@@ -72,6 +72,15 @@ date_added: "{{date}}"
 ## Strengths & Weaknesses
 个人评价。
 
+## Mind Map
+```mermaid
+mindmap
+  root((Paper Title))
+    Problem
+    Method
+    Results
+```
+
 ## Connections
 - Related papers:
 - Related ideas:
