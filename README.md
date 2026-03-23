@@ -1,8 +1,22 @@
 # 🔬 Research Workspace
 
-An Obsidian-based knowledge management workspace for AI research, with AI-assisted paper reading workflow.
+An Obsidian-based knowledge management workspace for AI research — building a **human-AI collaborative research pipeline** from paper reading to idea generation to experiment validation.
 
-基于 Obsidian 的 AI 研究知识管理工作区，支持 AI 辅助论文阅读。
+基于 Obsidian 的 AI 研究知识管理工作区，构建从论文阅读到 idea 生成再到实验验证的 **human-AI 协作研究流水线**。
+
+## 🎯 Vision
+
+论文太多，靠人工逐篇阅读不现实。这个项目的核心目标是让人和 AI 更好地配合——**人专注于创造性工作，AI 负责重复性、工程性的事情**，共同构建一个 personalized knowledge space。
+
+具体来说，我们希望实现一个逐步递进的协作流程：
+
+1. **AI 阅读与总结** — 论文太多读不过来，让 AI 批量阅读、生成结构化笔记
+2. **人工精炼与补充** — AI 总结并不完美，需要人来修改、补充个人见解
+3. **交互式讨论** — 人和 AI 围绕论文内容深入讨论，碰撞想法
+4. **知识网络构建** — 逐步积累形成 personalized knowledge space（人和 AI 共享）
+5. **智能论文筛选** — AI 基于已有知识网络，主动推荐相关论文 *(planned)*
+6. **Research Idea 生成** — 基于知识积累，人和 AI 讨论产出可行的研究想法 *(planned)*
+7. **代码实现与实验验证** — AI 将 idea 转化为代码，跑实验验证 *(planned)*
 
 ![Obsidian Demo](Attachments/obsidian-demo.png)
 
