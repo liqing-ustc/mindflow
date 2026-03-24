@@ -29,10 +29,11 @@
 ```
 MindFlow/
 ├── website/                    ← 新增：所有网站相关文件
-│   ├── quartz/                 ← Quartz 核心代码
+│   ├── quartz/                 ← Quartz 核心代码（从官方 repo clone）
 │   ├── quartz.config.ts        ← 站点配置
 │   ├── quartz.layout.ts        ← 页面布局
-│   └── package.json            ← Node.js 依赖
+│   ├── package.json            ← Node.js 依赖
+│   └── package-lock.json       ← 必须提交（npm ci 依赖此文件）
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          ← 新增：自动部署 workflow
@@ -53,6 +54,18 @@ website/node_modules/
 dist/
 ```
 
+### Quartz v4 初始化方式
+
+Quartz v4 不是普通的 npm 包，需要 clone 官方 repo 并移入 `website/` 目录：
+
+```bash
+git clone https://github.com/jackyzha0/quartz.git website
+rm -rf website/.git   # 必须：删除嵌套 git 目录，否则 website/ 不会被 MindFlow repo 追踪
+cd website && npm install
+```
+
+然后修改 `quartz.config.ts` 和 `quartz.layout.ts` 进行配置。
+
 ## Quartz Configuration
 
 ### Site Info (`quartz.config.ts`)
@@ -72,8 +85,15 @@ dist/
 | 文件树导航 | `Explorer` component |
 
 ### 排除目录
-`Templates/` 目录不发布到网站（模板文件无阅读价值）：
-在 `quartz.config.ts` 的 `ignorePatterns` 中添加 `"Templates/**"`。
+在 `quartz.config.ts` 的 `ignorePatterns` 中排除以下目录：
+
+```ts
+ignorePatterns: ["Templates/**", ".obsidian/**", "docs/**"]
+```
+
+- `Templates/`：模板文件无阅读价值
+- `.obsidian/`：Obsidian 配置 JSON，不是 markdown，会产生乱页
+- `docs/`：内部规划文档（spec/plan），不对外发布
 
 ## GitHub Actions Workflow
 
@@ -95,7 +115,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # 必须：Quartz 用 git history 生成页面的 lastmod 日期
 
       - uses: actions/setup-node@v4
         with:
@@ -110,7 +130,7 @@ jobs:
         run: npx quartz build --directory ../ --output ../dist
 
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
@@ -125,9 +145,10 @@ vault 根目录新增 `index.md`，作为网站首页，内容包括：
 
 ## Deployment Steps
 
-1. 在 GitHub repo Settings → Pages 中，将 Source 设为 `gh-pages` 分支
-2. 首次 push 后 GitHub Actions 自动构建，约 2-3 分钟后网站上线
-3. 后续每次 push 到 main 自动重新部署
+1. **开启 Actions 写权限**：GitHub repo Settings → Actions → General → Workflow permissions → 选择 "Read and write permissions"（默认是只读，会导致 deploy 步骤 403 报错）
+2. **设置 Pages 来源**：Settings → Pages → Source → 选择 `gh-pages` 分支
+3. 首次 push 后 GitHub Actions 自动构建，约 2-3 分钟后网站上线
+4. 后续每次 push 到 main 自动重新部署
 
 ## Site URL
 
