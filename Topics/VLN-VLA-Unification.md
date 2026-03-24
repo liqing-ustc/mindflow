@@ -1,17 +1,27 @@
 ---
 title: "VLN-VLA Unification: Foundation Models for Indoor Robot Navigation and Manipulation"
-tags: [VLN, VLA, SLAM, embodied-AI, foundation-model, indoor-scene, navigation, manipulation]
+tags:
+  - VLN
+  - VLA
+  - SLAM
+  - embodied-AI
+  - foundation-model
+  - indoor-scene
+  - navigation
+  - manipulation
 status: complete
-date_updated: "2026-03-24"
+date_updated: 2026-03-24
+dg-publish: true
 ---
 
 ## Overview
 
-本 survey 从 foundation model 视角，系统梳理了 VLN（Vision-and-Language Navigation）和 VLA（Vision-Language-Action）两个领域的技术演进与架构趋同。通过分析 17 篇核心论文，我们发现：**VLN 和 VLA 在四个维度上正在趋同**——VLM backbone、language-conditioned action prediction、web-scale pre-training、hierarchical 架构——NaVILA 已经证明 VLN 可以重构为 navigation-focused VLA。然而，统一面临三大核心障碍：（1）action space mismatch（50 Hz continuous joint control vs. 1-5 Hz discrete waypoint selection）；（2）navigation 和 manipulation 缺乏 shared spatial representation；（3）simulation 生态无法同时满足 building-scale navigation 和 high-fidelity manipulation。Semantic SLAM（尤其 ConceptGraphs 式 3D scene graph）是弥合这一 gap 的关键基础设施，可以同时服务 navigation waypoints 和 manipulation targets。现有 Nav+Manip 系统（OK-Robot、SayCan、Mobile ALOHA）验证了联合任务的可行性，但都未实现 shared spatial representation。综合 gap 分析和 benchmark 评估（ALFRED、TEACh、HomeRobot OVMM），我们提出最具潜力的研究方向是 **Hierarchical VLA with Shared Semantic Scene Graph**——共享 VLM backbone + 分离 domain-specific action heads + ConceptGraphs 式 scene graph 作为统一空间记忆，在 HomeRobot OVMM 上验证。
+本 survey 从 foundation model 视角，系统梳理了 VLN（Vision-and-Language Navigation）和 VLA（Vision-Language-Action）两个领域的技术演进与架构趋同。通过分析 **20 篇**核心论文，我们发现：**VLN 和 VLA 在四个维度上正在趋同**——VLM backbone、language-conditioned action prediction、web-scale pre-training、hierarchical 架构——NaVILA 已经证明 VLN 可以重构为 navigation-focused VLA，Hi Robot 验证了 hierarchical VLM-VLA 架构在 open-ended 指令理解上的有效性。然而，统一面临三大核心障碍：（1）action space mismatch（50 Hz continuous joint control vs. 1-5 Hz discrete waypoint selection）；（2）navigation 和 manipulation 缺乏 shared spatial representation；（3）simulation 生态无法同时满足 building-scale navigation 和 high-fidelity manipulation。Semantic SLAM（尤其 ConceptGraphs 式 3D scene graph 或 MTU3D 式 online query memory）是弥合这一 gap 的关键基础设施，可以同时服务 navigation waypoints 和 manipulation targets。现有 Nav+Manip 系统（OK-Robot、SayCan、Mobile ALOHA）验证了联合任务的可行性，但都未实现 shared spatial representation。π\*₀.₆ 的 Recap 算法开启了 VLA 的 RL self-improvement 时代，其 Knowledge Insulation 技术为 dual action heads 的独立训练提供了关键支撑。综合 gap 分析和 benchmark 评估（ALFRED、TEACh、HomeRobot OVMM），我们提出最具潜力的研究方向是 **Hierarchical VLA with Shared Semantic Scene Graph**——Hi Robot 式 VLM reasoning + π₀ 式 VLA execution + ConceptGraphs/MTU3D 式 spatial memory 作为统一空间记忆，在 HomeRobot OVMM 上验证。
+
 
 ## 1. VLA 基础模型现状
 
-Vision-Language-Action（VLA）模型是 embodied AI 领域近年来最重要的进展之一。其核心思路是将预训练 VLM 的视觉-语言理解能力迁移到 robot action 生成，形成"看懂场景 → 理解指令 → 输出动作"的端到端 pipeline。自 2023 年 [[Brohan2023-RT2|RT-2]] 开创 VLA 范式以来，该领域经历了三个关键演进：（1）**action representation 从 discrete token 到 continuous flow matching**——RT-2 和 [[Kim2024-OpenVLA|OpenVLA]] 将 action 离散化为 text token，控制频率受限于 autoregressive decoding（~3 Hz）；[[Black2024-Pi0|π₀]] 引入 flow matching + action expert 实现 50 Hz 连续控制；（2）**从单任务到 cross-embodiment generalist**——[[Ghosh2024-Octo|Octo]] 和 OpenVLA 在 Open X-Embodiment 数据集上训练，覆盖多种 robot 平台；π₀ 进一步扩展到 7 个平台 68 个任务；（3）**从短时操作到 long-horizon 自主系统**——[[Black2025-Pi05|π0.5]] 加入 hierarchical inference 实现 15 分钟级家务任务，[[Torne2026-MEM|MEM]] 引入多尺度记忆机制，[[Li2026-RoboClaw|RoboClaw]] 用 VLM agent loop 统一数据收集和执行。
+Vision-Language-Action（VLA）模型是 embodied AI 领域近年来最重要的进展之一。其核心思路是将预训练 VLM 的视觉-语言理解能力迁移到 robot action 生成，形成"看懂场景 → 理解指令 → 输出动作"的端到端 pipeline。自 2023 年 [[Brohan2023-RT2|RT-2]] 开创 VLA 范式以来，该领域经历了三个关键演进：（1）**action representation 从 discrete token 到 continuous flow matching**——RT-2 和 [[Kim2024-OpenVLA|OpenVLA]] 将 action 离散化为 text token，控制频率受限于 autoregressive decoding（~3 Hz）；[[Black2024-Pi0|π₀]] 引入 flow matching + action expert 实现 50 Hz 连续控制；（2）**从单任务到 cross-embodiment generalist**——[[Ghosh2024-Octo|Octo]] 和 OpenVLA 在 Open X-Embodiment 数据集上训练，覆盖多种 robot 平台；π₀ 进一步扩展到 7 个平台 68 个任务；（3）**从短时操作到 long-horizon 自主系统**——[[Black2025-Pi05|π0.5]] 加入 hierarchical inference 实现 15 分钟级家务任务，[[Torne2026-MEM|MEM]] 引入多尺度记忆机制，[[Li2026-RoboClaw|RoboClaw]] 用 VLM agent loop 统一数据收集和执行；（4）**RL 自我改进与 open-ended 指令理解**——[[Black2025-PiStar06|π\*₀.₆]] 首次实现通用 VLA 通过真实部署经验进行 RL self-improvement（Recap 算法：advantage-conditioned policy extraction），[[Shi2025-HiRobot|Hi Robot]] 提出 hierarchical VLM-VLA 架构（独立 VLM reasoning + VLA execution），通过 synthetic data generation 实现 open-ended 指令理解和实时用户纠正，超越 GPT-4o baseline 40%+。
 
 ### Key VLA Models
 
@@ -24,13 +34,16 @@ Vision-Language-Action（VLA）模型是 embodied AI 领域近年来最重要的
 | [[Black2025-Pi05\|π0.5]] | 2025 | PaliGemma 3B (extended) | Hybrid (discrete pre-train → continuous post-train) | Co-training 5 类异构数据 | Hierarchical inference + open-world generalization |
 | [[Torne2026-MEM\|MEM]] | 2026 | Gemma3-4B (π0.6 base) | Continuous (flow matching) | Robot demos + video + web | 多尺度记忆（视频短期 + 语言长期） |
 | [[Li2026-RoboClaw\|RoboClaw]] | 2026 | Off-the-shelf VLM + π0.5 | Continuous (flow matching) | 自主采集 + 迭代学习 | EAP 自主数据收集 + VLM agent loop |
+| [[Black2025-PiStar06\|π\*₀.₆]] | 2025 | Gemma 3 4B + Action Expert 860M | Continuous (flow matching, 50 Hz) | Demos + autonomous RL + interventions | Recap: advantage-conditioned RL for VLA self-improvement |
+| [[Shi2025-HiRobot\|Hi Robot]] | 2025 | PaliGemma 3B (hi) + π₀ (lo) | Hierarchical (language commands → flow matching) | Teleoperation + VLM synthetic data | Hierarchical VLM-VLA + synthetic multi-turn interaction data |
 
 ### 架构趋势 Takeaway
 
 1. **Action representation 是核心分野**：discrete token（RT-2, OpenVLA）→ diffusion（Octo）→ flow matching（π₀ 系列）。连续 action 生成显著提升了控制频率和灵巧操作能力。
 2. **VLM backbone 不是越大越好**：RT-2 用 55B 参数，但 π₀ 用 3B + 300M action expert 就实现了更强的操作能力。关键在于 action head 的设计和训练数据的多样性。
-3. **Hierarchical 架构成为主流**：π0.5 和 MEM 都采用高层语义推理 + 低层 action 生成的分层设计，这与 VLN 领域的 high-level planning + low-level control 高度相似，暗示了 VLN-VLA 统一的可能性。
-4. **开源生态推动快速迭代**：Octo 和 OpenVLA 的开源使社区能够快速复现和改进，Open X-Embodiment 数据集成为事实标准。
+3. **Hierarchical 架构成为主流**：π0.5、MEM、Hi Robot 都采用高层语义推理 + 低层 action 生成的分层设计。Hi Robot 进一步验证了**独立 VLM reasoning + VLA execution** 的双模型架构有效性（超越 GPT-4o 40%+），与 VLN 领域的 high-level planning + low-level control 高度平行，是 VLN-VLA 统一的最直接架构参考。
+4. **RL self-improvement 成为新前沿**：π\*₀.₆ 的 Recap 算法首次实现了通用 VLA 的 RL 自我改进（>2× throughput），其 advantage-conditioned policy extraction 绕过了 PPO 对 flow-matching 的兼容性问题。Knowledge Insulation 技术使 discrete tokens 和 continuous actions 独立训练——这对 dual action heads（nav + manip）的统一系统至关重要。
+5. **开源生态推动快速迭代**：Octo 和 OpenVLA 的开源使社区能够快速复现和改进，Open X-Embodiment 数据集成为事实标准。
 
 ## 2. VLN 基础模型现状
 
@@ -42,7 +55,7 @@ Vision-and-Language Navigation（VLN）要求 agent 根据自然语言指令在�
 
 **Phase 2: Continuous environments 与 hierarchical planning（2022-2024）**。VLN-CE（Vision-Language Navigation in Continuous Environments）将 VLN 从 discrete nav-graph 扩展到更接近真实场景的 continuous action space。[[An2024-ETPNav|ETPNav]] 提出 online topological mapping + hierarchical planning（transformer-based high-level planner + obstacle-avoiding low-level controller），在 R2R-CE 和 RxR-CE 上大幅超越 prior SOTA。这一阶段的关键架构创新——**hierarchical decomposition（high-level planning + low-level control）**——与 VLA 领域中 π0.5 的 hierarchical inference 高度平行。
 
-**Phase 3: LLM/VLM backbone 引入（2023-present）**。[[Zhou2023-NavGPT|NavGPT]] 首次将 GPT-4 作为 zero-shot navigation reasoning engine，通过文本化视觉观测让 LLM 进行显式推理（sub-goal decomposition、landmark identification、progress tracking）。尽管 zero-shot 性能低于 trained models，但揭示了 LLM 在 navigation planning 中的潜力。其 follow-up NavGPT-2（ECCV 2024）通过 visual alignment 消除了与 VLN specialist 的性能差距，验证了 VLM backbone 在 VLN 中的可行性。[[Cheng2024-NaVILA|NaVILA]] 进一步将 VLM（VILA）微调为 navigation VLA，用语言化 mid-level action 作为高层规划和低层控制的桥梁，在 R2R-CE 上达到 54% SR 并实现了 legged robot 真实世界部署。NaVILA 本质上就是一个 navigation-focused VLA，是 VLN-VLA 架构趋同的最直接证据。
+**Phase 3: LLM/VLM backbone 引入（2023-present）**。[[Zhou2023-NavGPT|NavGPT]] 首次将 GPT-4 作为 zero-shot navigation reasoning engine，通过文本化视觉观测让 LLM 进行显式推理（sub-goal decomposition、landmark identification、progress tracking）。尽管 zero-shot 性能低于 trained models，但揭示了 LLM 在 navigation planning 中的潜力。其 follow-up NavGPT-2（ECCV 2024）通过 visual alignment 消除了与 VLN specialist 的性能差距，验证了 VLM backbone 在 VLN 中的可行性。[[Cheng2024-NaVILA|NaVILA]] 进一步将 VLM（VILA）微调为 navigation VLA，用语言化 mid-level action 作为高层规划和低层控制的桥梁，在 R2R-CE 上达到 54% SR 并实现了 legged robot 真实世界部署。NaVILA 本质上就是一个 navigation-focused VLA，是 VLN-VLA 架构趋同的最直接证据。[[Zhu2025-MTU3D|MTU3D]] 则从另一个角度推进了统一：它将 3D visual grounding 和 active exploration **joint optimization**，通过 online query representation 直接从 RGB-D 流构建 dynamic spatial memory bank（无需离线 3D 重建），并设计 unified decision space 让 agent 在 "ground 已见物体" 和 "explore 未知区域" 之间统一决策。在 HM3D-OVON（+13.7% SR）、GOAT-Bench（+23.0% SR）等四个 benchmark 取得 SOTA，并在物理机器人上 zero-shot transfer。MTU3D 的意义在于：它证明了 **online spatial memory + unified grounding-exploration 是可行的**，为进一步扩展到 manipulation 提供了架构基础。
 
 ### Key VLN Models
 
@@ -53,18 +66,19 @@ Vision-and-Language Navigation（VLN）要求 agent 根据自然语言指令在�
 | [[Zhou2023-NavGPT\|NavGPT]] | 2023 | GPT-4 (frozen, zero-shot) | Discrete（nav-graph node selection） | Discrete nav-graph (MP3D) | LLM 作为 navigation reasoning engine，显式推理链 |
 | NavGPT-2 | 2024 | Frozen LLM + visual alignment | Discrete | Discrete nav-graph | 消除 LLM agent 与 VLN specialist 的性能差距 |
 | [[Cheng2024-NaVILA\|NaVILA]] | 2024 | VILA VLM (fine-tuned) | Mid-level language actions → RL locomotion | Continuous (Habitat + Isaac Sim + Real) | VLM → 语言化动作 → locomotion policy，真实 legged robot 部署 |
+| [[Zhu2025-MTU3D\|MTU3D]] | 2025 | DINO + CLIP (task-specific) | Unified scoring（object grounding / frontier exploration） | Continuous (Habitat + Real) | Online query spatial memory + joint grounding-exploration decision，4 benchmarks SOTA |
 
 ### VLN vs VLA：关键差异
 
-| 维度 | VLN | VLA |
-|------|-----|-----|
-| **Action space** | Discrete waypoints / nav-graph nodes | Continuous joint torques / end-effector poses |
-| **Primary environment** | Simulation（Habitat, MP3D, Gibson）| Real world + simulation |
-| **Control frequency** | Low（~1-5 Hz, per-step decision） | High（10-50 Hz continuous control）|
-| **Evaluation benchmarks** | R2R, REVERIE, SOON, R2R-CE, RxR-CE | 各种 real-world manipulation tasks |
-| **Spatial representation** | Topological map / nav-graph | 通常无显式空间表示（end-to-end） |
-| **Foundation model 使用方式** | VLM/LLM → high-level planning | VLM → end-to-end action generation |
-| **核心挑战** | Sim-to-real gap, instruction grounding | Dexterous control, generalization |
+| 维度                         | VLN                                    | VLA                                           |
+| -------------------------- | -------------------------------------- | --------------------------------------------- |
+| **Action space**           | Discrete waypoints / nav-graph nodes   | Continuous joint torques / end-effector poses |
+| **Primary environment**    | Simulation（Habitat, MP3D, Gibson）      | Real world + simulation                       |
+| **Control frequency**      | Low（~1-5 Hz, per-step decision）        | High（10-50 Hz continuous control）             |
+| **Evaluation benchmarks**  | R2R, REVERIE, SOON, R2R-CE, RxR-CE     | 各种 real-world manipulation tasks              |
+| **Spatial representation** | Topological map / nav-graph            | 通常无显式空间表示（end-to-end）                         |
+| **Foundation model 使用方式**  | VLM/LLM → high-level planning          | VLM → end-to-end action generation            |
+| **核心挑战**                   | Sim-to-real gap, instruction grounding | Dexterous control, generalization             |
 
 ### Sim-to-Real Gap 现状
 
@@ -133,6 +147,8 @@ Semantic SLAM 天然提供了这种 "spatial memory"：
 
 这种 spatial memory 对统一 VLN 和 VLA 至关重要：一个真正的 embodied agent 需要在导航到目标位置（VLN）后执行操作（VLA），再导航到下一个位置——整个过程需要一个 persistent、incrementally updated 的空间表示来维护 context。
 
+值得注意的是，[[Zhu2025-MTU3D|MTU3D]] 提供了一种**绕过显式 3D 重建的在线方案**：它用 DINO+sparse conv 从 RGB-D 帧直接生成 object queries，通过 IoU matching 增量合并到 dynamic spatial memory bank，同时维护 occupancy map 标记 explored/unexplored 区域。这种 query-based representation 介于上述三类表示之间——它具有 scene graph 的 object-level abstraction（每个 query 有 bounding box + CLIP embedding + confidence），又像 dense map 一样维护 spatial coverage（occupancy map），且无需离线重建。MTU3D 在 GOAT-Bench 上的 lifelong memory 实验（SR 从 10.5% → 52.6%）有力证明了 online spatial memory 对 long-horizon navigation 的价值。**对 VLN-VLA 统一的启示**：这种 online query representation 可以作为 ConceptGraphs 式 scene graph 的轻量替代方案，但需要探索如何扩展以支持 manipulation grounding（如附加 graspability score）。
+
 ### Section 3 Takeaway
 
 1. **语义空间表示是 VLN-VLA 统一的 "missing piece"**：VLN 需要 spatial map 进行 path planning，VLA 需要 object-level semantics 进行 manipulation grounding，语义 SLAM 可以同时满足两者。
@@ -157,10 +173,13 @@ Semantic SLAM 天然提供了这种 "spatial memory"：
 | [[Black2025-Pi05\|π0.5]] | VLA | PaliGemma 3B（extended） | Hybrid（discrete pre-train → continuous post-train, 50 Hz） | 无显式空间表示（implicit in VLM） | 5 类异构数据 co-training（MM/ME/CE/HL/WD） | Hierarchical（语义子任务 → flow matching action） | 长（10-15 min 家务） | Real |
 | [[Torne2026-MEM\|MEM]] | VLA | Gemma3-4B（π0.6 base） | Continuous（flow matching） | 视频短期记忆 + 语言长期记忆（无 spatial map） | Robot demos + video + web | Hierarchical + 多尺度记忆 | 长（15 min） | Real |
 | [[Li2026-RoboClaw\|RoboClaw]] | VLA | Off-the-shelf VLM + π0.5 | Continuous（flow matching） | VLM agent structured memory（非空间） | 自主采集（EAP）+ 迭代学习 | VLM agent loop + VLA primitives | 长（multi-step） | Real |
+| [[Black2025-PiStar06\|π\*₀.₆]] | VLA | Gemma 3 4B + Action Expert 860M | Continuous（flow matching, 50 Hz） | Distributional value function（670M） | Demos + autonomous RL + interventions | Recap: advantage-conditioned RL | 长（13hr deployment） | Real |
+| [[Shi2025-HiRobot\|Hi Robot]] | VLA | PaliGemma 3B (hi) + π₀ (lo) | Hierarchical（language → flow matching） | 无显式空间表示 | Teleoperation + VLM synthetic data | 独立 VLM reasoning + VLA execution | 中-长（multi-step） | Real |
 | [[Chen2022-DUET\|VLN-DUET]] | VLN | 无 VLM（task-specific Transformer） | Discrete（nav-graph node selection, 含远程跳转） | Online topological map | R2R/REVERIE/SOON supervised | Dual-scale graph transformer | 中（导航序列） | Sim（MP3D） |
 | [[An2024-ETPNav\|ETPNav]] | VLN | 无 VLM（task-specific Transformer） | Hybrid（high-level waypoint + low-level continuous） | Online topological map + waypoint prediction | R2R-CE/RxR-CE supervised | Hierarchical（transformer planner + heuristic controller） | 中 | Sim（Habitat） |
 | [[Zhou2023-NavGPT\|NavGPT]] | VLN | GPT-4（frozen, zero-shot） | Discrete（nav-graph node selection） | 无（文本化 history） | Zero-shot（无训练） | LLM reasoning engine | 中 | Sim（MP3D） |
 | [[Cheng2024-NaVILA\|NaVILA]] | VLN/VLA | VILA VLM（fine-tuned） | Mid-level 语言化动作 → RL locomotion policy | 无显式 map（VLM implicit） | YouTube 视频 + Habitat sim + auxiliary VQA | Hierarchical（VLM → 语言动作 → RL policy） | 中 | Sim→Real |
+| [[Zhu2025-MTU3D\|MTU3D]] | VLN | DINO + CLIP（task-specific, 266M） | Unified scoring（object query / frontier query） | Online query memory bank + occupancy map | >1M trajectories（HM3D sim + ScanNet real） | 三阶段训练（perception → VLE pre-training → fine-tune） | 中-长（lifelong multi-goal） | Sim→Real |
 
 ### 4.2 共性分析（Commonalities）
 
@@ -208,7 +227,7 @@ VLN 使用 R2R、REVERIE、SOON 等 benchmark 的 Success Rate / SPL 评估，VL
 
 **2. Language-conditioned hierarchical planning**
 
-π0.5 的语义子任务预测和 NaVILA 的语言化 mid-level action 本质上是同一种思路：**用自然语言作为高层规划和低层执行之间的 interface**。这为统一提供了一个优雅的 abstraction layer——high-level planner 用语言描述下一步目标（"navigate to the kitchen sink" 或 "pick up the red mug"），low-level policy 根据具体 domain（navigation 或 manipulation）选择对应的 action generation module。
+π0.5 的语义子任务预测、NaVILA 的语言化 mid-level action、Hi Robot 的独立 VLM → language command → VLA execution 本质上是同一种思路：**用自然语言作为高层规划和低层执行之间的 interface**。Hi Robot 进一步验证了这一范式的有效性——独立的 VLM high-level policy（PaliGemma-3B）在 open-ended 指令理解上大幅超越 GPT-4o（+40% instruction accuracy），证明 fine-tuned 小模型在 situated reasoning 上优于通用大模型。这为统一提供了一个优雅的 abstraction layer——high-level planner 用语言描述下一步目标（"navigate to the kitchen sink" 或 "pick up the red mug"），low-level policy 根据具体 domain（navigation 或 manipulation）选择对应的 action generation module。
 
 **3. Web-scale pre-training 的共享**
 
@@ -236,7 +255,7 @@ Navigation 数据主要来自 simulation（Habitat trajectories），manipulatio
 
 Section 3 的分析表明，semantic SLAM 可以作为 VLN-VLA 统一的 "missing piece"：
 
-**Navigation 侧**：SLAM 提供的 persistent spatial map 可以替代 VLN 中 hand-crafted 的 topological map。VLMaps 的 language-queryable grid map 已经展示了 open-vocabulary navigation planning 的可能。ConceptGraphs 的 scene graph 提供了更丰富的 object-level abstraction，可以直接作为 navigation waypoints（类似 VLN-DUET 的 topological map nodes，但语义更丰富）。
+**Navigation 侧**：SLAM 提供的 persistent spatial map 可以替代 VLN 中 hand-crafted 的 topological map。VLMaps 的 language-queryable grid map 已经展示了 open-vocabulary navigation planning 的可能。ConceptGraphs 的 scene graph 提供了更丰富的 object-level abstraction，可以直接作为 navigation waypoints（类似 VLN-DUET 的 topological map nodes，但语义更丰富）。[[Zhu2025-MTU3D|MTU3D]] 进一步证明了 online 构建的 query-based spatial memory 能有效支持 grounding + exploration 的联合决策，且无需离线 3D 重建——这为统一系统中的 real-time spatial representation 提供了可行路径。
 
 **Manipulation 侧**：ConceptGraphs 的 3D object nodes 提供了 manipulation targets 和空间关系信息。SplaTAM 的 dense Gaussian field 提供了高质量的 3D geometry，有利于 grasp planning。这些 spatial representations 可以增强 VLA 系统目前缺失的环境理解能力。
 
@@ -262,7 +281,7 @@ VLA 领域（尤其 π₀ 系列）选择了不同路线：直接在真实 robot
 
 1. **VLA 和 VLN 在四个维度上趋同**：VLM backbone、language-conditioned action prediction、web-scale pre-training、hierarchical 架构。NaVILA 是两者趋同的最直接证据——它本质上就是一个 navigation-focused VLA。
 2. **Action space mismatch 是统一的最大障碍**：50 Hz continuous joint control vs. 1-5 Hz discrete waypoint selection，控制频率相差一个数量级。Hierarchical decomposition（共享 VLM backbone + 分离 action heads）是最可行的统一路径。
-3. **Semantic SLAM 是统一的空间基础设施**：ConceptGraphs 式 scene graph 可以同时服务 navigation waypoints 和 manipulation targets，但目前没有系统真正实现 shared spatial representation。
+3. **Semantic SLAM 是统一的空间基础设施**：ConceptGraphs 式 scene graph 可以同时服务 navigation waypoints 和 manipulation targets；MTU3D 的 online query memory 证明了实时构建此类表示的可行性。但目前没有系统将 spatial representation 同时用于 navigation 和 manipulation。
 4. **Simulation 生态需要升级**：现有 sim 平台无法同时满足 building-scale navigation 和 high-fidelity manipulation 的需求，制约了 unified Nav+Manip 系统的开发和评估。
 5. **统一架构的可能形态**：VLM backbone（shared）→ language-mediated hierarchical planner（shared）→ domain-specific action heads（navigation: waypoint selection / VLM mid-level commands; manipulation: flow matching continuous control）→ shared semantic spatial memory（ConceptGraphs + SplaTAM + VLMaps）。
 
@@ -339,9 +358,9 @@ OK-Robot 和 SayCan 支持 open-vocabulary 指令但成功率较低（58-74%）�
 
 综合以上分析，结合 Section 1-3 的技术进展，一个理想的 Nav+Manip 统一系统应具备：
 
-1. **Hierarchical VLA architecture**（来自 Section 1：[[Black2025-Pi05|π0.5]]、[[Torne2026-MEM|MEM]]）：
-   - High-level：VLM 做 task decomposition 和 sub-goal generation（类似 SayCan 的 LLM planning，但用 VLM 替代纯文本 LLM 以获得 visual grounding）
-   - Low-level：flow matching action generation 同时输出 navigation 和 manipulation actions（类似 Mobile ALOHA 的 whole-body control，但由 foundation model 驱动）
+1. **Hierarchical VLA architecture**（来自 Section 1：[[Black2025-Pi05|π0.5]]、[[Torne2026-MEM|MEM]]、[[Shi2025-HiRobot|Hi Robot]]）：
+   - High-level：独立 VLM 做 task decomposition 和 sub-goal generation（Hi Robot 已验证此模式超越 GPT-4o，且支持 open-ended 指令和实时用户纠正）
+   - Low-level：flow matching action generation 同时输出 navigation 和 manipulation actions（类似 Mobile ALOHA 的 whole-body control，但由 foundation model 驱动；π\*₀.₆ 的 Recap 提供 RL self-improvement 能力）
 
 2. **Shared semantic spatial representation**（来自 Section 3：[[Gu2024-ConceptGraphs|ConceptGraphs]]）：
    - Navigation 和 manipulation 共享同一个 incrementally updated scene graph
@@ -373,7 +392,7 @@ OK-Robot 和 SayCan 支持 open-vocabulary 指令但成功率较低（58-74%）�
 
 1. **No end-to-end model handles both continuous navigation and dexterous manipulation。** 现有系统要么是 modular pipeline（OK-Robot、SayCan：nav 和 manip 完全独立），要么是 short-range end-to-end policy（Mobile ALOHA：只覆盖局部移动）。没有一个 foundation model 能在 building-scale navigation 和 dexterous manipulation 之间端到端切换。π0.5 实现了 long-horizon 家务任务，但其 navigation 能力有限（不涉及跨房间导航）；NaVILA 实现了 VLM-driven navigation，但不涉及 manipulation。
 
-2. **SLAM representations 未针对 VLM consumption 优化。** Section 3 分析了三类语义空间表示（dense feature maps、3D scene graphs、neural/Gaussian fields），但它们都是独立构建的，未与 VLM backbone 端到端优化。ConceptGraphs 的 scene graph 需要离线构建，VLMaps 的 feature map 需要预先扫描——没有 "online, VLM-native spatial representation" 能实时更新并直接嵌入 VLM 的 reasoning loop。
+2. **SLAM representations 未针对 VLM consumption 优化。** Section 3 分析了三类语义空间表示（dense feature maps、3D scene graphs、neural/Gaussian fields），但它们都是独立构建的，未与 VLM backbone 端到端优化。ConceptGraphs 的 scene graph 需要离线构建，VLMaps 的 feature map 需要预先扫描。[[Zhu2025-MTU3D|MTU3D]] 的 online query representation 部分解决了 "实时构建" 的问题，但其 spatial memory 仍然是独立模块，未与 VLM backbone 端到端优化——真正的 "VLM-native spatial representation" 仍不存在。
 
 3. **Navigation 和 manipulation 不共享 spatial representation。** Section 5 明确指出，即使是最先进的 OK-Robot，其 navigation（2D occupancy grid）和 manipulation（3D point cloud）使用完全不同的空间表示。没有系统实现了 "shared semantic SLAM serving both navigation and manipulation"。
 
@@ -381,7 +400,7 @@ OK-Robot 和 SayCan 支持 open-vocabulary 指令但成功率较低（58-74%）�
 
 5. **Sim-to-real gap 在 Nav+Manip 联合任务中更加严重。** VLN 主要在 simulation 中评估（Habitat/MP3D），VLA 主要在 real world 中训练。统一系统需要同时处理 building-scale navigation（sim 数据丰富）和 object-level manipulation（需要 real data），但没有 simulation 平台能同时提供 large-scale 建筑场景和 high-fidelity 物理交互。
 
-6. **缺乏 closed-loop error recovery 机制。** Modular 系统（SayCan、OK-Robot）一旦某个模块失败，整个任务失败；end-to-end 系统（Mobile ALOHA）缺乏显式 failure detection。理想系统需要在 navigation 和 manipulation 之间实现 interleaved execution with re-planning。
+6. **缺乏 closed-loop error recovery 机制。** Modular 系统（SayCan、OK-Robot）一旦某个模块失败，整个任务失败；end-to-end 系统（Mobile ALOHA）缺乏显式 failure detection。[[Black2025-PiStar06|π\*₀.₆]] 的 distributional value function 可以检测 failure（value 下降），[[Shi2025-HiRobot|Hi Robot]] 支持用户实时纠正，但两者都未实现**自主的 failure detection + re-planning** 在 nav-manip 切换中的应用。
 
 7. **Long-horizon spatial memory 机制不成熟。** MEM 引入了视频短期记忆和语言长期记忆，但缺乏 explicit spatial memory。π0.5 依赖 VLM implicit memory，无法回溯到之前探索过的区域。SLAM 可以提供 persistent spatial memory，但如何将 SLAM map 高效注入 VLM 的 context window 仍是 open problem。
 
@@ -460,14 +479,14 @@ HomeRobot OVMM 是最接近的现有 benchmark，但其 manipulation 仍较为�
 >
 > **为什么最有潜力**：
 > - 直接回应 Section 4 和 Section 5 共同识别的核心 gap（action space mismatch + 缺乏 shared spatial representation）
-> - 每个组件都有成熟的技术基础：VLM backbone（π₀/NaVILA）、scene graph（ConceptGraphs）、flow matching action generation（π₀ 系列）、hierarchical planning（π0.5/ETPNav）
+> - 每个组件都有成熟的技术基础：VLM backbone（π₀/NaVILA）、scene graph（ConceptGraphs）或 online query memory（MTU3D）、flow matching action generation（π₀ 系列）、hierarchical VLM-VLA 架构（Hi Robot 已验证）、RL self-improvement（π\*₀.₆ Recap）
 > - HomeRobot OVMM 提供了直接可用的评估平台
 > - 渐进式研究路径：可以先在 simulation 中验证架构（Habitat + AI2-THOR），再 transfer 到 real robot（Hello Robot Stretch）
 >
 > **具体 Idea**：在 HomeRobot OVMM 平台上，实现一个 三层架构系统：
-> 1. **VLM Planner**（基于 fine-tuned PaliGemma 或 VILA）：接收指令 + scene graph summary → 输出 sub-goal sequence
-> 2. **Scene Graph Memory**（基于 ConceptGraphs 简化版）：online incremental 构建，nodes 包含 CLIP embedding + 3D position + navigability flag + graspability flag
-> 3. **Dual Action Heads**：navigation head（waypoint selection on scene graph → local planner）+ manipulation head（flow matching à la π₀）
+> 1. **VLM Planner**（基于 Hi Robot 式 fine-tuned PaliGemma/Gemma 3）：接收指令 + scene graph summary → 输出 sub-goal sequence，支持 open-ended 指令和实时用户纠正（Hi Robot 的 synthetic data pipeline 可直接复用）
+> 2. **Scene Graph Memory**（基于 ConceptGraphs 简化版或 MTU3D 式 online query representation）：online incremental 构建，nodes/queries 包含 CLIP embedding + 3D position + navigability flag + graspability flag
+> 3. **Dual Action Heads**：navigation head（waypoint selection on scene graph → local planner）+ manipulation head（flow matching à la π₀，可用 π\*₀.₆ Recap 进行 RL self-improvement）
 >
 > 关键实验：对比 shared scene graph vs. separate representations（OK-Robot 式）的 Nav+Manip 成功率差异。
 >
