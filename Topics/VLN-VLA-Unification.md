@@ -143,7 +143,103 @@ Semantic SLAM 天然提供了这种 "spatial memory"：
 <!-- Cross-cutting comparison of VLN and VLA architectures -->
 
 ## 5. 现有 Nav+Manip 系统
-<!-- Systems combining navigation and manipulation -->
+
+### 为什么 Nav+Manip 是 VLN-VLA 统一的试金石？
+
+前面四个 Section 分别从 VLA（manipulation）、VLN（navigation）、语义 SLAM（spatial representation）角度梳理了各领域的进展。但一个真正有用的 embodied agent 必须**同时具备 navigation 和 manipulation 能力**——在家庭环境中，"把桌上的杯子放到厨房水槽里"这样的简单指令就需要：定位杯子（perception）→ 导航到桌子（navigation）→ 抓取杯子（manipulation）→ 导航到厨房（navigation）→ 放下杯子（manipulation）。现有的 Nav+Manip 系统是检验 VLN-VLA 能否统一的最直接试验场。
+
+### 代表系统总览
+
+| System | Year | 架构类型 | Navigation | Manipulation | Task Planning | 成功率 |
+|--------|------|----------|------------|--------------|---------------|--------|
+| [[Ahn2022-SayCan\|SayCan]] | 2022 | Modular（LLM planner + skill library） | Pretrained nav skill | Pretrained pick/place skills | LLM × affordance scoring | 74%（执行）/ 84%（规划） |
+| HomeRobot OVMM | 2023 | Modular（heuristic/RL baselines） | Learned / heuristic nav | Learned / heuristic grasp | Heuristic pipeline | 20%（真实）/ 10.8%（竞赛最佳） |
+| [[Liu2024-OKRobot\|OK-Robot]] | 2024 | Modular（VLM perception + nav + grasp） | A* on occupancy grid | AnyGrasp + LangSam | Linear state machine | 58.5%（真实家庭） |
+| [[Fu2024-MobileALOHA\|Mobile ALOHA]] | 2024 | End-to-end（imitation learning） | Whole-body policy（含底盘） | Whole-body policy（含双臂） | 无显式 planning | ~90%（co-training 后，per-task） |
+| TidyBot | 2023 | Modular（LLM preference + mobile manip） | Heuristic nav | Learned grasp | LLM 个性化偏好推理 | 85%（物品放置） |
+
+### 两大架构范式
+
+现有 Nav+Manip 系统可以清晰地分为两大架构范式：
+
+#### 范式一：Modular Pipeline（SayCan、OK-Robot、TidyBot、HomeRobot）
+
+**架构特征**：将 Nav+Manip 任务分解为独立模块——perception、navigation、manipulation、task planning——各模块独立开发和训练，通过 pipeline 或 state machine 串联。
+
+**SayCan**（[[Ahn2022-SayCan|详细笔记]]）是这一范式的奠基性工作。其核心创新是 "Say × Can" scoring：LLM 评估每个 skill 的语义合理性（Say），value function 评估 skill 在当前状态下的可执行性（Can），两者相乘得到 grounded plan。Skill library 包含 551 个独立训练的 skills（navigation、pick、place 等），在 Google Everyday Robot 上实现 74% 的端到端成功率。**局限**：skill library 是 closed-set 的，无法处理 unseen 动作；navigation 和 manipulation skills 完全独立训练。
+
+**OK-Robot**（[[Liu2024-OKRobot|详细笔记]]）代表了 modular 范式的最新进展。其创新在于用 open-knowledge models（CLIP、OWL-ViT、AnyGrasp、LangSam）替代 task-specific 训练，实现 **zero-shot** Nav+Manip。Pipeline 为：iPhone 扫描建 VoxelMap → CLIP query 定位目标 → A* 导航 → AnyGrasp 抓取。在 10 个真实家庭中达到 58.5% 成功率。**局限**：linear state machine 无错误恢复；nav 和 manip 无 shared representation；需要预先扫描建图。
+
+**TidyBot** 聚焦个性化：用 LLM 从少量用户示例中推断物品放置偏好（"这类物品应该放到哪里"），然后驱动 mobile manipulator 执行。在 unseen 物品上达到 91.2% 的偏好预测准确率和 85% 的真实放置成功率。
+
+**Modular Pipeline 的共同模式**：
+1. **Perception 和 Planning 分离**：用 VLM/LLM 做 high-level 理解和规划，用 task-specific 模块执行
+2. **Sequential handoff**：nav → manip 是硬切换，导航结束后才开始操作
+3. **No shared spatial representation**：navigation 用 occupancy grid / nav skill，manipulation 用 point cloud / grasp model，两者不共享空间信息
+4. **Error propagation without recovery**：一旦某个模块失败，整个任务失败
+
+#### 范式二：End-to-End Learning（Mobile ALOHA）
+
+**架构特征**：不显式区分 navigation 和 manipulation，用 unified policy 直接从 observation 映射到 whole-body action（包含底盘速度 + 关节角度）。
+
+**Mobile ALOHA**（[[Fu2024-MobileALOHA|详细笔记]]）是这一范式的代表。通过低成本 whole-body teleoperation 系统收集 bimanual mobile manipulation 数据，用 ACT（Action Chunking with Transformers）做 supervised behavior cloning。核心创新是 **co-training**：仅需 50 条 mobile demonstrations，加上大量已有的 static ALOHA 数据联合训练，成功率提升高达 90%。成功完成煎虾、开柜门存锅、叫电梯等复杂任务。
+
+**End-to-End 的优势**：
+1. **Nav-Manip 自然融合**：policy 同时控制底盘和双臂，无 handoff 问题
+2. **Implicit coordination**：model 学会在移动中调整姿态，如走近物体的同时伸出手臂
+3. **Simple pipeline**：无需模块化设计和复杂 interface
+
+**End-to-End 的局限**：
+1. **Navigation 范围有限**：teleoperation 数据只覆盖短距离移动，无法 navigate 到远处房间
+2. **No spatial understanding**：无地图、无 SLAM、无空间记忆
+3. **No language conditioning**：每个任务需单独训练，不能通过语言指定新目标
+4. **Per-task data collection**：不同于 OK-Robot 的 zero-shot，每个新任务需要约 50 条 demonstrations
+
+### 共同瓶颈分析
+
+无论 modular 还是 end-to-end，现有 Nav+Manip 系统面临以下共同瓶颈：
+
+**1. Nav → Manip Handoff 问题**
+Modular 系统中，navigation 结束后 robot 停在某个位置开始 manipulation——但这个位置可能不是 manipulation 的最优位置。OK-Robot 用 scoring function 尝试平衡"靠近目标"和"保持 gripper 空间"，但仍然是 heuristic 的。理想情况下，navigation 应该**根据 manipulation 的需求动态调整**终点位姿。
+
+**2. 缺乏 Shared Spatial Representation**
+OK-Robot 的 navigation 用 2D occupancy grid，manipulation 用 3D point cloud——两者是完全不同的空间表示。SayCan 更极端，navigation 和 manipulation 甚至没有共享的 scene understanding。这导致两个问题：（1）navigation 无法利用 manipulation 的场景理解（如"桌面太拥挤，需要从另一侧靠近"）；（2）manipulation 无法利用 navigation 的空间记忆（如"杯子在上次经过的桌子上"）。Section 3 讨论的 ConceptGraphs 式 scene graph 可以作为这种 shared representation。
+
+**3. 独立训练导致的 Capability Gap**
+SayCan 的 551 个 skills 各自独立训练，不存在"一边走一边抓"的 skill。Mobile ALOHA 的 end-to-end policy 虽然解决了这个问题，但缺乏 generalization。这反映了一个根本矛盾：modular 系统有 generalization 但缺 coordination，end-to-end 系统有 coordination 但缺 generalization。
+
+**4. Open-Vocabulary vs Task-Specific 的 Tradeoff**
+OK-Robot 和 SayCan 支持 open-vocabulary 指令但成功率较低（58-74%），Mobile ALOHA 在特定任务上成功率很高（~90%）但不支持语言指令。如何同时实现 open-vocabulary generalization 和 high task success rate 仍是 open problem。
+
+### 理想的统一 Nav+Manip 系统应该是什么样的？
+
+综合以上分析，结合 Section 1-3 的技术进展，一个理想的 Nav+Manip 统一系统应具备：
+
+1. **Hierarchical VLA architecture**（来自 Section 1：[[Black2025-Pi05|π0.5]]、[[Torne2026-MEM|MEM]]）：
+   - High-level：VLM 做 task decomposition 和 sub-goal generation（类似 SayCan 的 LLM planning，但用 VLM 替代纯文本 LLM 以获得 visual grounding）
+   - Low-level：flow matching action generation 同时输出 navigation 和 manipulation actions（类似 Mobile ALOHA 的 whole-body control，但由 foundation model 驱动）
+
+2. **Shared semantic spatial representation**（来自 Section 3：[[Gu2024-ConceptGraphs|ConceptGraphs]]）：
+   - Navigation 和 manipulation 共享同一个 incrementally updated scene graph
+   - Graph nodes 同时作为 navigation waypoints 和 manipulation targets
+   - Language-queryable spatial memory 支持 long-horizon 任务
+
+3. **Unified training with diverse data**（来自 Section 1：[[Black2024-Pi0|π₀]] 的 cross-embodiment training）：
+   - Navigation data（VLN datasets）、manipulation data（robot demonstrations）、internet video 联合训练
+   - 类似 π₀ 的异构数据 co-training 策略
+
+4. **Closed-loop execution with error recovery**（现有系统的共同缺陷）：
+   - Navigation 和 manipulation 不是 sequential handoff，而是 interleaved execution
+   - Failure detection + re-planning：grasp 失败 → 重新调整位姿 → 再次尝试
+
+这一方向与 VLN-VLA 统一的核心目标完全一致：**一个 foundation model 同时具备 navigate 和 manipulate 的能力，通过 shared spatial representation 在两种模式间无缝切换**。
+
+### Section 5 Takeaway
+
+1. **两大范式各有所长**：modular pipeline（SayCan、OK-Robot）擅长 open-vocabulary generalization 和 task planning，end-to-end（Mobile ALOHA）擅长 whole-body coordination 和 high success rate。
+2. **Nav→Manip handoff 是核心瓶颈**：所有 modular 系统都在 nav 结束后硬切换到 manip，缺乏 nav-manip co-optimization。
+3. **Shared spatial representation 缺失**：navigation 和 manipulation 使用不同的空间表示，无法互相利用对方的 scene understanding。Section 3 的 semantic SLAM（ConceptGraphs）可以填补这一空白。
+4. **理想方案是 hierarchical VLA + shared scene graph**：结合 VLA 的 unified action generation、VLN 的 spatial planning、和 semantic SLAM 的 persistent spatial memory，实现 nav-manip-unified foundation model。
 
 ## 6. Gap 分析与潜在方向
 <!-- Research gaps, benchmarks, and future directions -->
