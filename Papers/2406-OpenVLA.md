@@ -85,7 +85,7 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[Brohan2023-RT2|RT-2]]（闭源前作），[[Black2024-Pi0|π0]]（flow matching 替代方案），[[Ghosh2024-Octo|Octo]]（更小的开源 generalist policy）
+- Related papers: [[2307-RT2|RT-2]]（闭源前作），[[2410-Pi0|π0]]（flow matching 替代方案），[[2405-Octo|Octo]]（更小的开源 generalist policy）
 - Related ideas: Open X-Embodiment, LoRA fine-tuning for robotics
 - Related topics: [[VLN-VLA-Unification]]
 - Related projects:

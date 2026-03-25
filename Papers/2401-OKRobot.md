@@ -91,11 +91,11 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]]（Section 5 代表系统）、[[Huang2023-VLMaps]]（VoxelMap 的灵感来源）、[[Gu2024-ConceptGraphs]]（更丰富的语义表示可替代 VoxelMap）
+- Related papers: [[VLN-VLA-Unification]]（Section 5 代表系统）、[[2210-VLMaps]]（VoxelMap 的灵感来源）、[[2309-ConceptGraphs]]（更丰富的语义表示可替代 VoxelMap）
 - Related ideas: modular vs end-to-end 的 tradeoff；open-vocabulary 是 real-world 部署的关键
 - Related projects:
 
 ## Notes
 - OK-Robot 是 modular Nav+Manip 系统的最佳代表：每个模块用最好的 off-the-shelf model，通过简单 pipeline 组合。其成功和失败都清楚地展示了 modular 方案的优势和局限。
-- 与 [[Ahn2022-SayCan|SayCan]] 的区别：SayCan 用 LLM 做 task planning（选择 skill sequence），OK-Robot 用 VLM 做 perception（找物体位置），两者互补。
+- 与 [[2204-SayCan|SayCan]] 的区别：SayCan 用 LLM 做 task planning（选择 skill sequence），OK-Robot 用 VLM 做 perception（找物体位置），两者互补。
 - 58.5% 的成功率说明 open-knowledge 整合仍有很大提升空间，尤其是 nav→manip handoff 和错误恢复。

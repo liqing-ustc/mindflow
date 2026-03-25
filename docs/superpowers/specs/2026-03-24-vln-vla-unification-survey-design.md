@@ -109,10 +109,10 @@ Synthesized from Sections 1-5.
 
 ### Existing Paper notes to integrate: 4
 
-- `[[Black2024-Pi0]]` — π0 VLA foundation model
-- `[[Black2025-Pi05]]` — π0.5 open-world generalization
-- `[[Torne2026-MEM]]` — MEM multi-scale memory
-- `[[Li2026-RoboClaw]]` — RoboClaw agentic framework
+- `[[2410-Pi0]]` — π0 VLA foundation model
+- `[[2504-Pi05]]` — π0.5 open-world generalization
+- `[[2603-MEM]]` — MEM multi-scale memory
+- `[[2603-RoboClaw]]` — RoboClaw agentic framework
 
 All Paper notes follow `Templates/Paper.md` format with YAML frontmatter, mermaid mindmap, and wikilinks.
 

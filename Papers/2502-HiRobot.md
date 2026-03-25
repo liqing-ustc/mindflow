@@ -144,11 +144,11 @@ mindmap
 
 ## Connections
 - Related papers:
-  - [[Black2024-Pi0]] — Low-level policy 的基础架构
-  - [[Black2025-Pi05]] — 同为 hierarchical VLA，但 π₀.₅ 的 high-level 是同一个 VLM 输出 subtask tokens，Hi Robot 用独立 VLM 输出 language commands
-  - [[Black2025-PiStar06]] — π*₀.₆ 的 RL self-improvement 可与 Hi Robot 的 hierarchy 结合
-  - [[Cheng2024-NaVILA]] — NaVILA 也是 hierarchical（VLM → language action → low-level policy），但专注 navigation 而非 manipulation
-  - [[Ahn2022-SayCan]] — SayCan 也是 LLM high-level + skill library low-level，但 Hi Robot 用 VLM（有视觉）替代 LLM（纯文本），且 low-level 是通用 VLA 而非 closed-set skills
+  - [[2410-Pi0]] — Low-level policy 的基础架构
+  - [[2504-Pi05]] — 同为 hierarchical VLA，但 π₀.₅ 的 high-level 是同一个 VLM 输出 subtask tokens，Hi Robot 用独立 VLM 输出 language commands
+  - [[2511-PiStar06]] — π*₀.₆ 的 RL self-improvement 可与 Hi Robot 的 hierarchy 结合
+  - [[2412-NaVILA]] — NaVILA 也是 hierarchical（VLM → language action → low-level policy），但专注 navigation 而非 manipulation
+  - [[2204-SayCan]] — SayCan 也是 LLM high-level + skill library low-level，但 Hi Robot 用 VLM（有视觉）替代 LLM（纯文本），且 low-level 是通用 VLA 而非 closed-set skills
 - Related topics:
   - [[VLN-VLA-Unification]] — Hi Robot 的 hierarchical 架构是 VLN-VLA 统一方案的直接证据：VLM reasoning + VLA execution
 - Related ideas:

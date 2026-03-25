@@ -76,9 +76,9 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]]（Section 3 核心工作）, [[Huang2023-VLMaps]]（per-pixel feature map 对比）
-- 与 VLA 的关系：scene graph 可以作为 [[Black2025-Pi05|π0.5]] hierarchical inference 的 high-level spatial context
-- 与 VLN 的关系：scene graph 可替代 [[Chen2022-DUET|VLN-DUET]] 和 [[An2024-ETPNav|ETPNav]] 的 topological map，提供更丰富的语义信息
+- Related papers: [[VLN-VLA-Unification]]（Section 3 核心工作）, [[2210-VLMaps]]（per-pixel feature map 对比）
+- 与 VLA 的关系：scene graph 可以作为 [[2504-Pi05|π0.5]] hierarchical inference 的 high-level spatial context
+- 与 VLN 的关系：scene graph 可替代 [[2202-DUET|VLN-DUET]] 和 [[2304-ETPNav|ETPNav]] 的 topological map，提供更丰富的语义信息
 - Related ideas: 3D scene graph 作为 VLN-VLA 统一的 "spatial interface"
 
 ## Notes

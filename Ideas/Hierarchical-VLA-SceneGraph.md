@@ -22,31 +22,31 @@ dg-home: true
 ## Related Work
 
 **VLA / Manipulation 基础：**
-- [[Black2024-Pi0]] — Flow matching action generation，manipulation head 的技术基础
-- [[Black2025-Pi05]] — VLM + hierarchical planning for long-horizon tasks，验证了 hierarchical 架构的可行性
-- [[Black2025-PiStar06]] — **RL self-improvement for VLA**。Recap 算法（advantage-conditioned policy extraction）首次实现通用 VLA 通过真实部署 RL 改进，>2× throughput。Knowledge Insulation 使 discrete/continuous actions 独立训练——对 dual action heads 至关重要
-- [[Torne2026-MEM]] — 多尺度记忆机制（视频短期 + 语言长期），memory 设计的参考
+- [[2410-Pi0]] — Flow matching action generation，manipulation head 的技术基础
+- [[2504-Pi05]] — VLM + hierarchical planning for long-horizon tasks，验证了 hierarchical 架构的可行性
+- [[2511-PiStar06]] — **RL self-improvement for VLA**。Recap 算法（advantage-conditioned policy extraction）首次实现通用 VLA 通过真实部署 RL 改进，>2× throughput。Knowledge Insulation 使 discrete/continuous actions 独立训练——对 dual action heads 至关重要
+- [[2603-MEM]] — 多尺度记忆机制（视频短期 + 语言长期），memory 设计的参考
 
 **Hierarchical VLM-VLA 架构（直接验证）：**
-- [[Shi2025-HiRobot]] — **最直接的上两层架构验证**。独立 VLM reasoning (PaliGemma-3B, ~1 Hz) + VLA execution (π₀, 10-50 Hz)，超越 GPT-4o 40%+ instruction accuracy。Synthetic data generation 从少量 demos 自动生成多轮交互训练数据——可直接迁移到 Nav+Manip 指令生成。**本 idea 只需在 Hi Robot 架构中间加入 spatial memory 层并扩展 navigation**
+- [[2502-HiRobot]] — **最直接的上两层架构验证**。独立 VLM reasoning (PaliGemma-3B, ~1 Hz) + VLA execution (π₀, 10-50 Hz)，超越 GPT-4o 40%+ instruction accuracy。Synthetic data generation 从少量 demos 自动生成多轮交互训练数据——可直接迁移到 Nav+Manip 指令生成。**本 idea 只需在 Hi Robot 架构中间加入 spatial memory 层并扩展 navigation**
 
 **VLN / Navigation 基础：**
-- [[Cheng2024-NaVILA]] — VLM-driven navigation with language actions，high-level planner 的参考
-- [[An2024-ETPNav]] — Hierarchical navigation with explicit topological planning
-- [[Zhu2025-MTU3D]] — **最直接的架构参考**。Online query-based spatial memory + unified grounding-exploration decision space，证明了无需 3D 重建即可 joint optimize grounding 和 exploration。其 unified decision space 设计可推广到加入 manipulation action type，实现 grounding / exploration / manipulation 三合一
+- [[2412-NaVILA]] — VLM-driven navigation with language actions，high-level planner 的参考
+- [[2304-ETPNav]] — Hierarchical navigation with explicit topological planning
+- [[2507-MTU3D]] — **最直接的架构参考**。Online query-based spatial memory + unified grounding-exploration decision space，证明了无需 3D 重建即可 joint optimize grounding 和 exploration。其 unified decision space 设计可推广到加入 manipulation action type，实现 grounding / exploration / manipulation 三合一
 
 **Spatial Representation：**
-- [[Gu2024-ConceptGraphs]] — Open-vocabulary 3D scene graph，shared representation 的核心技术（离线构建）
-- [[Huang2023-VLMaps]] — Language-indexed spatial features for navigation（dense feature map 方案）
+- [[2309-ConceptGraphs]] — Open-vocabulary 3D scene graph，shared representation 的核心技术（离线构建）
+- [[2210-VLMaps]] — Language-indexed spatial features for navigation（dense feature map 方案）
 
 **Nav+Manip 系统（对比基线）：**
-- [[Liu2024-OKRobot]] — Modular Nav+Manip baseline，使用 separate representations
+- [[2401-OKRobot]] — Modular Nav+Manip baseline，使用 separate representations
 
 ## Rough Plan
 
 ### 三层架构设计
 
-1. **High-level VLM Planner**（基于 [[Shi2025-HiRobot|Hi Robot]] 架构扩展）
+1. **High-level VLM Planner**（基于 [[2502-HiRobot|Hi Robot]] 架构扩展）
    - 实现：Fine-tuned PaliGemma-3B 或 Gemma 3（Hi Robot 已验证此方案超越 GPT-4o）
    - 输入：语言指令 + 多摄像头图像 + scene graph 的文本化 summary（Hi Robot 原版无 scene graph input，这是本 idea 的扩展点）
    - 输出：intermediate language command（如 "navigate to kitchen sink"）+ optional verbal response
@@ -55,11 +55,11 @@ dg-home: true
 
 2. **Mid-level Spatial Memory**（两种候选方案）
    - **方案 A: Scene Graph 式**（基于 ConceptGraphs 简化版）——每个 node 包含 CLIP embedding + 3D position + navigability flag + graspability flag，graph 结构天然支持 relational reasoning（"杯子在桌子上"）
-   - **方案 B: Online Query 式**（基于 [[Zhu2025-MTU3D|MTU3D]] 的 spatial memory bank）——从 RGB-D 流直接生成 object queries，IoU matching 增量合并，配合 occupancy map，无需显式 graph 构建。优势是实时性好（MTU3D 实测 3.4 FPS），劣势是缺少拓扑关系
+   - **方案 B: Online Query 式**（基于 [[2507-MTU3D|MTU3D]] 的 spatial memory bank）——从 RGB-D 流直接生成 object queries，IoU matching 增量合并，配合 occupancy map，无需显式 graph 构建。优势是实时性好（MTU3D 实测 3.4 FPS），劣势是缺少拓扑关系
    - **两种方案的共同要求**：同时服务 navigation（nodes/queries 作为 waypoints）和 manipulation（作为 grasp targets），支持 language query
    - **关键设计选择**：方案 A 更适合需要 relational reasoning 的复杂任务（"把 X 放到 Y 旁边"），方案 B 更适合需要 real-time 的场景。也可以混合使用：MTU3D 式 online queries 做实时感知，ConceptGraphs 式 graph 做离线 relational enrichment
 
-3. **Low-level Dual Action Heads**（基于 [[Black2025-PiStar06|π\*₀.₆]] 的 Knowledge Insulation）
+3. **Low-level Dual Action Heads**（基于 [[2511-PiStar06|π\*₀.₆]] 的 Knowledge Insulation）
    - Navigation head：在 scene graph 上做 waypoint selection → local planner 执行 continuous locomotion
    - Manipulation head：flow matching policy（à la π₀）生成 continuous joint-level control
    - **Knowledge Insulation**：π\*₀.₆ 已验证 discrete tokens 和 continuous actions 可以独立训练而互不干扰——这正是 nav head（discrete waypoint）和 manip head（continuous flow）共存于同一模型所需要的技术

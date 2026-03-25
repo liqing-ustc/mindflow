@@ -62,7 +62,7 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]], [[Chen2022-DUET|VLN-DUET]]（discrete 版 topological map 前身）, [[Cheng2024-NaVILA]]（VLM-based navigation）, [[Black2025-Pi05|π0.5]]（hierarchical 架构对比）
+- Related papers: [[VLN-VLA-Unification]], [[2202-DUET|VLN-DUET]]（discrete 版 topological map 前身）, [[2412-NaVILA]]（VLM-based navigation）, [[2504-Pi05|π0.5]]（hierarchical 架构对比）
 - Related ideas: ETPNav 的 hierarchical planning 与 VLA 的 hierarchical inference 结构对应，暗示 VLN-VLA 架构趋同
 - Related projects:
 

@@ -85,11 +85,11 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]]（Section 5 代表系统）、[[Black2024-Pi0]]（π₀ 的 flow matching action generation 可升级 Mobile ALOHA 的 policy）、[[Black2025-Pi05]]（π0.5 的 hierarchical inference 可解决 long-horizon 问题）
+- Related papers: [[VLN-VLA-Unification]]（Section 5 代表系统）、[[2410-Pi0]]（π₀ 的 flow matching action generation 可升级 Mobile ALOHA 的 policy）、[[2504-Pi05]]（π0.5 的 hierarchical inference 可解决 long-horizon 问题）
 - Related ideas: end-to-end vs modular 的 Nav+Manip 方案对比；co-training 作为 data augmentation 的思路
 - Related projects:
 
 ## Notes
-- Mobile ALOHA 代表了 Nav+Manip 的 **end-to-end imitation learning** 路线：不显式区分 navigation 和 manipulation，而是用 whole-body policy 统一处理。这与 [[Liu2024-OKRobot|OK-Robot]] 的 modular pipeline 形成鲜明对比。
+- Mobile ALOHA 代表了 Nav+Manip 的 **end-to-end imitation learning** 路线：不显式区分 navigation 和 manipulation，而是用 whole-body policy 统一处理。这与 [[2401-OKRobot|OK-Robot]] 的 modular pipeline 形成鲜明对比。
 - 局限在于 navigation 距离短、无 language conditioning、无 spatial map——本质上是一个 "mobile manipulation" 系统而非 "navigation + manipulation" 系统。
 - Stanford 后续工作将 Mobile ALOHA 与 VLA（如 π₀）结合，可能是 end-to-end Nav+Manip 的更完整方案。

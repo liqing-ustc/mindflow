@@ -65,7 +65,7 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]], [[Cheng2024-NaVILA]], [[Chen2022-DUET|VLN-DUET]]
+- Related papers: [[VLN-VLA-Unification]], [[2412-NaVILA]], [[2202-DUET|VLN-DUET]]
 - Related ideas: LLM reasoning → high-level planning 与 VLA 中的 hierarchical inference 类似；NavGPT-2 的 visual alignment 方向与 VLA 的 VLM backbone 思路一致
 - Related projects:
 

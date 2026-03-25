@@ -71,7 +71,7 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]], [[Black2024-Pi0|π₀]], [[Black2025-Pi05|π0.5]], [[An2024-ETPNav|ETPNav]]
+- Related papers: [[VLN-VLA-Unification]], [[2410-Pi0|π₀]], [[2504-Pi05|π0.5]], [[2304-ETPNav|ETPNav]]
 - Related ideas: 语言作为 mid-level action representation 与 π0.5 的 hierarchical inference 高度相似；VLN 和 VLA 的架构趋同
 - Related projects:
 

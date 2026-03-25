@@ -117,7 +117,7 @@ Write Section 1 content in `Topics/VLN-VLA-Unification.md`:
 ```markdown
 | Model | Year | VLM Backbone | Action Space | Training | Key Innovation |
 |-------|------|-------------|-------------|----------|---------------|
-| [[Black2024-Pi0\|π0]] | 2024 | PaliGemma 3B | Continuous (flow matching) | Cross-embodiment | Action Expert + Flow Matching |
+| [[2410-Pi0\|π0]] | 2024 | PaliGemma 3B | Continuous (flow matching) | Cross-embodiment | Action Expert + Flow Matching |
 | ... | ... | ... | ... | ... | ... |
 ```
 

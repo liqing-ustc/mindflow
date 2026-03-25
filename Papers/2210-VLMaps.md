@@ -69,8 +69,8 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]]（Section 3 核心工作）, [[Gu2024-ConceptGraphs]]（graph-based vs. grid-based 对比）
-- 与 VLN 的关系：VLMaps 可以替代 [[Chen2022-DUET|VLN-DUET]] 的 topological map 和 [[An2024-ETPNav|ETPNav]] 的 waypoint graph，提供 open-vocabulary spatial reasoning
+- Related papers: [[VLN-VLA-Unification]]（Section 3 核心工作）, [[2309-ConceptGraphs]]（graph-based vs. grid-based 对比）
+- 与 VLN 的关系：VLMaps 可以替代 [[2202-DUET|VLN-DUET]] 的 topological map 和 [[2304-ETPNav|ETPNav]] 的 waypoint graph，提供 open-vocabulary spatial reasoning
 - 与 VLA 的关系：VLMaps 主要面向 navigation，缺乏 3D geometry 信息难以直接支持 manipulation
 - 后续工作 NLMap-Saycan 将 VLMaps 扩展到 navigation + manipulation 联合系统
 

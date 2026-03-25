@@ -137,7 +137,7 @@ mindmap
 ```
 
 ## Connections
-- Related papers: [[VLN-VLA-Unification]]（Section 5 代表系统）、[[Brohan2023-RT2]]（RT-2 是 SayCan skill library 的 evolution——从 separate skills 到 unified VLA）、[[Zhou2023-NavGPT]]（NavGPT 将 LLM-based planning 用于 navigation，与 SayCan 的 LLM planning 思路相通）、[[Liu2024-OKRobot]]（OK-Robot 用 VLM perception 替代 SayCan 的 LLM planning）
+- Related papers: [[VLN-VLA-Unification]]（Section 5 代表系统）、[[2307-RT2]]（RT-2 是 SayCan skill library 的 evolution——从 separate skills 到 unified VLA）、[[2305-NavGPT]]（NavGPT 将 LLM-based planning 用于 navigation，与 SayCan 的 LLM planning 思路相通）、[[2401-OKRobot]]（OK-Robot 用 VLM perception 替代 SayCan 的 LLM planning）
 - Related ideas: LLM as task planner 的范式；affordance grounding 的思想可扩展到 VLN（navigation affordance）
 - Related projects:
 

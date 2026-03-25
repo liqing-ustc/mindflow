@@ -340,9 +340,9 @@ These browser steps must be done before Task 5 (Giscus component) so you have th
 
   ## Recent Papers
 
-  - [[Papers/Black2025-Pi05|Pi0.5]] — Physical Intelligence
-  - [[Papers/Torne2026-MEM|MEM]] — Memory-Efficient Models
-  - [[Papers/Li2026-RoboClaw|RoboClaw]]
+  - [[Papers/2504-Pi05|Pi0.5]] — Physical Intelligence
+  - [[Papers/2603-MEM|MEM]] — Memory-Efficient Models
+  - [[Papers/2603-RoboClaw|RoboClaw]]
 
   ## About
 

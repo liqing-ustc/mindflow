@@ -71,8 +71,8 @@ mindmap
 
 ## Connections
 - Related papers: [[VLN-VLA-Unification]]（Section 3，作为 geometric SLAM backbone）
-- 与 ConceptGraphs 的关系：[[Gu2024-ConceptGraphs]] 依赖外部 pose 估计，SplaTAM 可提供高质量 poses + dense geometry；Krishna Murthy Jatavallabhula 是两篇论文的共同作者
-- 与 VLN 的关系：SplaTAM 的 dense map 可以为 [[An2024-ETPNav|ETPNav]] 等 continuous VLN 方法提供更精确的 obstacle map
+- 与 ConceptGraphs 的关系：[[2309-ConceptGraphs]] 依赖外部 pose 估计，SplaTAM 可提供高质量 poses + dense geometry；Krishna Murthy Jatavallabhula 是两篇论文的共同作者
+- 与 VLN 的关系：SplaTAM 的 dense map 可以为 [[2304-ETPNav|ETPNav]] 等 continuous VLN 方法提供更精确的 obstacle map
 - 与 VLA 的关系：dense 3D reconstruction 可为 manipulation 提供精确的 object geometry
 
 ## Notes
