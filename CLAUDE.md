@@ -8,7 +8,7 @@ An Obsidian-based knowledge management workspace for AI research. Content is wri
 
 ## Repository Structure
 
-- `Papers/` — Paper notes, named `YYMM-ShortTitle.md` (e.g., `2603-RoboClaw.md`), YYMM 取自 arxiv 发布日期
+- `Papers/` — Paper notes, named `YYMM-ShortTitle.md` (e.g., `2603-RoboClaw.md`), YYMM 取自 date_publish
 - `Ideas/` — Research ideas (status: raw → developing → validated → archived)
 - `Projects/` — Project tracking (status: planning → active → paused → completed)
 - `Topics/` — Literature survey/comparison notes
