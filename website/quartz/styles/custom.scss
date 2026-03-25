@@ -2,11 +2,21 @@
 
 // Reduce top spacing (default $topSpacing is 6rem, too large)
 .page-header {
-  margin-top: 1.5rem !important;
+  margin-top: 2rem !important;
 }
 
 .sidebar.left {
-  padding-top: 1.5rem !important;
+  padding-top: 2rem !important;
+}
+
+.sidebar.right {
+  padding-top: 2rem !important;
+}
+
+// TOC: show full content, push Graph below
+.toc {
+  overflow-y: visible;
+  flex: 0 0 auto;
 }
 
 // Sticky header
