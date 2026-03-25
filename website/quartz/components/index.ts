@@ -22,6 +22,10 @@ import Breadcrumbs from "./Breadcrumbs"
 import Comments from "./Comments"
 import Flex from "./Flex"
 import TopNav from "./TopNav"
+import HomepageStats from "./HomepageStats"
+import HomepageTags from "./HomepageTags"
+import SidebarTags from "./SidebarTags"
+import PaperMeta from "./PaperMeta"
 
 export {
   ArticleTitle,
@@ -48,4 +52,8 @@ export {
   Comments,
   Flex,
   TopNav,
+  HomepageStats,
+  HomepageTags,
+  SidebarTags,
+  PaperMeta,
 }

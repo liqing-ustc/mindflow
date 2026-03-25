@@ -18,7 +18,7 @@ const config: QuartzConfig = {
     locale: "en-US",
     baseUrl: "liqing.io/mindflow",
     ignorePatterns: ["Templates/**", ".obsidian/**", "docs/**", "website/**", "private", "*.canvas", "CLAUDE.md", "README.md"],
-    defaultDateType: "created",
+    defaultDateType: "published",
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,

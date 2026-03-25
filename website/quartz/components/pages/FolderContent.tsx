@@ -74,10 +74,12 @@ export default ((opts?: Partial<FolderContentOptions>) => {
 
     const cssClasses: string[] = fileData.frontmatter?.cssclasses ?? []
     const classes = cssClasses.join(" ")
+    const isPapersFolder = fileData.slug?.startsWith("Papers/") || fileData.slug === "Papers"
     const listProps = {
       ...props,
       sort: options.sort,
       allFiles: allPagesInFolder,
+      ...(isPapersFolder && { dateFormatOptions: { year: "numeric", month: "short" } as Intl.DateTimeFormatOptions }),
     }
 
     const content = (

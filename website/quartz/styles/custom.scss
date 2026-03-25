@@ -14,6 +14,12 @@
 }
 
 
+// Hide title on folder and tag pages (redundant with breadcrumbs)
+body[data-slug$="/index"] .article-title,
+body[data-slug^="tags/"] .article-title {
+  display: none;
+}
+
 // Sticky header
 .page-header > header {
   position: sticky;
@@ -27,14 +33,92 @@
   max-width: 740px;
 }
 
+// Homepage: hide date/read-time meta
+body[data-slug="index"] .content-meta {
+  display: none;
+}
+
+// Comments: only show on note pages (hide on homepage, folders, tags)
+body[data-slug="index"] .giscus,
+body[data-slug$="/index"] .giscus,
+body[data-slug^="tags/"] .giscus {
+  display: none;
+}
+
+// Homepage: larger content text
+body[data-slug="index"] article p,
+body[data-slug="index"] article li {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+
+// Explorer title font size
+button.desktop-explorer {
+  font-size: 1.2rem !important;
+}
+
+// Explorer: spacing between items inside folders
+.explorer-content ul > li > a {
+  padding-top: 0rem !important;
+  padding-bottom: 0.5rem !important;
+  display: inline-block;
+}
+
 // Explorer: add breathing room between top-level folders
-.explorer-content > li {
+.explorer-ul > li {
   margin-top: 0.15rem;
   padding-top: 0.35rem;
   border-top: 1px solid var(--lightgray);
 }
 
-.explorer-content > li:first-child {
+.explorer-ul > li:first-child {
   border-top: none;
   padding-top: 0;
+}
+
+// Explorer folder name colors (Papers, Topics, Ideas, Meetings, Resources)
+.explorer-ul > li:nth-child(1) .folder-button { color: #3B82F6 !important; }
+.explorer-ul > li:nth-child(2) .folder-button { color: #8B5CF6 !important; }
+.explorer-ul > li:nth-child(3) .folder-button { color: #10B981 !important; }
+.explorer-ul > li:nth-child(4) .folder-button { color: #F59E0B !important; }
+.explorer-ul > li:nth-child(5) .folder-button { color: #EF4444 !important; }
+
+// Tag color palette (6-color cycle, applied everywhere tags appear)
+$tag-colors: #3B82F6, #8B5CF6, #10B981, #F59E0B, #EF4444, #EC4899;
+
+// Sidebar tags
+@for $i from 1 through 6 {
+  .sidebar-tag-pill:nth-child(6n + #{$i}) {
+    background: transparentize(nth($tag-colors, $i), 0.85);
+    color: nth($tag-colors, $i) !important;
+  }
+  .sidebar-tag-pill:nth-child(6n + #{$i}):hover {
+    background: nth($tag-colors, $i);
+    color: white !important;
+  }
+}
+
+// Homepage tag cloud
+@for $i from 1 through 6 {
+  .tag-pill:nth-child(6n + #{$i}) {
+    background: transparentize(nth($tag-colors, $i), 0.85);
+    color: nth($tag-colors, $i) !important;
+  }
+  .tag-pill:nth-child(6n + #{$i}):hover {
+    background: nth($tag-colors, $i);
+    color: white !important;
+  }
+}
+
+// Note inline tags (#tag links in beforeBody)
+@for $i from 1 through 6 {
+  .tags > li:nth-child(6n + #{$i}) > a {
+    background: transparentize(nth($tag-colors, $i), 0.85);
+    color: nth($tag-colors, $i) !important;
+  }
+  .tags > li:nth-child(6n + #{$i}) > a:hover {
+    background: nth($tag-colors, $i);
+    color: white !important;
+  }
 }
