@@ -1,7 +1,7 @@
 ---
 title: "MEM: Multi-Scale Embodied Memory for Vision Language Action Models"
 authors: [Marcel Torne, Karl Pertsch, Homer Walke, Kyle Vedder, Suraj Nair, Brian Ichter, Allen Z. Ren, Haohuan Wang, Jiaming Tang, Kyle Stachowicz, Karan Dhabalia, Michael Equi, Quan Vuong, Jost Tobias Springenberg, Sergey Levine, Chelsea Finn, Danny Driess]
-year: 2026
+date_publish: 2026-03
 venue: arXiv
 tags: [VLA, task-planning, spatial-memory]
 url: https://arxiv.org/abs/2603.03596

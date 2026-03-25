@@ -22,7 +22,7 @@ An Obsidian-based knowledge management workspace for AI research. Content is wri
 
 All notes must follow their corresponding template in `Templates/`. Key conventions:
 
-- **Paper notes** use YAML frontmatter with: title, authors, year, venue, tags, url, code, status (`unread`/`reading`/`finished`), rating (1-5), date_added
+- **Paper notes** use YAML frontmatter with: title, authors, date_publish (YYYY-MM-DD/YYYY-MM/YYYY), venue, tags, url, code, status (`unread`/`reading`/`finished`), rating (1-5), date_added
 - **Tags** 参照 `Resources/Tag-Taxonomy.md` 中定义的标准 tag，每篇笔记选取 2-4 个；如需新增 tag 请先更新该文件
 - **Connections** between notes use Obsidian `[[wikilinks]]`
 - Paper notes include a `mermaid mindmap` section summarizing the paper structure

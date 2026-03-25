@@ -1,7 +1,7 @@
 ---
 title: "Hi Robot: Open-Ended Instruction Following with Hierarchical Vision-Language-Action Models"
 authors: [Lucy Xiaoyang Shi, Brian Ichter, Michael Equi, Liyiming Ke, Karl Pertsch, Quan Vuong, James Tanner, Anna Walling, Haohuan Wang, Niccolo Fusai, Adrian Li-Bell, Danny Driess, Lachy Groom, Sergey Levine, Chelsea Finn]
-year: 2025
+date_publish: 2025-02
 venue: arXiv
 tags: [VLA, VLM, manipulation, instruction-following, task-planning]
 url: https://arxiv.org/abs/2502.19417

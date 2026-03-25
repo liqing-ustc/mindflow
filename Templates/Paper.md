@@ -1,7 +1,7 @@
 ---
 title:
 authors: []
-year:
+date_publish:    # YYYY-MM-DD 或 YYYY-MM 或 YYYY
 venue:          # e.g. NeurIPS 2025, arXiv
 tags: []        # e.g. [transformer, LLM, RLHF]
 url:            # 论文链接

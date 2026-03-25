@@ -1,7 +1,7 @@
 ---
 title: "RoboClaw: An Agentic Framework for Scalable Long-Horizon Robotic Tasks"
 authors: [Ruiying Li, Yunlang Zhou, YuYao Zhu, Kylin Chen, Jingyuan Wang, Sukai Wang, Kongtao Hu, Minhui Yu, Bowen Jiang, Zhan Su, Jiayao Ma, Xin He, Yongjian Shen, Yang Yang, Guanghui Ren, Maoqing Yao, Wenhao Wang, Yao Mu]
-year: 2026
+date_publish: 2026-03
 venue: arXiv
 tags: [VLA, LLM, manipulation, task-planning, RL]
 url: https://arxiv.org/abs/2603.11558

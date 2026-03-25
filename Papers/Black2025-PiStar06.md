@@ -1,7 +1,7 @@
 ---
 title: "π*₀.₆: A VLA That Learns From Experience"
 authors: [Physical Intelligence (Ali Amin, Ashwin Balakrishna, Kevin Black, et al.)]
-year: 2025
+date_publish: 2025-11
 venue: arXiv
 tags: [VLA, manipulation, flow-matching, RL]
 url: https://arxiv.org/abs/2511.14759

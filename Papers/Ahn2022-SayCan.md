@@ -46,7 +46,7 @@ authors:
   - Sichun Xu
   - Mengyuan Yan
   - Andy Zeng
-year: 2022
+date_publish: 2022-04
 venue: CoRL 2022
 tags:
   - scene-understanding

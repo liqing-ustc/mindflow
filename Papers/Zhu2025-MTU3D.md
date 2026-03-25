@@ -1,7 +1,7 @@
 ---
 title: "Move to Understand a 3D Scene: Bridging Visual Grounding and Exploration for Efficient and Versatile Embodied Navigation"
 authors: [Ziyu Zhu, Xilin Wang, Yixuan Li, Zhuofan Zhang, Xiaojian Ma, Yixin Chen, Baoxiong Jia, Wei Liang, Qian Yu, Zhidong Deng, Siyuan Huang, Qing Li]
-year: 2025
+date_publish: 2025-07
 venue: arXiv
 tags: [VLN, navigation, SLAM, scene-understanding, spatial-memory]
 url: https://arxiv.org/abs/2507.04047

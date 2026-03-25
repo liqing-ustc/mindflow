@@ -1,7 +1,7 @@
 ---
 title: "OK-Robot: What Really Matters in Integrating Open-Knowledge Models for Robotics"
 authors: [Peiqi Liu, Yaswanth Orru, Jay Vakil, Chris Paxton, Nur Muhammad Mahi Shafiullah, Lerrel Pinto]
-year: 2024
+date_publish: 2024-01
 venue: RSS 2024
 tags: [mobile-manipulation, navigation, scene-understanding]
 url: https://arxiv.org/abs/2401.12202

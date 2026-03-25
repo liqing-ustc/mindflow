@@ -1,7 +1,7 @@
 ---
 title: "π₀: A Vision-Language-Action Flow Model for General Robot Control"
 authors: [Kevin Black, Noah Brown, Danny Driess, Adnan Esmail, Michael Equi, Chelsea Finn, Niccolo Fusai, Lachy Groom, Karol Hausman, Brian Ichter, Szymon Jakubczak, Tim Jones, Liyiming Ke, Sergey Levine, Adrian Li-Bell, Mohith Mothukuri, Suraj Nair, Karl Pertsch, Lucy Xiaoyang Shi, James Tanner, Quan Vuong, Anna Walling, Haohuan Wang, Ury Zhilinsky]
-year: 2024
+date_publish: 2024-10
 venue: RSS 2025
 tags: [VLA, manipulation, flow-matching, diffusion-policy, cross-embodiment]
 url: https://arxiv.org/abs/2410.24164

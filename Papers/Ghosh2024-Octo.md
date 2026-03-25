@@ -1,7 +1,7 @@
 ---
 title: "Octo: An Open-Source Generalist Robot Policy"
 authors: [Dibya Ghosh, Homer Walke, Karl Pertsch, Kevin Black, Oier Mees, Sudeep Dasari, Joey Hejna, Tobias Kreiman, Charles Xu, Jianlan Luo, You Liang Tan, Lawrence Yunliang Chen, Pannag Sanketi, Quan Vuong, Ted Xiao, Dorsa Sadigh, Chelsea Finn, Sergey Levine]
-year: 2024
+date_publish: 2024-05
 venue: RSS 2024
 tags: [VLA, manipulation, cross-embodiment, diffusion-policy]
 url: https://arxiv.org/abs/2405.12213
