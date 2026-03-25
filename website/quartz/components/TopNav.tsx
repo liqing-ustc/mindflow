@@ -1,9 +1,13 @@
 import { pathToRoot } from "../util/path"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 
-const TopNav: QuartzComponent = ({ fileData }: QuartzComponentProps) => {
-  const root = pathToRoot(fileData.slug!)
-  const base = root.endsWith("/") ? root : root + "/"
+const TopNav: QuartzComponent = ({ fileData, cfg }: QuartzComponentProps) => {
+  // Build absolute base path from baseUrl (e.g. "liqing-ustc.github.io/MindFlow" → "/MindFlow")
+  // Falls back to pathToRoot for local dev where baseUrl has no path segment
+  const urlPath = cfg.baseUrl?.includes("/")
+    ? "/" + cfg.baseUrl.split("/").slice(1).join("/")
+    : pathToRoot(fileData.slug!)
+  const base = urlPath.endsWith("/") ? urlPath : urlPath + "/"
   const sections = [
     { label: "Papers", path: "Papers/" },
     { label: "Ideas", path: "Ideas/" },
