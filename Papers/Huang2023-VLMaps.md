@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# Visual Language Maps for Robot Navigation
-
 ## Summary
 提出 VLMaps，将预训练 visual-language model（LSeg/CLIP）的 dense pixel-level features 融合到 3D 重建的 top-down grid map 中，实现可通过自然语言直接查询的空间表示；结合 LLM 解析复杂指令为可执行导航代码，支持 open-vocabulary spatial goal navigation。
 

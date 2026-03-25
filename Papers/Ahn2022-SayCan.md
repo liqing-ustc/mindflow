@@ -58,9 +58,6 @@ status: reading
 rating: 5
 date_added: 2026-03-24
 ---
-
-# SayCan: Grounding Language in Robotic Affordances
-
 ## Summary
 提出 SayCan 框架，将 LLM 的语义知识（"Say"）与 robot affordance functions（"Can"）结合，使 mobile manipulator 能根据高层自然语言指令执行 long-horizon 任务。LLM 提议可能的 skill sequences，affordance function 过滤出在当前物理环境中可行的动作，实现 language grounding。
 

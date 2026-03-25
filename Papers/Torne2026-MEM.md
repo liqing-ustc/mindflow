@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-23"
 ---
-
-# MEM: Multi-Scale Embodied Memory for Vision Language Action Models
-
 ## Summary
 MEM 提出了一种多尺度记忆架构，将**视频短期记忆**（通过高效视频编码器压缩）和**语言长期记忆**（自然语言事件摘要）结合，使 VLA 模型能够完成长达 15 分钟的复杂多阶段机器人任务（如厨房清理、三明治制作），同时满足实时推理延迟约束。
 

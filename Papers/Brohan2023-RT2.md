@@ -10,9 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-24"
 ---
-
-# RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control
-
 ## Summary
 RT-2 是 Google DeepMind 提出的开创性 VLA 模型，首次将预训练 VLM（PaLM-E 12B / PaLI-X 55B）直接用于机器人控制，将 robot action 表示为 text token 序列，通过 co-fine-tuning 在 web 数据和 robot 数据上联合训练，使机器人获得了从互联网知识到物理操作的迁移能力。
 

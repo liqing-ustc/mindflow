@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# OK-Robot: What Really Matters in Integrating Open-Knowledge Models for Robotics
-
 ## Summary
 一个 zero-shot、modular 的 open-vocabulary mobile manipulation 系统，通过组合现成的 VLM（CLIP/OWL-ViT）、语义记忆（VoxelMap）、导航（A* on occupancy grid）和抓取（AnyGrasp）模块，在真实家庭环境中实现 58.5% 的 pick-and-drop 成功率，无需任何额外训练。
 

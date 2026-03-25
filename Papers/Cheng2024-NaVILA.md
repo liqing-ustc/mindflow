@@ -10,9 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-24"
 ---
-
-# NaVILA: Legged Robot Vision-Language-Action Model for Navigation
-
 ## Summary
 NaVILA 将 VLM（VILA）微调为 navigation VLA，通过生成 mid-level 语言化动作指令（如 "move forward 75cm"）而非直接输出 low-level joint action，再由 RL locomotion policy 执行，实现了 legged robot 上的 vision-language navigation。
 

@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# NavGPT: Explicit Reasoning in Vision-and-Language Navigation with Large Language Models
-
 ## Summary
 NavGPT 首次探索将 LLM（GPT-4）作为纯推理引擎用于 VLN 任务，通过将视觉观测转为文本描述输入 LLM，实现 zero-shot sequential action prediction，展示了 LLM 在 navigation reasoning 中的显式推理能力（sub-goal decomposition、commonsense、landmark identification）。
 

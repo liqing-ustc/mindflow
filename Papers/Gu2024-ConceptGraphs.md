@@ -10,9 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-24"
 ---
-
-# ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planning
-
 ## Summary
 从 posed RGB-D 序列构建 open-vocabulary 3D scene graph，利用 2D foundation models（SAM、CLIP、GPT-4）的输出通过 multi-view association 融合到 3D，无需 3D 训练数据或模型微调，可直接支持 language-conditioned navigation 和 manipulation planning。
 

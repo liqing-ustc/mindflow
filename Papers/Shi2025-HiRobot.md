@@ -10,9 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-24"
 ---
-
-# Hi Robot: Open-Ended Instruction Following with Hierarchical VLA
-
 ## Summary
 Hi Robot 提出了一个 **hierarchical VLM-VLA 架构**，将 open-ended 用户指令的理解（high-level VLM reasoning）和物理执行（low-level VLA control）解耦。核心创新是用 **synthetic data generation** 从少量 teleoperation demos 自动生成大规模多轮交互训练数据，使系统能理解复杂指令（"make me a vegetarian sandwich without tomatoes"）、接受实时纠正（"that's not trash"）、并通过语音与用户交互。在 table bussing、sandwich making、grocery shopping 三个任务上超越 GPT-4o baseline 40%+ instruction accuracy。
 

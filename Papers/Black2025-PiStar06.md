@@ -10,9 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-24"
 ---
-
-# π*₀.₆: A VLA That Learns From Experience
-
 ## Summary
 π\*₀.₆ 提出了 **Recap**（RL with Experience and Corrections via Advantage-conditioned Policies），首次实现了通用 VLA 模型通过真实世界部署经验进行 **RL 自我改进**。核心创新是 advantage-conditioned policy extraction——不需要复杂的 policy gradient（如 PPO），而是通过 distributional value function 判断每个 action 的 advantage，将其作为文本条件（"Advantage: positive/negative"）输入 VLA，实现端到端的 flow-matching VLA 强化学习。
 

@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# SplaTAM: Splat, Track & Map 3D Gaussians for Dense RGB-D SLAM
-
 ## Summary
 提出基于 3D Gaussian Splatting 的 dense RGB-D SLAM 系统，通过 explicit volumetric representation（3D Gaussians）实现同时 tracking（相机位姿估计）和 mapping（场景重建），在 pose estimation、map quality 和 novel-view synthesis 上达到 2x 优于现有方法的性能。
 

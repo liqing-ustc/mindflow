@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-Body Teleoperation
-
 ## Summary
 一个低成本（$32K）的 whole-body teleoperation 系统，通过在 ALOHA 双臂平台上加装移动底盘，实现了 bimanual mobile manipulation 的数据收集和 imitation learning。核心创新是 co-training：用少量（50 条）mobile manipulation demonstrations 加上大量已有的 static ALOHA 数据联合训练，成功率提升高达 90%。
 

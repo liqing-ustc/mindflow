@@ -4,7 +4,6 @@ tags: [web-agent]
 status: raw
 date_created: "2026-03-23"
 ---
-
 ## Core Idea
 
 现有 Internet 是为人类设计的，AI agent 在上面工作本质上是 "agent browsing human's Internet"，造成大量 token 浪费、能力错配和可靠性问题。行业已开始构建 agent-friendly 的基础设施（llms.txt 解决信息获取，WebMCP 解决操作执行），但更深层的**语义理解层**仍是空白——这是本 idea 的核心研究方向。

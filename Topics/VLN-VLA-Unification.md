@@ -11,7 +11,6 @@ status: complete
 date_updated: 2026-03-24
 dg-publish: true
 ---
-
 ## Overview
 
 本 survey 从 foundation model 视角，系统梳理了 VLN（Vision-and-Language Navigation）和 VLA（Vision-Language-Action）两个领域的技术演进与架构趋同。通过分析 **20 篇**核心论文，我们发现：**VLN 和 VLA 在四个维度上正在趋同**——VLM backbone、language-conditioned action prediction、web-scale pre-training、hierarchical 架构——NaVILA 已经证明 VLN 可以重构为 navigation-focused VLA，Hi Robot 验证了 hierarchical VLM-VLA 架构在 open-ended 指令理解上的有效性。然而，统一面临三大核心障碍：（1）action space mismatch（50 Hz continuous joint control vs. 1-5 Hz discrete waypoint selection）；（2）navigation 和 manipulation 缺乏 shared spatial representation；（3）simulation 生态无法同时满足 building-scale navigation 和 high-fidelity manipulation。Semantic SLAM（尤其 ConceptGraphs 式 3D scene graph 或 MTU3D 式 online query memory）是弥合这一 gap 的关键基础设施，可以同时服务 navigation waypoints 和 manipulation targets。现有 Nav+Manip 系统（OK-Robot、SayCan、Mobile ALOHA）验证了联合任务的可行性，但都未实现 shared spatial representation。π\*₀.₆ 的 Recap 算法开启了 VLA 的 RL self-improvement 时代，其 Knowledge Insulation 技术为 dual action heads 的独立训练提供了关键支撑。综合 gap 分析和 benchmark 评估（ALFRED、TEACh、HomeRobot OVMM），我们提出最具潜力的研究方向是 **Hierarchical VLA with Shared Semantic Scene Graph**——Hi Robot 式 VLM reasoning + π₀ 式 VLA execution + ConceptGraphs/MTU3D 式 spatial memory 作为统一空间记忆，在 HomeRobot OVMM 上验证。

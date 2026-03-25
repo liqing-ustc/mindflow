@@ -10,9 +10,6 @@ status: finished
 rating: 4
 date_added: "2026-03-23"
 ---
-
-# RoboClaw: An Agentic Framework for Scalable Long-Horizon Robotic Tasks
-
 ## Summary
 RoboClaw 提出了一个统一的 agentic robotics 框架，通过 Entangled Action Pairs (EAP) 实现自主数据收集，并用 VLM 作为 meta-controller 统一数据收集、policy learning 和 task execution，在 long-horizon manipulation 任务上比 baseline 提升 25% 成功率，人工投入减少 53.7%。
 

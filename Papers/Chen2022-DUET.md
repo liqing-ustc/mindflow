@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# Think Global, Act Local: Dual-scale Graph Transformer for Vision-and-Language Navigation
-
 ## Summary
 VLN-DUET 提出 dual-scale graph transformer 架构，通过在线构建 topological map 并结合 local fine-grained encoding 和 global coarse-grained encoding，实现了长程 action planning 和精细 cross-modal grounding 的平衡，在 REVERIE、SOON、R2R 等 VLN benchmarks 上取得 SOTA。
 

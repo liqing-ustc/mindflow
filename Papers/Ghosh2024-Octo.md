@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# Octo: An Open-Source Generalist Robot Policy
-
 ## Summary
 Octo 是 UC Berkeley 等机构提出的开源 generalist robot policy，采用 transformer backbone + diffusion action head 架构，在 Open X-Embodiment 数据集的 800k trajectories 上训练，支持 language 和 goal image 两种指令模式，可在数小时内 fine-tune 到新的 observation/action space，是 VLA 领域最早的开源 generalist policy 之一。
 

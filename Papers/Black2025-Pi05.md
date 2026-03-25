@@ -10,8 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-23"
 ---
-# π0.5: a Vision-Language-Action Model with Open-World Generalization
-
 ## Summary
 Physical Intelligence 提出 π0.5，一个基于 π0 的 vision-language-action 模型，通过在异构数据（多机器人、高层语义预测、web 数据等）上进行 co-training，首次实现了端到端学习的机器人系统在**全新家庭环境**中执行 10-15 分钟的长时域灵巧操作任务（如清洁厨房、整理卧室）。
 

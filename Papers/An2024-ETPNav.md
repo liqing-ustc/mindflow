@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# ETPNav: Evolving Topological Planning for Vision-Language Navigation in Continuous Environments
-
 ## Summary
 ETPNav 将 VLN 从 discrete nav-graph 扩展到 continuous environments，通过 online topological mapping + hierarchical planning（transformer-based high-level planner + obstacle-avoiding low-level controller），在 R2R-CE 和 RxR-CE 上大幅超越 prior SOTA（10%+ 和 20%+）。
 

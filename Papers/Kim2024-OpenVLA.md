@@ -10,9 +10,6 @@ status: reading
 rating: 4
 date_added: "2026-03-24"
 ---
-
-# OpenVLA: An Open-Source Vision-Language-Action Model
-
 ## Summary
 OpenVLA 是 Stanford 等机构推出的 7B 参数开源 VLA 模型，基于 Llama 2 + DINOv2/SigLIP 双视觉编码器架构，在 970k 真实 robot demonstration（Open X-Embodiment）上训练，性能超过 RT-2-X（55B）16.5%，同时支持消费级 GPU fine-tuning，是 VLA 领域最重要的开源基准之一。
 

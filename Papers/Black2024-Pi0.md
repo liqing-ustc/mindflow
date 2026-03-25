@@ -10,9 +10,6 @@ status: finished
 rating: 5
 date_added: "2026-03-23"
 ---
-
-# π₀: A Vision-Language-Action Flow Model for General Robot Control
-
 ## Summary
 π₀ 是 Physical Intelligence 提出的通用机器人基础模型，基于预训练 VLM（PaliGemma 3B）+ flow matching action head 架构，在 7 个机器人平台、68 个任务上联合训练，实现了高频（50 Hz）灵巧操作，在 laundry folding、table bussing、box assembly 等复杂任务上显著优于 OpenVLA 和 Octo 等 baseline。
 

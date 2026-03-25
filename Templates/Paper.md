@@ -10,9 +10,6 @@ status: unread  # unread / reading / finished
 rating:         # 1-5 整数（1=一般, 3=不错, 5=必读）
 date_added: "{{date}}"
 ---
-
-# {{title}}
-
 ## Summary
 一句话概括这篇论文解决了什么问题、怎么解决的。
 

@@ -10,9 +10,6 @@ status: reading
 rating: 5
 date_added: "2026-03-24"
 ---
-
-# Move to Understand a 3D Scene (MTU3D)
-
 ## Summary
 MTU3D 提出了一个统一的 embodied navigation 框架，通过 **online query representation** 和 **joint grounding-exploration objective** 将 3D visual grounding 和 active exploration 桥接在一起，无需显式 3D 重建，在 open-vocabulary navigation、multi-modal lifelong navigation、sequential task navigation 和 active EQA 四个 benchmark 上取得 SOTA。
 

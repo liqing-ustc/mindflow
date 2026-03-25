@@ -13,7 +13,6 @@ date_created: 2026-03-24
 dg-publish: true
 dg-home: true
 ---
-
 ## Core Idea
 构建一个三层 hierarchical VLA 架构，以 semantic scene graph 作为 navigation 和 manipulation 的 shared spatial representation，实现 building-scale 导航与 dexterous manipulation 的统一。
 
