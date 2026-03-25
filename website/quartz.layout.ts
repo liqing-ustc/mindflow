@@ -46,12 +46,6 @@ export const defaultContentPageLayout: PageLayout = {
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
-    Component.Graph({
-      localGraph: {
-        depth: 1,
-        showTags: false,
-      },
-    }),
   ],
   afterBody: [
     Component.Comments({
