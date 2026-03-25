@@ -1,13 +1,13 @@
 ---
 title: Hierarchical VLA with Shared Semantic Scene Graph for Unified Navigation-Manipulation
 tags:
-  - VLN
   - VLA
-  - SLAM
-  - scene-graph
+  - VLN
   - flow-matching
-  - hierarchical-planning
   - mobile-manipulation
+  - task-planning
+  - scene-understanding
+  - SLAM
 status: raw
 date_created: 2026-03-24
 dg-publish: true

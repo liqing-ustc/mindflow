@@ -3,7 +3,7 @@ title: "Think Global, Act Local: Dual-scale Graph Transformer for Vision-and-Lan
 authors: [Shizhe Chen, Pierre-Louis Guhur, Makarand Tapaswi, Cordelia Schmid, Ivan Laptev]
 year: 2022
 venue: CVPR 2022 (Oral)
-tags: [VLN, transformer, graph-transformer, topological-map, navigation, R2R, REVERIE]
+tags: [VLN, navigation, spatial-memory]
 url: https://arxiv.org/abs/2202.11742
 code: https://github.com/cshizhe/VLN-DUET
 status: reading

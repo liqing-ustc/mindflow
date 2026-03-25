@@ -3,7 +3,7 @@ title: "ETPNav: Evolving Topological Planning for Vision-Language Navigation in 
 authors: [Dong An, Hanqing Wang, Wenguan Wang, Zun Wang, Yan Huang, Keji He, Liang Wang]
 year: 2024
 venue: TPAMI 2024
-tags: [VLN, VLN-CE, navigation, topological-map, continuous-environment, hierarchical-planning, embodied-AI]
+tags: [VLN, navigation, task-planning, spatial-memory]
 url: https://arxiv.org/abs/2304.03047
 code: https://github.com/MarSaKi/ETPNav
 status: reading

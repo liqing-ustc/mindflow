@@ -3,7 +3,7 @@ title: "Move to Understand a 3D Scene: Bridging Visual Grounding and Exploration
 authors: [Ziyu Zhu, Xilin Wang, Yixuan Li, Zhuofan Zhang, Xiaojian Ma, Yixin Chen, Baoxiong Jia, Wei Liang, Qian Yu, Zhidong Deng, Siyuan Huang, Qing Li]
 year: 2025
 venue: arXiv
-tags: [embodied-AI, navigation, VLN, 3D-grounding, SLAM, exploration, spatial-memory, foundation-model, indoor-scene]
+tags: [VLN, navigation, SLAM, scene-understanding, spatial-memory]
 url: https://arxiv.org/abs/2507.04047
 code: https://mtu3d.github.io
 status: reading

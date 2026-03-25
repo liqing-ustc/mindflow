@@ -3,7 +3,7 @@ title: "Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-
 authors: [Zipeng Fu, Tony Z. Zhao, Chelsea Finn]
 year: 2024
 venue: CoRL 2024
-tags: [mobile-manipulation, imitation-learning, teleoperation, bimanual, behavior-cloning, embodied-AI]
+tags: [mobile-manipulation, imitation-learning, manipulation]
 url: https://arxiv.org/abs/2401.02117
 code: https://github.com/MarkFzp/mobile-aloha
 status: reading

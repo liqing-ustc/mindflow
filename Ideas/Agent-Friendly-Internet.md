@@ -1,6 +1,6 @@
 ---
 title: "Agent-Friendly Internet: 从文档格式到语义网络"
-tags: [agent, document-format, information-retrieval, semantic-web, web-infrastructure, GEO]
+tags: [web-agent]
 status: raw
 date_created: "2026-03-23"
 ---

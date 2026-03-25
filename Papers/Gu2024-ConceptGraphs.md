@@ -3,7 +3,7 @@ title: "ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planni
 authors: [Qiao Gu, Alihusein Kuwajerwala, Sacha Morin, Krishna Murthy Jatavallabhula, Bipasha Sen, Aditya Agarwal, Corban Rivera, William Paul, Kirsty Ellis, Rama Chellappa, Chuang Gan, Celso Miguel de Melo, Joshua B. Tenenbaum, Antonio Torralba, Florian Shkurti, Liam Paull]
 year: 2024
 venue: ICRA 2024
-tags: [3D-scene-graph, open-vocabulary, SLAM, semantic-map, CLIP, foundation-model, robot-planning, embodied-AI]
+tags: [SLAM, scene-understanding, task-planning]
 url: https://arxiv.org/abs/2309.16650
 code: https://github.com/concept-graphs/concept-graphs
 status: reading

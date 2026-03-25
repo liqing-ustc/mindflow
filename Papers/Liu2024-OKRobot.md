@@ -3,7 +3,7 @@ title: "OK-Robot: What Really Matters in Integrating Open-Knowledge Models for R
 authors: [Peiqi Liu, Yaswanth Orru, Jay Vakil, Chris Paxton, Nur Muhammad Mahi Shafiullah, Lerrel Pinto]
 year: 2024
 venue: RSS 2024
-tags: [mobile-manipulation, open-vocabulary, VLM, CLIP, navigation, grasping, embodied-AI]
+tags: [mobile-manipulation, navigation, scene-understanding]
 url: https://arxiv.org/abs/2401.12202
 code: https://github.com/ok-robot/ok-robot
 status: reading

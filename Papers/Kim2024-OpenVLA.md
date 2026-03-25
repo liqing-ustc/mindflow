@@ -3,7 +3,7 @@ title: "OpenVLA: An Open-Source Vision-Language-Action Model"
 authors: [Moo Jin Kim, Karl Pertsch, Siddharth Karamcheti, Ted Xiao, Ashwin Balakrishna, Suraj Nair, Rafael Rafailov, Ethan Foster, Grace Lam, Pannag Sanketi, Quan Vuong, Thomas Kollar, Benjamin Burchfiel, Russ Tedrake, Dorsa Sadigh, Sergey Levine, Percy Liang, Chelsea Finn]
 year: 2024
 venue: ICML 2025
-tags: [VLA, robotics, foundation-model, manipulation, open-source, fine-tuning, cross-embodiment]
+tags: [VLA, manipulation, cross-embodiment]
 url: https://arxiv.org/abs/2406.09246
 code: https://github.com/openvla/openvla
 status: reading

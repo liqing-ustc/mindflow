@@ -1,6 +1,6 @@
 ---
 title: "WebMCP: 让网站成为 AI Agent 的结构化工具"
-tags: [agent, web-standard, MCP, Google, browser]
+tags: [web-agent]
 date_created: "2026-03-23"
 ---
 

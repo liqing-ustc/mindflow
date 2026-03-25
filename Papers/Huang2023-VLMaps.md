@@ -3,7 +3,7 @@ title: "Visual Language Maps for Robot Navigation"
 authors: [Chenguang Huang, Oier Mees, Andy Zeng, Wolfram Burgard]
 year: 2023
 venue: ICRA 2023
-tags: [VLM, semantic-map, navigation, open-vocabulary, CLIP, LSeg, LLM, embodied-AI]
+tags: [VLM, LLM, navigation, scene-understanding, semantic-map]
 url: https://arxiv.org/abs/2210.05714
 code: https://github.com/vlmaps/vlmaps
 status: reading

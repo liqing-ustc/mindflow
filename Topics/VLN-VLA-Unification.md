@@ -1,14 +1,12 @@
 ---
 title: "VLN-VLA Unification: Foundation Models for Indoor Robot Navigation and Manipulation"
 tags:
-  - VLN
   - VLA
-  - SLAM
-  - embodied-AI
-  - foundation-model
-  - indoor-scene
-  - navigation
+  - VLN
   - manipulation
+  - navigation
+  - SLAM
+  - scene-understanding
 status: complete
 date_updated: 2026-03-24
 dg-publish: true

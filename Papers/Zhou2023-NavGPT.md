@@ -3,7 +3,7 @@ title: "NavGPT: Explicit Reasoning in Vision-and-Language Navigation with Large 
 authors: [Gengze Zhou, Yicong Hong, Qi Wu]
 year: 2023
 venue: AAAI 2024
-tags: [VLN, LLM, GPT, navigation, zero-shot, reasoning, embodied-AI]
+tags: [VLN, LLM, navigation, task-planning]
 url: https://arxiv.org/abs/2305.16986
 code: https://github.com/GengzeZhou/NavGPT
 status: reading

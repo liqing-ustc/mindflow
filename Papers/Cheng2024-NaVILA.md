@@ -3,7 +3,7 @@ title: "NaVILA: Legged Robot Vision-Language-Action Model for Navigation"
 authors: [An-Chieh Cheng, Yandong Ji, Zhaojing Yang, Zaitian Gongye, Xueyan Zou, Jan Kautz, Erdem Bıyık, Hongxu Yin, Sifei Liu, Xiaolong Wang]
 year: 2024
 venue: RSS 2025
-tags: [VLN, VLA, VLM, navigation, legged-robot, embodied-AI, foundation-model]
+tags: [VLA, VLN, VLM, navigation, legged]
 url: https://arxiv.org/abs/2412.04453
 code: https://github.com/AnjieCheng/NaVILA
 status: reading

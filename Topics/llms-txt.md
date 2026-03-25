@@ -1,6 +1,6 @@
 ---
 title: "llms.txt: 让网站对 LLM 可读的新标准"
-tags: [agent, LLM, web-standard, GEO]
+tags: [LLM, web-agent]
 date_created: "2026-03-23"
 ---
 
