@@ -2,6 +2,9 @@
 title:
 tags: []
 status: raw     # raw / developing / validated / archived
+linked_project:      # [[Projects/xxx]] 关联项目
+linked_experiment:   # [[Experiments/xxx]] 关联实验
+feasibility: unverified  # unverified / promising / confirmed / rejected
 date_created: "{{date}}"
 ---
 ## Core Idea
