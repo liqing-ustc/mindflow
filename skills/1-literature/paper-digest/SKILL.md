@@ -126,7 +126,7 @@ date_added: "<今天日期 YYYY-MM-DD>"
 
    若日志文件不存在，先创建文件（包含一级标题 `# YYYY-MM-DD`），再追加 entry。
 
-3. **阅读队列**：若 source 来自阅读队列（如 `Workbench/reading-queue.md`），用 Edit 将对应条目标记为已完成（如在行首添加 `✓` 或删除该条目）。
+3. **阅读队列**：若 source 来自阅读队列（`Workbench/queue/reading.md`），用 Edit 将对应条目标记为已完成（如在行首添加 `✓` 或删除该条目）。
 
 ## Guard
 
