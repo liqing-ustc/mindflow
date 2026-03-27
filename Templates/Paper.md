@@ -2,31 +2,32 @@
 title:
 authors: []
 institute: []
-date_publish:    # YYYY-MM-DD 或 YYYY-MM 或 YYYY
-venue:          # e.g. NeurIPS 2025, arXiv
-tags: []        # e.g. [transformer, LLM, RLHF]
-url:            # 论文链接
-code:           # GitHub repo 链接
-status: unread  # unread / reading / finished
-rating:         # 1-5 整数（1=一般, 3=不错, 5=必读）
+date_publish:
+venue:
+tags: []
+url:
+code:
+status: unread
+rating:
 date_added: "{{date}}"
 ---
 ## Summary
-一句话概括这篇论文解决了什么问题、怎么解决的。
+%% 一句话概括：解决了什么问题、怎么解决的 %%
 
 ## Problem & Motivation
-作者要解决什么问题？为什么重要？
+%% 问题背景与动机，2-5 句话。为什么重要？现有方法有什么局限？ %%
 
 ## Method
-核心方法/架构描述。
+%% 核心方法/架构。中文撰写，保留英文技术术语。可分段，鼓励列出关键组件。 %%
 
 ## Key Results
-主要实验结果和 takeaway。
+%% 主要实验结果，包含具体数字和 benchmark 名称。 %%
 
 ## Strengths & Weaknesses
-个人评价。
+%% 方法亮点与局限的个人评价，以及对领域的潜在影响。 %%
 
 ## Mind Map
+%% root 节点用论文 ShortTitle，子节点覆盖 Problem / Method / Results 三个维度 %%
 ```mermaid
 mindmap
   root((Paper Title))
@@ -36,9 +37,10 @@ mindmap
 ```
 
 ## Connections
+%% 用 Grep 在 Papers/ 和 Ideas/ 中搜索方法名、任务名等关键词，填入 [[wikilinks]] %%
 - Related papers:
 - Related ideas:
 - Related projects:
 
 ## Notes
-其他想法、疑问、启发。
+%% 其他想法、疑问、启发。留空供后续填写。 %%

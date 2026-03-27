@@ -147,7 +147,7 @@ mindmap
 - Related papers:
   - [[2410-Pi0]] — Low-level policy 的基础架构
   - [[2504-Pi05]] — 同为 hierarchical VLA，但 π₀.₅ 的 high-level 是同一个 VLM 输出 subtask tokens，Hi Robot 用独立 VLM 输出 language commands
-  - [[2511-PiStar06]] — π*₀.₆ 的 RL self-improvement 可与 Hi Robot 的 hierarchy 结合
+  - [[2511-PiStar06]] — π\*₀.₆ 的 RL self-improvement 可与 Hi Robot 的 hierarchy 结合
   - [[2412-NaVILA]] — NaVILA 也是 hierarchical（VLM → language action → low-level policy），但专注 navigation 而非 manipulation
   - [[2204-SayCan]] — SayCan 也是 LLM high-level + skill library low-level，但 Hi Robot 用 VLM（有视觉）替代 LLM（纯文本），且 low-level 是通用 VLA 而非 closed-set skills
 - Related topics:
@@ -165,9 +165,9 @@ mindmap
 3. **Hi Robot 的局限 = 我们的机会**：
    - 无 spatial memory → 加入 ConceptGraphs/MTU3D 式 spatial representation
    - Navigation 范围有限 → 扩展到 building-scale（需要 SLAM）
-   - High-level 不感知 low-level 失败 → 加入 value function（π*₀.₆ 的 Recap）做 failure detection
+   - High-level 不感知 low-level 失败 → 加入 value function（π\*₀.₆ 的 Recap）做 failure detection
 
-4. **Hi Robot + π*₀.₆ + spatial memory = 我们 idea 的完整系统**：
+4. **Hi Robot + π\*₀.₆ + spatial memory = 我们 idea 的完整系统**：
    - Hi Robot 提供 hierarchical VLM-VLA 架构 + synthetic data pipeline
-   - π*₀.₆ 提供 RL self-improvement for manipulation
+   - π\*₀.₆ 提供 RL self-improvement for manipulation
    - Spatial memory（ConceptGraphs/MTU3D）提供 navigation + manipulation 的 shared representation

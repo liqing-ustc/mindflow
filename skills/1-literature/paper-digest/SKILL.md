@@ -42,15 +42,15 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 
 从获取到的内容中提取以下元数据（如果全文无法获取，至少要获取 abstract）：
 
-| 字段 | 说明 |
-|:-----|:-----|
-| `title` | 完整论文标题 |
-| `authors` | 作者列表（字符串数组） |
-| `institute` | 作者所属机构（字符串数组，从 affiliation 提取） |
+| 字段             | 说明                                      |
+| :------------- | :-------------------------------------- |
+| `title`        | 完整论文标题                                  |
+| `authors`      | 作者列表（字符串数组）                             |
+| `institute`    | 作者所属机构（字符串数组，从 affiliation 提取）          |
 | `date_publish` | 发表日期，格式 `YYYY-MM-DD`、`YYYY-MM` 或 `YYYY` |
-| `venue` | 发表场所，如 `NeurIPS 2025`、`arXiv` |
-| `url` | 论文链接（优先用 arXiv abstract 页） |
-| `code` | GitHub 代码链接（若论文中提及） |
+| `venue`        | 发表场所，如 `NeurIPS 2025`、`arXiv`           |
+| `url`          | 论文链接（优先用论文主页，无则用 arXiv abstract 页）     |
+| `code`         | GitHub 代码链接（若论文中提及）                     |
 
 ### Step 2：阅读并理解
 
@@ -76,39 +76,13 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 
 ### Step 4：生成笔记
 
-按照 `Templates/Paper.md` 填写所有字段，生成完整的笔记内容：
+读取 `Templates/Paper.md`，按模板中的字段和 `%%` 注释指导填写所有内容。
 
-**Frontmatter**（YAML）：
-
-```yaml
----
-title: <完整论文标题>
-authors: [<作者1>, <作者2>, ...]
-institute: [<机构1>, <机构2>, ...]
-date_publish: <YYYY-MM-DD 或 YYYY-MM 或 YYYY>
-venue: <发表场所>
-tags: [<tag1>, <tag2>, ...]
-url: <论文链接>
-code: <代码链接，无则留空>
-status: unread
-rating:
-date_added: "<今天日期 YYYY-MM-DD>"
----
-```
-
-**正文各节**（用中文撰写，保留英文技术术语）：
-
-- `## Summary`：一句话概括论文解决了什么问题、怎么解决的。
-- `## Problem & Motivation`：问题背景与动机，2-5 句话。
-- `## Method`：核心方法描述，可分段，鼓励列出关键组件。
-- `## Key Results`：主要实验结果，包含具体数字和 benchmark 名称。
-- `## Strengths & Weaknesses`：方法优势与局限的个人评价。
-- `## Mind Map`：用 mermaid mindmap 可视化论文结构，root 节点用论文 ShortTitle，子节点覆盖 Problem / Method / Results 三个维度。
-- `## Connections`：
-  - 用 Grep 在 `Papers/` 中搜索方法名、任务名等关键词，找出相关论文笔记，填入 `[[wikilinks]]`。
-  - 用 Grep 在 `Ideas/` 中搜索相关关键词，填入相关 idea 的链接。
-  - 若无相关内容，对应子项留空。
-- `## Notes`：留空，供 Human 后续填写。
+补充规则（模板未涵盖的）：
+- **语言**：正文用中文撰写，英文技术术语（模型名、方法名、benchmark 名）保持英文不翻译
+- **未获取全文**：在受影响的章节开头加注 `> [未获取全文，仅基于 abstract]`，不得推测正文内容
+- **date_added**：填写今天日期，格式 `YYYY-MM-DD`
+- **Connections 搜索范围**：用 Grep 在 `Papers/` 搜索方法名/任务名，在 `Ideas/` 搜索相关关键词，填入 `[[wikilinks]]`；若无相关内容，对应子项留空
 
 ### Step 5：保存并记录
 
