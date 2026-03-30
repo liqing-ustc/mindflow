@@ -1,21 +1,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
     <loc>https://liqing.io/mindflow/DomainMaps/SpatialRep</loc>
-    <lastmod>2026-03-30T07:43:31.229Z</lastmod>
+    <lastmod>2026-03-30T08:42:03.834Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/DomainMaps/VLA</loc>
-    <lastmod>2026-03-30T07:43:31.283Z</lastmod>
+    <lastmod>2026-03-30T08:42:03.887Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/DomainMaps/VLN</loc>
-    <lastmod>2026-03-30T07:43:31.323Z</lastmod>
+    <lastmod>2026-03-30T08:42:03.909Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/DomainMaps/</loc>
-    <lastmod>2026-03-30T07:43:31.364Z</lastmod>
+    <lastmod>2026-03-30T08:42:03.927Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Ideas/Agent-Friendly-Internet</loc>
-    <lastmod>2026-03-30T07:43:31.407Z</lastmod>
+    <lastmod>2026-03-30T08:42:03.955Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Ideas/Hierarchical-VLA-SceneGraph</loc>
-    <lastmod>2026-03-30T07:43:31.449Z</lastmod>
+    <lastmod>2026-03-30T08:42:03.995Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Meetings/2026-03-27-EndToEnd-Navigation</loc>
     <lastmod>2026-03-27T00:00:00.000Z</lastmod>
@@ -38,6 +38,9 @@
     <loc>https://liqing.io/mindflow/Papers/2305-NavGPT</loc>
     <lastmod>2023-05-01T00:00:00.000Z</lastmod>
   </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2305-RAP</loc>
+    <lastmod>2023-05-01T00:00:00.000Z</lastmod>
+  </url><url>
     <loc>https://liqing.io/mindflow/Papers/2307-RT2</loc>
     <lastmod>2023-07-01T00:00:00.000Z</lastmod>
   </url><url>
@@ -56,10 +59,22 @@
     <loc>https://liqing.io/mindflow/Papers/2401-SpatialVLM</loc>
     <lastmod>2024-01-01T00:00:00.000Z</lastmod>
   </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2402-Genie</loc>
+    <lastmod>2024-02-01T00:00:00.000Z</lastmod>
+  </url><url>
     <loc>https://liqing.io/mindflow/Papers/2402-NaVid</loc>
     <lastmod>2024-02-01T00:00:00.000Z</lastmod>
   </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2405-DIAMOND</loc>
+    <lastmod>2024-05-01T00:00:00.000Z</lastmod>
+  </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2405-OccSora</loc>
+    <lastmod>2024-05-01T00:00:00.000Z</lastmod>
+  </url><url>
     <loc>https://liqing.io/mindflow/Papers/2405-Octo</loc>
+    <lastmod>2024-05-01T00:00:00.000Z</lastmod>
+  </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2405-Vista</loc>
     <lastmod>2024-05-01T00:00:00.000Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Papers/2406-IRASim</loc>
@@ -71,11 +86,17 @@
     <loc>https://liqing.io/mindflow/Papers/2407-ECoT</loc>
     <lastmod>2024-07-01T00:00:00.000Z</lastmod>
   </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2408-GameNGen</loc>
+    <lastmod>2024-08-01T00:00:00.000Z</lastmod>
+  </url><url>
     <loc>https://liqing.io/mindflow/Papers/2410-Pi0</loc>
     <lastmod>2024-10-01T00:00:00.000Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Papers/2411-RewardHacking</loc>
     <lastmod>2024-11-28T00:00:00.000Z</lastmod>
+  </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2411-WorldModelSurvey</loc>
+    <lastmod>2024-11-01T00:00:00.000Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Papers/2412-LHVLN</loc>
     <lastmod>2024-12-01T00:00:00.000Z</lastmod>
@@ -129,6 +150,9 @@
     <lastmod>2025-06-01T00:00:00.000Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Papers/2506-SmolVLA</loc>
+    <lastmod>2025-06-01T00:00:00.000Z</lastmod>
+  </url><url>
+    <loc>https://liqing.io/mindflow/Papers/2506-VJEPA2</loc>
     <lastmod>2025-06-01T00:00:00.000Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Papers/2506-VLNR1</loc>
@@ -213,122 +237,125 @@
     <lastmod>2026-03-01T00:00:00.000Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/AutoResearch-SkillDesign</loc>
-    <lastmod>2026-03-30T07:43:32.680Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.060Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/AutoResearch</loc>
-    <lastmod>2026-03-30T07:43:32.748Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.129Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/Embodied-Reasoning-Survey</loc>
-    <lastmod>2026-03-30T07:43:32.796Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.178Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/VLA-Survey</loc>
-    <lastmod>2026-03-30T07:43:32.839Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.216Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/VLN-Survey</loc>
-    <lastmod>2026-03-30T07:43:32.882Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.258Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/VLN-VLA-Unification</loc>
-    <lastmod>2026-03-30T07:43:32.958Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.325Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/WebMCP</loc>
-    <lastmod>2026-03-30T07:43:33.039Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.405Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/WorldActionModel-Survey</loc>
-    <lastmod>2026-03-30T07:43:33.051Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.416Z</lastmod>
+  </url><url>
+    <loc>https://liqing.io/mindflow/Topics/WorldModel-Survey</loc>
+    <lastmod>2026-03-30T08:42:05.451Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Topics/llms-txt</loc>
-    <lastmod>2026-03-30T07:43:33.072Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.477Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/agenda</loc>
-    <lastmod>2026-03-30T07:43:33.079Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.482Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/evolution/changelog</loc>
-    <lastmod>2026-03-30T07:43:33.080Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.484Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/identity</loc>
-    <lastmod>2026-03-30T07:43:33.082Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.486Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/logs/2026-03-26</loc>
-    <lastmod>2026-03-30T07:43:33.087Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.488Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/logs/2026-03-27</loc>
-    <lastmod>2026-03-30T07:43:33.091Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.494Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/logs/2026-03-30</loc>
-    <lastmod>2026-03-30T07:43:33.099Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.504Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/memory/effective-methods</loc>
-    <lastmod>2026-03-30T07:43:33.105Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.510Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/memory/failed-directions</loc>
-    <lastmod>2026-03-30T07:43:33.106Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.510Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/memory/insights</loc>
-    <lastmod>2026-03-30T07:43:33.107Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.511Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/memory/patterns</loc>
-    <lastmod>2026-03-30T07:43:33.108Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.512Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/Workbench/queue</loc>
-    <lastmod>2026-03-30T07:43:33.109Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.513Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/examples/demo-walkthrough</loc>
-    <lastmod>2026-03-30T07:43:33.112Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.516Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/</loc>
-    <lastmod>2026-03-30T07:43:33.116Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.520Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/references/agenda-protocol</loc>
-    <lastmod>2026-03-30T07:43:33.121Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.523Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/references/memory-protocol</loc>
-    <lastmod>2026-03-30T07:43:33.130Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.530Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/references/skill-protocol</loc>
-    <lastmod>2026-03-30T07:43:33.144Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.542Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/references/tag-taxonomy</loc>
-    <lastmod>2026-03-30T07:43:33.159Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.557Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/1-literature/cross-paper-analysis/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.172Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.567Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/1-literature/literature-survey/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.191Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.585Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/1-literature/paper-digest/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.210Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.603Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/2-ideation/idea-evaluate/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.229Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.620Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/2-ideation/idea-generate/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.252Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.641Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/3-experiment/experiment-design/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.281Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.662Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/3-experiment/experiment-track/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.305Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.680Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/3-experiment/result-analysis/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.321Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.694Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/4-writing/draft-section/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.347Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.713Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/4-writing/writing-refine/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.362Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.728Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/5-evolution/agenda-evolve/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.410Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.744Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/5-evolution/memory-distill/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.440Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.764Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/5-evolution/memory-retrieve/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.451Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.775Z</lastmod>
   </url><url>
     <loc>https://liqing.io/mindflow/skills/6-orchestration/autoresearch/SKILL</loc>
-    <lastmod>2026-03-30T07:43:33.463Z</lastmod>
+    <lastmod>2026-03-30T08:42:05.784Z</lastmod>
   </url></urlset>
