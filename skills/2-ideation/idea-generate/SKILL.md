@@ -125,7 +125,6 @@ idea-generate 是 MindFlow 的创意引擎。给定知识空白、validated insi
 - **不直接修改 agenda.md**：idea-generate 的产出只写入 `Ideas/`；是否将某个 idea 纳入 agenda 的 direction，由 agenda-evolve skill 或 Supervisor 决策，idea-generate 不擅自修改 `Workbench/agenda.md`。
 - **hypothesis 必须可证伪**：若某个候选 idea 的假设无法在合理实验条件下被证伪（如过于宽泛的"改进 VLA 的泛化能力"），不得写入文件；须拒绝该候选，并在输出中说明原因，改换更具体的方向。
 - **语言规范**：正文用中文撰写，英文技术术语（模型名、方法名、benchmark 名、任务名）保持英文，不做翻译。
-- **autonomy: copilot 模式**：若以 copilot 模式调用，先将所有候选 idea 的摘要（hypothesis + motivation）输出给 Human 预览和筛选，Human 确认选择哪些后，再执行 Write 写入文件；日志同样在确认后追加。
 
 ## Examples
 

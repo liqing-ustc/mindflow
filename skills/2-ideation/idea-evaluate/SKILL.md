@@ -22,7 +22,6 @@ idea-evaluate 是 MindFlow 的 idea 质量守门人。给定一个研究 idea（
 
 评估结束后产出三种结论之一：**recommend**（建议推进）/ **revise**（有潜力但需修正）/ **shelve**（搁置）。结论会同步写回 Idea 文件的 `status` 字段，确保状态一致性。
 
-该技能适用于三种模式：autopilot（全自动评估写回）、copilot（草稿预览后 Human 确认写回）、sparring（仅输出评估结论，不修改文件）。
 
 ## Steps
 
@@ -175,7 +174,6 @@ idea-evaluate 是 MindFlow 的 idea 质量守门人。给定一个研究 idea（
 - **不修改 hypothesis 字段**：`hypothesis` 是 idea-generate 的职责范围，idea-evaluate 只读取不修改。
 - **评估必须基于可追溯证据**：每个维度的说明必须能对应到 vault 中的具体笔记（Paper、DomainMaps、已有 Idea）。禁止凭空判断——若无足够证据支撑某维度评分，在说明中注明"证据不足，保守估计"。
 - **不覆盖已有 Evaluation 节**：若 Idea 文件中已有 `## Evaluation` 节，追加新节（带新日期），不得删除历史评估记录。
-- **sparring 模式不写文件**：若以 sparring 模式调用，仅输出评估结论到对话，不执行任何 Edit 操作。
 - **语言规范**：中文正文 + 英文技术术语（模型名、方法名、benchmark 名保持英文，不翻译）。
 
 ## Examples

@@ -16,7 +16,7 @@ allowed-tools: Read, Edit, Glob, Grep
 - **clarity**：冗余表达、歧义措辞、过度抽象的概念是否需要具体化
 - **evidence**：每个关键 claim 是否有 `[[wikilink]]` 支撑，引用是否恰当
 
-默认以 **copilot 模式**运行（autonomy: low）：输出建议列表，由 Supervisor 确认后再执行修改。
+默认行为：输出建议列表，由 Supervisor 确认后再执行修改。
 
 ---
 
@@ -99,7 +99,7 @@ Read(target)
 
 ### Step 4 — Copilot 确认流程
 
-**默认行为（autonomy: low）**：输出建议列表后，等待 Supervisor 确认。不主动执行 Edit。
+**默认行为**：输出建议列表后，等待 Supervisor 确认。不主动执行 Edit。
 
 询问 Supervisor：
 > "以上 N 条修改建议，请确认哪些执行？可回复：全部执行 / 执行 #1 #3 #5 / 跳过全部"
@@ -134,7 +134,7 @@ Read(target)
 
 ## Guard
 
-- **默认 copilot 模式**：autonomy: low，不经确认不执行 Edit。
+- **默认先确认再修改**：不经 Supervisor 确认不执行 Edit。
 - **不改变核心论点**：只调整表达和结构，不替换或删除作者的核心主张。
 - **不增删章节**：不新增标题层级，不删除现有段落（除非 Supervisor 明确指示）。
 - **语言规范**：遵循文稿原有语言风格（中英混用 / 纯英文 / 纯中文），不擅自切换。

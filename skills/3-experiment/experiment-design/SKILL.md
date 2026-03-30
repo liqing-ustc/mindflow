@@ -23,7 +23,6 @@ experiment-design 是 MindFlow 从 idea 到实验的桥接技能。给定一个 
 | **Expected Outcome** | 假设成立与不成立两种情况 |
 | **Risk & Mitigation** | 主要风险点与应对方案 |
 
-该技能适用于两种模式：autopilot（全自动设计写入）、copilot（草稿预览后 Supervisor 确认写入）。
 
 ## Steps
 
@@ -164,7 +163,6 @@ Frontmatter 字段填写：
 - **status 校验为硬性前置条件**：若 idea 的 status 不是 `developing` 或 `validated`，立即停止，不执行任何写入操作。告知 Supervisor 当前 status 及建议（如先执行 idea-evaluate）。
 - **不伪造历史记忆**：Step 2 的记忆检索若无结果，如实说明，不编造相关历史经验。
 - **语言规范**：中文正文 + 英文技术术语（模型名、数据集名、benchmark 名、metric 名保持英文，不翻译）。
-- **copilot 模式**：若以 copilot 模式调用，在写入文件前先输出完整实验方案草稿，等待 Supervisor 确认后再执行 Step 4-6。
 
 ## Examples
 

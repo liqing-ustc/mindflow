@@ -212,7 +212,6 @@ Key Findings 可以包含：意外规律、config 敏感性、数据质量问题
 - **inconclusive 不强行下结论**：数据不充分时（run 数量 < 3、metric 方差过大、结果相互矛盾），必须判为 inconclusive，不得为追求"明确结论"而强行判定 supported 或 refuted。
 - **不修改 Run Entries**：只读取 Run Entry 数据，绝对不修改 Experiment 文件中任何 `## Run` 节的原始内容。分析是独立节，与 run 数据并存。
 - **语言规范**：中文正文 + 英文技术术语（模型名、metric 名、benchmark 名、方法名保持英文，不翻译）。
-- **copilot 模式预览**：若以 copilot 模式调用，先将完整 Analysis 内容输出到对话供 Supervisor 审阅，确认后再执行 Edit 写入文件。
 
 ## Examples
 

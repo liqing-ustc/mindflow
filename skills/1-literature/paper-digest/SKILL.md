@@ -10,7 +10,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 
 paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源（URL、PDF 路径、标题或 DOI），它自动获取论文内容、提炼核心信息，并按照 `Templates/Paper.md` 格式生成结构化笔记保存至 `Papers/`。
 
-该技能适用于两种工作模式：autopilot（全自动，直接写文件）和 copilot（草稿模式，Human 确认后写入）。它是 literature-sweep、reading-queue 等高阶技能的基础组件。
+它是 literature-survey 等高阶技能的基础组件。
 
 ## Steps
 
@@ -90,7 +90,6 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 - **不覆盖已有笔记**：若 `Papers/YYMM-ShortTitle.md` 已存在，停止执行并告知 Human，不得覆盖或修改已有文件。
 - **不捏造信息**：所有字段必须来自论文原文。无法获取全文时，在受影响的章节开头标注 `> [未获取全文，仅基于 abstract]`，不得推测正文内容填充 Method / Key Results 等节。
 - **语言规范**：正文用中文撰写，英文技术术语（模型名、方法名、benchmark 名）保持英文，不做翻译。
-- **autonomy: copilot 模式**：若用户以 copilot 模式调用，生成笔记草稿后先输出给 Human 预览，确认后再执行 Write；日志同样在确认后追加。
 
 ## Verify
 

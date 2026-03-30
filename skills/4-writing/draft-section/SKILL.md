@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 draft-section 是 MindFlow 的基础写作技能。给定目标文件、章节名和素材引用列表，它从 vault 中读取所有相关笔记，按照学术写作规范起草指定章节，并写入目标文件。
 
-该技能适用于两种工作模式：autopilot（直接写入文件）和 copilot（生成草稿后 Human 确认再写入）。它是 autoresearch 高阶工作流的写作子技能，也可由 Supervisor 直接触发用于快速成文。
+它是 autoresearch 高阶工作流的写作子技能，也可由 Supervisor 直接触发用于快速成文。
 
 所有 claim 必须有 `[[wikilink]]` 来源，正文用中文撰写，英文技术术语保持英文。
 
@@ -133,7 +133,6 @@ tags: []
 
 - **不修改其他章节**：Edit 操作只针对指定的 `section`，严禁修改目标文件中其他章节的任何内容。如不确定插入边界，停止并告知 Human。
 - **不捏造引用**：所有 `[[wikilink]]` 必须指向 vault 中实际存在的文件。若 claim 无来源，标注 `[需引用]`，不得编造笔记文件名或论文信息。
-- **copilot 模式先预览**：若以 copilot 模式调用，生成章节草稿后先完整输出给 Human 预览，明确确认后再执行 Write/Edit；日志同样在确认后追加。
 - **语言规范**：正文用中文撰写；技术术语（模型名、方法名、benchmark 名）保持英文，不做翻译；不使用非正式口语。
 - **不覆盖完整章节**：若目标章节已有实质性内容（>100 字），不直接覆盖，停止执行并告知 Human，建议以 writing-refine 技能进行修订。
 

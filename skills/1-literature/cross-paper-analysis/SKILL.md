@@ -182,7 +182,6 @@ tags: []
 - **不捏造内容**：所有分析必须来自实际读取到的笔记内容。若某笔记缺少某一节（如无 Strengths & Weaknesses），在对比表对应单元格注明"未记录"，不得推测或补全。
 - **Topics 文件不覆盖**：若 `Topics/{topic}-Analysis.md` 已存在，停止执行并告知 Human；不得覆盖已有分析文件（可建议在文件名加版本后缀，如 `-v2`）。
 - **language 规范**：描述与分析用中文撰写；方法名、模型名、benchmark 名、论文标题等技术术语保持英文，不做翻译。
-- **autonomy: copilot 模式**：若以 copilot 模式调用，生成分析草稿后先输出给 Human 预览，确认后再执行 Write/Edit；`Workbench/` 的写入同样在确认后执行。
 
 ## Verify
 

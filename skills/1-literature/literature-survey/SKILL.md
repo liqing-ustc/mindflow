@@ -199,7 +199,6 @@ scope:
 - **不直接修改 DomainMaps**：综合分析中如有值得纳入 DomainMaps 的发现，在 Survey 文件的 Key Takeaways 中标注"建议加入 DomainMaps"，不得直接修改 `DomainMaps/` 下的任何文件。
 - **Papers/ 已有笔记只读**：不得修改 vault 中已存在的 Paper 笔记，只可读取。新论文的笔记由 paper-digest 创建。
 - **语言规范**：正文用中文撰写，英文技术术语保持英文不翻译。
-- **autonomy: copilot 模式**：若以 copilot 模式调用，在 Step 3 筛选完成后先输出候选论文列表给 Human 确认，确认后再执行 Step 4 批量 digest；最终 Survey 文件也先预览再写入。
 
 ## Verify
 
