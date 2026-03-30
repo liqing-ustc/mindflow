@@ -1,16 +1,18 @@
 ---
 name: paper-digest
 description: >
-  当 Supervisor 给出论文 URL/标题/PDF/DOI，或阅读队列中有待处理论文时，消化论文并生成结构化笔记到 Papers/
-argument-hint: "[arXiv URL / PDF path / title / DOI]"
+  当 Supervisor 给出论文或 blog 的 URL/标题/PDF/DOI，或阅读队列中有待处理条目时，消化内容并生成结构化笔记到 Papers/
+argument-hint: "[arXiv URL / blog URL / PDF path / title / DOI]"
 allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 ---
 
 ## Purpose
 
-paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源（URL、PDF 路径、标题或 DOI），它自动获取论文内容、提炼核心信息，并按照 `Templates/Paper.md` 格式生成结构化笔记保存至 `Papers/`。
+paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文或技术 blog 的来源（URL、PDF 路径、标题或 DOI），它自动获取内容、提炼核心信息，并按照 `Templates/Paper.md` 格式生成结构化笔记保存至 `Papers/`。
 
-它是 literature-survey 等高阶技能的基础组件。
+它是 literature-survey 等高阶技能的基础组件。支持两种内容类型：
+- **论文**：arXiv、PDF、DOI 等学术论文
+- **Blog**：技术博客文章（如 Google Research Blog、Lilian Weng、公司技术博客等）
 
 ## Steps
 
@@ -22,6 +24,7 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 - **PDF 路径**（如 `/path/to/paper.pdf`）：用 Read 读取文件内容。
 - **论文标题或关键词**：用 WebSearch 搜索（建议加上 `site:arxiv.org` 或 `filetype:pdf`），从结果中定位最可能的论文页面，再用 WebFetch 获取内容。
 - **DOI**（如 `10.1145/...`）：用 WebFetch 抓取 `https://doi.org/<DOI>`，跟随重定向到出版商页面。
+- **Blog URL**（非 arXiv/DOI 的普通网页链接）：用 WebFetch 抓取页面内容。从页面中提取作者、发布日期等元数据。
 
 从获取到的内容中提取以下元数据（如果全文无法获取，至少要获取 abstract）：
 
@@ -31,7 +34,7 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 | `authors`      | 作者列表（字符串数组）                             |
 | `institute`    | 作者所属机构（字符串数组，从 affiliation 提取）          |
 | `date_publish` | 发表日期，格式 `YYYY-MM-DD`、`YYYY-MM` 或 `YYYY` |
-| `venue`        | 发表场所，如 `NeurIPS 2025`、`arXiv`           |
+| `venue`        | 发表场所，如 `NeurIPS 2025`、`arXiv`；blog 填来源名如 `Google DeepMind Blog`、`Lilian Weng Blog` |
 | `url`          | 论文链接（优先用论文主页，无则用 arXiv abstract 页）     |
 | `code`         | GitHub 代码链接（若论文中提及）                     |
 
@@ -40,8 +43,8 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 通读获取到的内容，重点提炼以下四个维度：
 
 1. **Problem & Motivation**：作者要解决什么问题？现有方法有什么局限？为什么这个问题重要？
-2. **Method**：核心方法/架构是什么？关键设计选择有哪些？用简洁的中文描述，保留必要的英文术语。
-3. **Key Results**：主要实验结果是什么？在哪些 benchmark 上取得了什么指标？核心 takeaway 是什么？
+2. **Method**：核心方法/架构是什么？关键设计选择有哪些？用简洁的中文描述，保留必要的英文术语。对于 blog，此处提炼文章的核心论点或技术方案。
+3. **Key Results**：主要实验结果是什么？在哪些 benchmark 上取得了什么指标？核心 takeaway 是什么？对于 blog，提炼关键结论、数据或 demo 效果。
 4. **Strengths & Weaknesses**：方法的亮点与局限，以及对该领域的潜在影响。
 
 如果只能获取 abstract 而非全文，在所有内容区块开头加注：`> [未获取全文，仅基于 abstract]`
@@ -51,7 +54,8 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 **文件名格式**：`YYMM-ShortTitle.md`
 
 - `YYMM`：取自 `date_publish` 的年份后两位 + 月份，如 `2603`（2026年3月）
-- `ShortTitle`：论文标题的 CamelCase 缩写，2-4 个关键词，如 `EvoScientist`、`RoboClaw`、`DiffusionPolicy`
+- `ShortTitle`：标题的 CamelCase 缩写，2-4 个关键词，如 `EvoScientist`、`RoboClaw`、`DiffusionPolicy`
+- Blog 同理，如一篇 2026 年 2 月的 blog 关于 scaling laws → `2602-ScalingLaws.md`
 
 **去重检查**：用 Glob 扫描 `Papers/` 目录，检查是否已存在同名或同主题笔记（搜索标题关键词）。若发现重复，停止并告知 Human，不创建新文件。
 
@@ -145,3 +149,20 @@ paper-digest 是 MindFlow 最基础的文献技能。给定一篇论文的来源
 1. Read `/Users/qingli/Downloads/roboclaw_2025.pdf` 读取 PDF 内容
 2. 从内容中提取元数据（title、authors、date、venue）
 3. 后续步骤同示例 1
+
+---
+
+**示例 4：从 blog URL 消化**
+
+```
+/paper-digest "https://lilianweng.github.io/posts/2024-11-28-reward-hacking/"
+```
+
+执行过程：
+1. WebFetch 抓取 blog 页面内容
+2. 提取元数据：title、author（Lilian Weng）、date_publish、venue 填 `Lilian Weng Blog`
+3. institute、code 无法确定则留空
+4. 提炼 Problem / Method（核心论点）/ Key Results（关键结论）/ Strengths & Weaknesses
+5. 后续去重、tag 选择、Connections 搜索、保存、日志同论文流程
+
+输出文件：`Papers/2411-RewardHacking.md`
