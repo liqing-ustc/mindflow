@@ -15,7 +15,7 @@ last_updated: "2026-03-27"
 | VLN | [[Domain-Map/VLN\|VLN]] | Vision-Language Navigation | 2026-03-27 |
 | Spatial Representation | [[Domain-Map/SpatialRep\|SpatialRep]] | 语义 SLAM 与空间表示 | 2026-03-27 |
 
-> 新增 domain：创建 `Domain-Map/{Name}.md`，使用 `Templates/DomainMap.md` 模板（Overview → Core Concepts → Established Knowledge → Active Debates → Open Questions → Known Dead Ends），在上表添加一行。
+> 新增 domain：创建 `Domain-Map/{Name}.md`，使用 `Templates/DomainMap.md` 模板，在上表添加一行。
 
 ## Cross-Domain Insights
 
