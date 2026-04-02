@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Language-Conditioned Mobile Manipulation: From Modular Pipelines to End-to-End VLA</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=Schibsted Grotesk:wght@400;700&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="MindFlow"/><meta property="og:title" content="Language-Conditioned Mobile Manipulation: From Modular Pipelines to End-to-End VLA"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Language-Conditioned Mobile Manipulation: From Modular Pipelines to End-to-End VLA"/><meta name="twitter:description" content="Overview Language-conditioned mobile manipulation（LCMM）是 embodied AI 的核心挑战之一：机器人需要理解自然语言指令，在大规模环境中自主导航到目标位置，并完成精细操作。它同时涉及 language understanding、spatial reasoning、navigation ..."/><meta property="og:description" content="Overview Language-conditioned mobile manipulation（LCMM）是 embodied AI 的核心挑战之一：机器人需要理解自然语言指令，在大规模环境中自主导航到目标位置，并完成精细操作。它同时涉及 language understanding、spatial reasoning、navigation ..."/><meta property="og:image:alt" content="Overview Language-conditioned mobile manipulation（LCMM）是 embodied AI 的核心挑战之一：机器人需要理解自然语言指令，在大规模环境中自主导航到目标位置，并完成精细操作。它同时涉及 language understanding、spatial reasoning、navigation ..."/><meta property="og:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:url" content="https://liqing.io/mindflow/static/og-image.png"/><meta name="twitter:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="liqing.io/mindflow"/><meta property="og:url" content="https://liqing.io/mindflow/Topics/LanguageConditioned-MobileManipulation-Survey"/><meta property="twitter:url" content="https://liqing.io/mindflow/Topics/LanguageConditioned-MobileManipulation-Survey"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="Overview Language-conditioned mobile manipulation（LCMM）是 embodied AI 的核心挑战之一：机器人需要理解自然语言指令，在大规模环境中自主导航到目标位置，并完成精细操作。它同时涉及 language understanding、spatial reasoning、navigation ..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvbWluZGZsb3cvbWluZGZsb3cvd2Vic2l0ZS9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://liqing.io/mindflow/index.xml"/></head><body data-slug="Topics/LanguageConditioned-MobileManipulation-Survey"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">MindFlow</a></h2><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="false" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>{let order=[\&quot;Papers\&quot;,\&quot;Topics\&quot;,\&quot;Ideas\&quot;,\&quot;Meetings\&quot;,\&quot;Resources\&quot;],aIdx=order.indexOf(a.displayName),bIdx=order.indexOf(b.displayName);return aIdx!==-1&amp;&amp;bIdx!==-1?aIdx-bIdx:aIdx!==-1?-1:bIdx!==-1?1:a.displayName.localeCompare(b.displayName)}&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>{node.isFolder||(node.displayName=node.slugSegment)}&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="egl7ek"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div><div class="sidebar-tags"><span class="sidebar-tags-title">Popular Tags</span><div class="sidebar-tag-cloud"><a href="/mindflow/tags/VLA" class="sidebar-tag-pill">#VLA</a><a href="/mindflow/tags/VLM" class="sidebar-tag-pill">#VLM</a><a href="/mindflow/tags/manipulation" class="sidebar-tag-pill">#manipulation</a><a href="/mindflow/tags/task-planning" class="sidebar-tag-pill">#task-planning</a><a href="/mindflow/tags/navigation" class="sidebar-tag-pill">#navigation</a><a href="/mindflow/tags/web-agent" class="sidebar-tag-pill">#web-agent</a><a href="/mindflow/tags/instruction-following" class="sidebar-tag-pill">#instruction-following</a><a href="/mindflow/tags/VLN" class="sidebar-tag-pill">#VLN</a><a href="/mindflow/tags/scene-understanding" class="sidebar-tag-pill">#scene-understanding</a><a href="/mindflow/tags/RL" class="sidebar-tag-pill">#RL</a></div></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../Topics/">Topics</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>LanguageConditioned-MobileManipulation-Survey</a></div></nav><h1 class="article-title">Language-Conditioned Mobile Manipulation: From Modular Pipelines to End-to-End VLA</h1><p show-comma="true" class="content-meta"><time datetime="2026-04-02T13:41:14.749Z">Apr 02, 2026</time><span>16 min read</span></p><ul class="tags"><li><a href="../tags/mobile-manipulation" class="internal tag-link">mobile-manipulation</a></li><li><a href="../tags/VLA" class="internal tag-link">VLA</a></li><li><a href="../tags/instruction-following" class="internal tag-link">instruction-following</a></li><li><a href="../tags/task-planning" class="internal tag-link">task-planning</a></li><li><a href="../tags/scene-understanding" class="internal tag-link">scene-understanding</a></li></ul></div></div><article class="popover-hint"><h2 id="overview">Overview<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#overview" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Language-conditioned mobile manipulation（LCMM）是 embodied AI 的核心挑战之一：机器人需要理解自然语言指令，在大规模环境中自主导航到目标位置，并完成精细操作。它同时涉及 language understanding、spatial reasoning、navigation 和 dexterous manipulation，是 VLN 和 VLA 两个领域的交叉地带。</p>
+<p><strong>研究现状</strong>：该领域正经历从”模块化 pipeline”向”端到端 VLA”的范式转变。早期工作（SayCan、TidyBot、OK-Robot）采用 LLM/VLM 做高层规划 + 独立 skill 模块执行的模块化架构，验证了 language-conditioned 任务的可行性但受限于模块间的信息断裂。2024-2025 年，VLA 模型开始向 mobile manipulation 延伸——MoManipVLA 尝试将 fixed-base VLA 迁移到移动场景，EchoVLA 为 VLA 增加空间记忆，SG-VLA 通过 auxiliary spatial grounding 增强 VLA 的空间理解。2025-2026 年，端到端统一架构出现：DM0 首次在同一框架中训练 navigation 和 manipulation，WholeBodyVLA 用 latent action 从无 action 标注视频学习全身控制，π0.5/Hi Robot 实现了 15 分钟级家务任务。</p>
+<p><strong>核心难点</strong>：</p>
+<ol>
+<li><strong>Action space mismatch</strong>：navigation（2-3D 底盘速度，~5 Hz）和 manipulation（6-7 DoF 末端控制，30-50 Hz）的控制频率和维度差异巨大</li>
+<li><strong>Spatial representation gap</strong>：导航需要 building-scale 的空间记忆（semantic map / scene graph），操作需要 object-level 的精细感知，两者缺乏统一表示</li>
+<li><strong>Long-horizon reasoning</strong>：LCMM 任务通常需要 10+ 步的多阶段推理（find → navigate → pick → navigate → place），错误在长 horizon 中累积</li>
+<li><strong>数据稀缺</strong>：真实 mobile manipulation 数据采集成本极高，simulation 与真实世界的 gap 显著</li>
+</ol>
+<p><strong>整体趋势</strong>：该领域正沿三个方向收敛——（1）端到端 VLA 替代模块化 pipeline；（2）显式空间表示（3D scene graph、semantic map）作为 VLA 的增强模块；（3）hierarchical 架构（VLM reasoning + VLA execution）成为平衡语义理解和精细控制的主流范式。</p>
+<h2 id="技术路线">技术路线<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#技术路线" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="路线-1模块化-pipelinellmvlm-planning--skill-library">路线 1：模块化 Pipeline（LLM/VLM Planning + Skill Library）<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#路线-1模块化-pipelinellmvlm-planning--skill-library" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>核心思路</strong>：用 LLM/VLM 做高层任务规划和语义理解，调用预定义的 skill 模块（navigation、grasping、placing）执行底层控制。各模块独立开发、独立优化。</p>
+<p><strong>代表论文</strong>：</p>
+<ul>
+<li><a href="../Papers/2204-SayCan" class="internal alias" data-slug="Papers/2204-SayCan">SayCan</a>（2022）：开创性工作。LLM 生成候选技能序列，learned affordance function 评估每个技能在当前状态下的可行性，两者乘积做 scoring 选择最优技能。在 Everyday Robot 上实现 84% planning SR，但受限于 551 个预定义技能的覆盖范围。</li>
+<li><a href="../Papers/2305-TidyBot" class="internal alias" data-slug="Papers/2305-TidyBot">TidyBot</a>（2023）：LLM 从少量用户示例中归纳个性化偏好规则（如”衣服放衣柜，书放书架”），通过 CLIP 分类将规则泛化到未见物体。真实世界 85% SR。亮点在于 <strong>personalization</strong> 而非通用 planning。</li>
+<li><a href="../Papers/2401-OKRobot" class="internal alias" data-slug="Papers/2401-OKRobot">OK-Robot</a>（2024）：Zero-shot 模块化系统，集成 OWL-ViT（检测）+ VoxelMap（语义地图）+ AnyGrasp（抓取），无需任何训练即可在真实家庭环境中 pick-and-drop，58.5% SR。证明 off-the-shelf foundation models 组合已有实用价值。</li>
+<li><a href="../Papers/2410-BUMBLE" class="internal alias" data-slug="Papers/2410-BUMBLE">BUMBLE</a>（2024）：Building-scale mobile manipulation。VLM 统一处理感知和推理，Set-of-Mark prompting 将深度信息注入 VLM，双层记忆（短期执行历史 + 长期失败案例）。3 栋建筑 70 次试验 47.1% SR。核心发现：<strong>73.7% 的失败来自 VLM 推理错误</strong>，spatial reasoning 是核心瓶颈。</li>
+<li><a href="../Papers/2602-UniPlan" class="internal alias" data-slug="Papers/2602-UniPlan">UniPlan</a>（2026）：VLM 做视觉语义 grounding → PDDL predicates，Fast Downward solver 做符号规划。通过 AST 操作将 tabletop PDDL domain 扩展到 mobile manipulation。50 个任务 ~84% SR，仅需 2 次 LLM 调用（baselines 需 4-9 次），规划时间 &lt;0.7s。</li>
+</ul>
+<p><strong>优势</strong>：模块间可独立升级；利用成熟的 foundation models（CLIP、GPT-4V、SAM）；工程可行性高。
+<strong>局限</strong>：模块间信息断裂导致错误传播；skill library 限制了任务覆盖范围；无法端到端优化全链路；BUMBLE 的实验清楚表明 VLM spatial reasoning 是系统瓶颈。</p>
+<h3 id="路线-2端到端-vla-适配-mobile-manipulation">路线 2：端到端 VLA 适配 Mobile Manipulation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#路线-2端到端-vla-适配-mobile-manipulation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>核心思路</strong>：将已有的 table-top VLA 模型（π₀、OpenVLA 等）扩展到 mobile manipulation 场景，解决 action space 扩展、spatial grounding 增强等问题。</p>
+<p><strong>代表论文</strong>：</p>
+<ul>
+<li><a href="../Papers/2503-MoManipVLA" class="internal alias" data-slug="Papers/2503-MoManipVLA">MoManipVLA</a>（2025, CVPR）：将 fixed-base VLA（OpenVLA-7B）的 EEF waypoints 通过双层轨迹优化（上层优化底盘位置，下层优化臂轨迹）转换为 mobile manipulation 轨迹。OVMM 49.4% SR。但<strong>使用 GT segmentation 时 49.4%，切换到 Detic 后骤降至 11.3%</strong>，暴露了感知而非规划是真正瓶颈。</li>
+<li><a href="../Papers/2603-SGVLA" class="internal alias" data-slug="Papers/2603-SGVLA">SG-VLA</a>（2026）：为 VLA 添加 5 个 auxiliary spatial grounding decoder（机器人位置、关节配置、抓取 affordance、目标物体位姿、分割 mask），通过渐进式 3 阶段训练注入空间理解。ManiSkill-HAB 上平均 SR 从 0.60 提升至 0.73（+22%）。关键发现：temporal history 反而降低性能（0.60 → 0.49），naive co-training 导致性能崩溃（0.60 → 0.51），progressive training 是关键。</li>
+<li><a href="../Papers/2511-EchoVLA" class="internal alias" data-slug="Papers/2511-EchoVLA">EchoVLA</a>（2025）：为 VLA 增加双重 declarative memory——scene memory（3D voxel map + discrepancy-driven 更新）和 episodic memory（token FIFO buffer），通过 hierarchical coarse-to-fine attention 检索，per-part（base/arm）diffusion policy 生成动作。Mobile manipulation SR 0.31（+55% over π0.5 baseline）。</li>
+<li><a href="../Papers/2509-AnywhereVLA" class="internal alias" data-slug="Papers/2509-AnywhereVLA">AnywhereVLA</a>（2025）：模块化集成 SLAM + frontier exploration + SmolVLA（450M），在嵌入式硬件（Jetson Orin NX）上 >10Hz 运行。仅 50 条 teleoperation demos 即可达 80% manipulation SR。但实验规模极小（50 episodes, 单一环境），无 baseline 对比。</li>
+</ul>
+<p><strong>优势</strong>：继承 VLA 预训练的视觉-语言理解能力；端到端训练避免模块间信息断裂；可利用大规模 manipulation 数据。
+<strong>局限</strong>：现有 VLA 的 spatial reasoning 和 navigation 能力不足；从 table-top 到 mobile 的迁移带来 action space 和场景复杂度的双重挑战；绝对性能仍较低（0.31-0.49 SR）。</p>
+<h3 id="路线-3统一-navigation-manipulation-架构">路线 3：统一 Navigation-Manipulation 架构<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#路线-3统一-navigation-manipulation-架构" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>核心思路</strong>：从架构层面统一 navigation 和 manipulation，而非简单拼接。包括 hierarchical VLM-VLA 架构和 whole-body end-to-end 控制。</p>
+<p><strong>代表论文</strong>：</p>
+<ul>
+<li><a href="../Papers/2602-DM0" class="internal alias" data-slug="Papers/2602-DM0">DM0</a>（2026）：Embodied-Native VLA，从训练伊始融合 web、driving、embodied 数据。Spatial Scaffolding 策略（subtask → bbox → trajectory → action）构成自然的 coarse-to-fine 课程学习。2B 参数在 RoboChallenge Table30 上 62% SR，超越 π0.5（3B, 42.67%）。<strong>首次在同一框架中训练 navigation（Habitat sim）和 manipulation</strong>，但 navigation 仅在仿真中验证。</li>
+<li><a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a>（2025）：Hierarchical inference（VLM 高层规划 → VLA 低层执行），通过 co-training 5 类异构数据实现 open-world generalization。在真实家庭中完成 15 分钟级家务任务（laundry folding、table bussing）。但 <strong>navigation 范围有限</strong>，主要处理 room-scale 移动。</li>
+<li><a href="../Papers/2502-HiRobot" class="internal alias" data-slug="Papers/2502-HiRobot">Hi Robot</a>（2025）：Hierarchical VLM-VLA 架构，独立 VLM 做 open-ended 指令理解 + π₀ 做低层执行。通过 synthetic data generation 从少量 teleoperation 数据大规模生成 multi-turn 交互训练数据。超越 GPT-4o baseline 40%+。</li>
+<li><a href="../Papers/2512-WholeBodyVLA" class="internal alias" data-slug="Papers/2512-WholeBodyVLA">WholeBodyVLA</a>（2025, ICLR 2026）：面向 humanoid 的统一 loco-manipulation VLA。从无 action 标注的 egocentric 视频训练 Latent Action Model（VQ-VAE），VLA 预测 dual latent codes（locomotion + manipulation），LMO RL controller 执行。AgiBot X2 上 78.0% SR（+21.3pp），8x 数据效率。</li>
+<li><a href="../Papers/2401-MobileALOHA" class="internal alias" data-slug="Papers/2401-MobileALOHA">Mobile ALOHA</a>（2024）：End-to-end 全身控制的先驱。ACT policy 直接预测底盘速度 + 双臂关节 + 夹爪的 16D action chunk。Co-training（50 条 mobile demo + 大量 static 数据）将 SR 提升高达 90%。证明了 end-to-end whole-body control 的可行性，但无 language conditioning。</li>
+</ul>
+<p><strong>优势</strong>：从架构层面消除 navigation-manipulation 割裂；端到端优化全链路；hierarchical 设计平衡了语义理解和精细控制。
+<strong>局限</strong>：训练数据需求巨大；real-world navigation 验证不足（DM0 仅 sim，π0.5 仅 room-scale）；统一 action space 的设计尚无定论。</p>
+<p><strong>值得关注的相邻进展</strong>：纯 navigation 侧已出现 cross-embodiment foundation model——<a href="../Papers/2509-NavFoM" class="internal alias" data-slug="Papers/2509-NavFoM">NavFoM</a>（12.7M 样本，Qwen2-7B backbone）zero-shot 覆盖 VLN、ObjectNav、visual tracking、autonomous driving 四类任务和四类平台，VLN-CE RxR 4-view 达 64.4% SR（+8.1% over SOTA）。其 multi-task co-training 的协同效应极为显著（tracking +49.4%、searching +34.9%），进一步验证了跨任务数据共享的价值。将此类 navigation foundation 与 table-top VLA 的 manipulation 能力融合，是实现统一 mobile manipulation 系统的一个自然研究方向。</p>
+<h3 id="路线-4spatial-representation-增强">路线 4：Spatial Representation 增强<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#路线-4spatial-representation-增强" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>核心思路</strong>：构建显式的空间表示（semantic map、3D scene graph）作为 navigation 和 manipulation 的共享基础设施，弥合 VLM/VLA 的 spatial reasoning gap。</p>
+<p><strong>代表论文</strong>：</p>
+<ul>
+<li><a href="../Papers/2210-VLMaps" class="internal alias" data-slug="Papers/2210-VLMaps">VLMaps</a>（2022）：将 CLIP/LSeg dense features 融合到 3D 重建的 top-down grid map，创建 language-queryable 空间表示。与 LLM 指令解析结合实现 open-vocabulary 空间导航。</li>
+<li><a href="../Papers/2309-ConceptGraphs" class="internal alias" data-slug="Papers/2309-ConceptGraphs">ConceptGraphs</a>（2023）：从 RGB-D 序列用 2D foundation models（SAM、CLIP、GPT-4）构建 open-vocabulary 3D scene graph，无需任何 3D 训练数据。支持 language-conditioned navigation 和 manipulation planning。</li>
+<li><a href="../Papers/2410-DovSG" class="internal alias" data-slug="Papers/2410-DovSG">DovSG</a>（2024, RA-L 2025）：动态可更新的 open-vocabulary 3D scene graph。通过 ACE relocalization + voxel-level change detection 实现增量局部更新（13x 更少内存，20x 更快）。长期任务 SR 33.3% vs 静态 OK-Robot 5.0%，验证了<strong>动态更新对长期操作的关键价值</strong>。</li>
+<li><a href="../Papers/2306-HomeRobot" class="internal alias" data-slug="Papers/2306-HomeRobot">OVMM</a>（2023, NeurIPS 2023）：定义了 Open-Vocabulary Mobile Manipulation benchmark（find-pick-find-place in unseen multi-room homes），包含 Habitat 仿真和 Hello Robot Stretch 真机。Baseline real-world SR ~20%。核心发现：<strong>GT segmentation → Detic 导致性能断崖式下降</strong>，perception 是绝对瓶颈。</li>
+</ul>
+<p><strong>优势</strong>：显式空间表示弥补 VLM/VLA 的 spatial reasoning 不足；支持 open-vocabulary 查询；可同时服务 navigation 和 manipulation。
+<strong>局限</strong>：构建和维护成本高；动态环境中更新的鲁棒性不足；与端到端 VLA 的集成方式尚不成熟（是否应该作为 VLA 的输入 modality？还是独立模块？）。</p>
+<h2 id="datasets--benchmarks">Datasets &amp; Benchmarks<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#datasets--benchmarks" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th style="text-align:left;">Benchmark</th><th style="text-align:left;">类型</th><th style="text-align:left;">规模</th><th style="text-align:left;">评估指标</th><th style="text-align:left;">SOTA</th><th style="text-align:left;">特点</th></tr></thead><tbody><tr><td style="text-align:left;"><strong>HomeRobot OVMM</strong></td><td style="text-align:left;">Sim + Real</td><td style="text-align:left;">多房间家庭环境</td><td style="text-align:left;">Overall SR</td><td style="text-align:left;">~49.4% (MoManipVLA, GT seg)</td><td style="text-align:left;">Open-vocabulary, pick-and-place in unseen homes</td></tr><tr><td style="text-align:left;"><strong>ManiSkill-HAB</strong></td><td style="text-align:left;">Sim</td><td style="text-align:left;">家庭环境 4 类任务</td><td style="text-align:left;">Success Rate</td><td style="text-align:left;">0.73 (SG-VLA)</td><td style="text-align:left;">Mobile manipulation, pick/place/open/close</td></tr><tr><td style="text-align:left;"><strong>ALFRED</strong></td><td style="text-align:left;">Sim (AI2-THOR)</td><td style="text-align:left;">8K+ expert demos, 7 task types</td><td style="text-align:left;">Task SR / GC SR</td><td style="text-align:left;">~70%+ (recent VLM methods)</td><td style="text-align:left;">Language-guided household tasks</td></tr><tr><td style="text-align:left;"><strong>BEHAVIOR-1K</strong></td><td style="text-align:left;">Sim (OmniGibson)</td><td style="text-align:left;">1000 活动, 50 场景</td><td style="text-align:left;">Activity completion</td><td style="text-align:left;">较低</td><td style="text-align:left;">大规模日常活动, 但难度极高</td></tr><tr><td style="text-align:left;"><strong>RoboChallenge Table30</strong></td><td style="text-align:left;">Real</td><td style="text-align:left;">30 任务</td><td style="text-align:left;">Overall SR</td><td style="text-align:left;">62% (DM0, specialist)</td><td style="text-align:left;">包含 navigation + manipulation</td></tr><tr><td style="text-align:left;"><strong>CALVIN</strong></td><td style="text-align:left;">Sim</td><td style="text-align:left;">4 environments, long-horizon</td><td style="text-align:left;">Avg completed tasks</td><td style="text-align:left;">4.80 (Xiaomi-Robotics-0)</td><td style="text-align:left;">Multi-step language instructions</td></tr></tbody></table></div>
+<p><strong>关键观察</strong>：</p>
+<ul>
+<li>没有一个 benchmark 完整覆盖 “open-vocabulary + building-scale navigation + dexterous manipulation + language instruction” 的全链路。HomeRobot OVMM 最接近但 manipulation 简化（snap grasping in sim），RoboChallenge Table30 有真实操作但 navigation 有限。</li>
+<li><strong>Perception 是跨 benchmark 的一致瓶颈</strong>：HomeRobot（GT seg → Detic 性能断崖）、MoManipVLA（GT → Detic 从 49.4% 降至 11.3%）、BUMBLE（73.7% 失败来自 VLM 推理）。</li>
+</ul>
+<h2 id="key-takeaways">Key Takeaways<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#key-takeaways" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ol>
+<li>
+<p><strong>Perception 是当前 LCMM 的绝对瓶颈，不是 planning 也不是 control</strong>。HomeRobot、MoManipVLA、BUMBLE 的实验一致表明：GT 感知 → learned 感知的性能跌落远大于 planning 或 policy 的改进带来的提升。这意味着短期内投入更好的 open-vocabulary detection/segmentation（如 Grounding DINO 2、SAM 2）可能比改进 VLA 架构更有效。</p>
+</li>
+<li>
+<p><strong>Hierarchical architecture（VLM reasoning + VLA execution）正在成为 LCMM 的主流范式</strong>。π0.5、Hi Robot、DM0、UniPlan 都采用了某种形式的 hierarchical decomposition。这源于 LCMM 本身的双重需求——高层语义推理（理解指令、规划步骤）和底层精细控制（灵巧抓取、精确放置）需要不同的计算范式。</p>
+</li>
+<li>
+<p><strong>从 fixed-base VLA 到 mobile VLA 的迁移并非简单的 action space 扩展</strong>。MoManipVLA 的双层优化、SG-VLA 的 auxiliary spatial grounding、EchoVLA 的 declarative memory 都表明：mobile manipulation 需要 VLA 具备 building-scale spatial understanding，而这不是在 table-top 数据上预训练能自然获得的能力。</p>
+</li>
+<li>
+<p><strong>Spatial representation 是统一 navigation 和 manipulation 的关键基础设施</strong>。VLMaps、ConceptGraphs、DovSG 证明了显式空间表示对 LCMM 的价值；DovSG 的 6.6x 性能提升（33.3% vs 5.0%）表明动态更新是长期部署的必要条件。但如何将显式空间表示与端到端 VLA 优雅集成仍是 open question。</p>
+</li>
+<li>
+<p><strong>End-to-end whole-body control 已被验证可行，但 language conditioning 是缺失环节</strong>。Mobile ALOHA 证明了 16D 全身端到端控制的可行性；WholeBodyVLA 用 latent action 从视频学习 humanoid 控制（78% SR）。但这些工作的 language understanding 能力较弱或缺失，与 hierarchical VLM-VLA 方案形成互补。</p>
+</li>
+</ol>
+<h2 id="open-problems">Open Problems<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#open-problems" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ol>
+<li>
+<p><strong>统一的 spatial representation</strong>：如何设计一种空间表示同时服务 building-scale navigation（需要 topological/metric map）和 object-level manipulation（需要 6-DoF pose、affordance）？ConceptGraphs 式 3D scene graph 是最有潜力的候选，但其构建和维护成本高、动态更新鲁棒性不足。MTU3D 的 online query spatial memory 提供了轻量替代方案。</p>
+</li>
+<li>
+<p><strong>Perception-action 闭环</strong>：当前 LCMM 系统的感知和控制基本是单向的（感知 → 决策 → 控制）。如何让机器人在操作过程中 actively 探索和感知（如 MTU3D 的 grounding-exploration 联合决策），而非先感知后行动？</p>
+</li>
+<li>
+<p><strong>真正的 open-vocabulary mobile manipulation</strong>：当前大多数系统对 “open-vocabulary” 的定义局限于 “open-vocabulary object detection”。但真正的 open-vocabulary 应包括理解复杂空间关系（“把沙发后面的遥控器拿到二楼卧室的床头柜上”）、处理模糊指令（“整理一下客厅”）、以及 personalized 偏好（TidyBot）。</p>
+</li>
+<li>
+<p><strong>数据获取与 sim-to-real</strong>：Mobile manipulation 的训练数据极度稀缺。Mobile ALOHA 的物理 teleoperation 方案成本低但范围有限；WholeBodyVLA 从无 action 视频学习是创新方向但需结构化人类演示；simulation（HomeRobot/ManiSkill-HAB）提供大规模数据但 sim-to-real gap 显著。π0.5 和 DM0 的 heterogeneous data co-training 是目前最有效的数据策略。</p>
+</li>
+<li>
+<p><strong>长期部署的鲁棒性</strong>：DovSG 是唯一认真处理环境动态变化的工作，但其 33.3% SR 仍远不够。长期部署需要 continual learning、failure recovery、human-in-the-loop correction 等机制，几乎全部空白。</p>
+</li>
+<li>
+<p><strong>统一 action space 设计</strong>：Navigation（2-3D velocity）和 manipulation（6-7 DoF EEF / joint）的 action space 差异巨大。EchoVLA 的 per-part diffusion policy、WholeBodyVLA 的 dual latent action、DM0 的 shared backbone + separate head 代表了三种不同的解决思路，但哪种最优尚无定论。</p>
+</li>
+</ol>
+<h2 id="调研日志">调研日志<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#调研日志" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li><strong>调研日期</strong>: 2026-04-02</li>
+<li><strong>论文统计</strong>: vault 已有 14 篇 + 新 digest 10 篇（成功 10 / 跳过 0 / 失败 0）</li>
+<li><strong>未能获取</strong>: 无</li>
+<li><strong>总共分析</strong>: 24 篇论文</li>
+</ul>
+<h3 id="已有论文vault">已有论文（vault）<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#已有论文vault" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="../Papers/2204-SayCan" class="internal alias" data-slug="Papers/2204-SayCan">SayCan</a>, <a href="../Papers/2210-VLMaps" class="internal alias" data-slug="Papers/2210-VLMaps">VLMaps</a>, <a href="../Papers/2309-ConceptGraphs" class="internal alias" data-slug="Papers/2309-ConceptGraphs">ConceptGraphs</a>, <a href="../Papers/2401-OKRobot" class="internal alias" data-slug="Papers/2401-OKRobot">OK-Robot</a>, <a href="../Papers/2401-MobileALOHA" class="internal alias" data-slug="Papers/2401-MobileALOHA">Mobile ALOHA</a>, <a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a>, <a href="../Papers/2410-Pi0" class="internal alias" data-slug="Papers/2410-Pi0">π₀</a>, <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a>, <a href="../Papers/2412-RoboVLMs" class="internal alias" data-slug="Papers/2412-RoboVLMs">RoboVLMs</a>, <a href="../Papers/2502-HiRobot" class="internal alias" data-slug="Papers/2502-HiRobot">Hi Robot</a>, <a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a>, <a href="../Papers/2507-MTU3D" class="internal alias" data-slug="Papers/2507-MTU3D">MTU3D</a>, <a href="../Papers/2511-PiStar06" class="internal alias" data-slug="Papers/2511-PiStar06">π*₀.₆</a>, <a href="../Papers/2602-DM0" class="internal alias" data-slug="Papers/2602-DM0">DM0</a></p>
+<h3 id="新-digest-论文">新 digest 论文<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#新-digest-论文" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="../Papers/2305-TidyBot" class="internal alias" data-slug="Papers/2305-TidyBot">TidyBot</a>, <a href="../Papers/2306-HomeRobot" class="internal alias" data-slug="Papers/2306-HomeRobot">HomeRobot</a>, <a href="../Papers/2410-BUMBLE" class="internal alias" data-slug="Papers/2410-BUMBLE">BUMBLE</a>, <a href="../Papers/2410-DovSG" class="internal alias" data-slug="Papers/2410-DovSG">DovSG</a>, <a href="../Papers/2503-MoManipVLA" class="internal alias" data-slug="Papers/2503-MoManipVLA">MoManipVLA</a>, <a href="../Papers/2509-AnywhereVLA" class="internal alias" data-slug="Papers/2509-AnywhereVLA">AnywhereVLA</a>, <a href="../Papers/2511-EchoVLA" class="internal alias" data-slug="Papers/2511-EchoVLA">EchoVLA</a>, <a href="../Papers/2512-WholeBodyVLA" class="internal alias" data-slug="Papers/2512-WholeBodyVLA">WholeBodyVLA</a>, <a href="../Papers/2602-UniPlan" class="internal alias" data-slug="Papers/2602-UniPlan">UniPlan</a>, <a href="../Papers/2603-SGVLA" class="internal alias" data-slug="Papers/2603-SGVLA">SG-VLA</a></p></article><hr/><div class="page-footer"><div class="giscus" data-repo="liqing-ustc/MindFlow" data-repo-id="R_kgDORucr2w" data-category="Comments" data-category-id="DIC_kwDORucr284C5LSt" data-mapping="pathname" data-strict="1" data-reactions-enabled="1" data-input-position="bottom" data-light-theme="light" data-dark-theme="dark" data-theme-url="https://liqing.io/mindflow/static/giscus"></div></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-content" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="toc-content"><ul id="ll547o" class="overflow"><li class="depth-0"><a href="#overview" data-for="overview">Overview</a></li><li class="depth-0"><a href="#技术路线" data-for="技术路线">技术路线</a></li><li class="depth-1"><a href="#路线-1模块化-pipelinellmvlm-planning--skill-library" data-for="路线-1模块化-pipelinellmvlm-planning--skill-library">路线 1：模块化 Pipeline（LLM/VLM Planning + Skill Library）</a></li><li class="depth-1"><a href="#路线-2端到端-vla-适配-mobile-manipulation" data-for="路线-2端到端-vla-适配-mobile-manipulation">路线 2：端到端 VLA 适配 Mobile Manipulation</a></li><li class="depth-1"><a href="#路线-3统一-navigation-manipulation-架构" data-for="路线-3统一-navigation-manipulation-架构">路线 3：统一 Navigation-Manipulation 架构</a></li><li class="depth-1"><a href="#路线-4spatial-representation-增强" data-for="路线-4spatial-representation-增强">路线 4：Spatial Representation 增强</a></li><li class="depth-0"><a href="#datasets--benchmarks" data-for="datasets--benchmarks">Datasets &amp; Benchmarks</a></li><li class="depth-0"><a href="#key-takeaways" data-for="key-takeaways">Key Takeaways</a></li><li class="depth-0"><a href="#open-problems" data-for="open-problems">Open Problems</a></li><li class="depth-0"><a href="#调研日志" data-for="调研日志">调研日志</a></li><li class="depth-1"><a href="#已有论文vault" data-for="已有论文vault">已有论文（vault）</a></li><li class="depth-1"><a href="#新-digest-论文" data-for="新-digest-论文">新 digest 论文</a></li><li class="overflow-end"></li></ul></div></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.4.1</a> © 2026</p><ul><li><a href="https://github.com/liqing-ustc/MindFlow">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../postscript.js" type="module"></script></html>
