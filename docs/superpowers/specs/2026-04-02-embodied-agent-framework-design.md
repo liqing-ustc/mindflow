@@ -2,7 +2,7 @@
 
 **Date**: 2026-04-02
 **Status**: Draft
-**Scope**: High-level architecture for a product-prototype embodied agent that follows user instructions (text/voice) in an indoor scene by controlling a mobile manipulator and home appliances, with internet search and calendar access.
+**Scope**: High-level architecture for a product-prototype embodied agent that follows user instructions (text/voice) in an indoor scene by controlling a mobile manipulator (via VLA) and digital interfaces (via CUA), with internet search and calendar access.
 
 ---
 
@@ -10,55 +10,64 @@
 
 An autonomous embodied agent that lives in a user's home. It understands natural language instructions (text or voice), controls a mobile manipulator robot to navigate rooms and manipulate objects, operates smart home devices via APIs and dumb appliances via physical interaction, searches the internet, accesses the user's calendar, and communicates back in the same modality the user used.
 
-The agent operates autonomously — it executes immediately for safe actions, confirms with the user for risky ones, and never performs dangerous actions without explicit approval. Over time, it learns the home layout, user preferences, and task procedures, becoming more capable the longer it operates.
+The agent operates autonomously. Over time, it learns the home layout, user preferences, and task procedures, becoming more capable the longer it operates.
 
-## 2. Architecture: Brain + Spine
+## 2. Architecture: Brain + Spine + CLI
 
-A two-layer architecture inspired by biological nervous systems.
+A three-component architecture inspired by biological nervous systems, extended with a digital counterpart.
 
 ### 2.1 Brain — VLM Orchestrator
+*Reasons and plans in the mind*
 
 The Brain is a Vision-Language Model (VLM) that serves as the central reasoning engine. It:
 
 - **Receives all inputs**: user instructions (text/voice), raw camera feeds, tool responses, Spine status reports
 - **Runs the reactive goal-stack loop**: the core runtime behavior (see §4)
 - **Perceives the scene**: processes camera feeds to understand objects, people, appliance states, spatial layout
-- **Manages memory**: maintains the semantic spatial map and episodic memory (see §3)
-- **Invokes digital tools**: web agent, calendar, smart home API, dialogue — as function calls (see §5)
+- **Manages memory**: maintains spatial memory and episodic memory (see §3)
+- **Dispatches digital actions**: sends tool calls to the CLI (CUA) for web, calendar, smart home, dialogue (see §5)
 - **Dispatches physical actions**: sends natural language instructions to the Spine
-- **Gates safety**: classifies actions by risk tier before execution (see §6)
-
 The Brain is the only decision-maker. All reasoning, planning, and high-level perception happen here.
 
 ### 2.2 Spine — VLA Executor
+*Acts in the physical world*
 
 The Spine is a language-conditioned Vision-Language-Action (VLA) model that translates the Brain's natural language instructions into motor actions. It:
 
 - **Receives**: natural language instruction from Brain + raw camera/sensor feeds
 - **Outputs**: motor commands (wheel velocities, arm joint positions, gripper actions)
 - **Handles both navigation and manipulation** end-to-end — no separate planner or controller
-- **Reports back** to the Brain: execution status (success / failure / in-progress), observations
+- **Reports back** to the Brain: execution status (success / failure / in-progress), robot status
 
 The Spine uses vision purely for visuomotor control — it does not build maps or maintain memory.
 
-### 2.3 Brain → Spine Interface
-
+**Brain & Spine Interface**
 - **Downward (Brain → Spine)**: Natural language instructions. Examples:
   - "Navigate to the kitchen"
   - "Pick up the red mug from the counter"
   - "Press the left button on the coffee machine"
-- **Upward (Spine → Brain)**: Execution status and observations. Examples:
-  - "Navigation complete — arrived at kitchen"
-  - "Grasp failed — object slipped"
-  - "In progress — 3 meters from target"
+- **Upward (Spine → Brain)**: Execution status: "success/fail/on-going"
 
 This keeps the interface simple and model-agnostic. The Brain doesn't need to know the Spine's internals, and the Spine can be swapped for a different VLA without changing the Brain.
+
+### 2.3 CLI — CUA Executor (Digital World)
+
+The CLI is a Computer-Use Agent (CUA) that operates digital interfaces on behalf of the Brain. It is the digital counterpart of the Spine — while the Spine acts on the physical world through motor commands, the CLI acts on the digital world through computer-using.
+
+- **Receives**: tool calls from Brain (web search, calendar operations, smart home commands, dialogue actions)
+- **Outputs**: action results (search results, confirmations, device states, user messages)
+- **Operates**: web browsers, calendar apps, smart home platforms, speech/text interfaces
+- **Reports back** to the Brain: tool results
+
+**Brain & CLI interface:**
+- **Downward (Brain → CLI)**: Tool calls (e.g., `web_search("coffee pod refill")`, `device_control("kitchen_light", "on")`)
+- **Upward (CLI → Brain)**: Tool results (e.g., search results, confirmation of device state change)
 
 ## 3. Perception & Memory
 
 The Brain directly processes camera feeds for scene understanding. The Spine receives camera feeds independently for motor control. Both layers see the world, but use vision for different purposes.
 
-### 3.1 Semantic Spatial Map
+### 3.1 Spatial Memory
 
 The agent's persistent mental model of the home.
 
@@ -71,7 +80,6 @@ The agent's persistent mental model of the home.
 **Behavior:**
 - Updated incrementally every perception cycle as the agent moves and observes
 - Queryable by the goal-stack loop: "Where is X?", "What room am I in?", "Is the front door locked?"
-- Stale entries (not observed for a long time) are flagged for re-verification
 - Initially empty — built during the onboarding phase
 
 ### 3.2 Episodic Memory
@@ -100,18 +108,16 @@ The Brain's core runtime behavior. Runs continuously while the agent is active.
 2. **Update Memory** — Write new observations to spatial map. Log significant events to episodic memory. Update appliance states.
 3. **Evaluate Goal Stack** — Check the top goal: completed? failed? blocked? If a new user instruction arrived, parse it and push new goals. Pop completed goals. Re-prioritize if conditions changed.
 4. **Decide Action** — Given the current goal + scene understanding + memory, choose the next action. Options:
-   - Physical action → send NL instruction to Spine
-   - Digital action → call a tool (web, calendar, smart home)
-   - Verbal action → respond to user via dialogue
+   - Physical action → send NL instruction to Spine (VLA)
+   - Digital action → send tool call to CLI (CUA): web, calendar, smart home, dialogue
    - Internal action → decompose current goal into sub-goals
-5. **Safety Gate** — Classify the action by risk tier (see §6). AUTO → proceed. CONFIRM → ask user. BLOCK → refuse.
-6. **Dispatch** — Send the action to the appropriate executor.
+5. **Dispatch** — Send the action to the appropriate executor (Spine or CLI).
 
 Then loop back to step 1.
 
 ### 4.2 Key Behaviors
 
-- **Parallel dispatch**: Digital actions (calendar queries, web searches) run concurrently with physical actions. The Brain doesn't wait for a web search to finish before telling the Spine to start navigating.
+- **Parallel dispatch**: CLI actions (calendar queries, web searches) run concurrently with Spine actions. The Brain doesn't wait for a web search to finish before telling the Spine to start navigating.
 - **Interruptible**: New user instructions can arrive at any time. They push onto the goal stack, potentially pausing the current goal. The agent can handle "actually, stop — do this instead."
 - **Failure recovery**: If the Spine reports failure, the Brain re-evaluates: retry with a rephrased instruction, try an alternative approach, or ask the user for help.
 - **Idle state**: When the goal stack is empty, the agent enters ambient mode — still perceiving and updating the spatial map, still listening for instructions, but not acting.
@@ -129,9 +135,23 @@ User says: *"Make me a coffee and check my afternoon schedule."*
 | 5 | Mug placed. Coffee machine is dumb (no API). Episodic memory: "last time, pressed left button." Tell Spine: "Press the left button on the coffee machine." |
 | 6+ | Coffee brewing (detected via visual/audio). Wait. Coffee done. Tell Spine: "Pick up the mug and bring it to the user." Delivered. Speak: "Here's your coffee." Pop make_coffee. Stack empty → idle. |
 
-## 5. Digital Tools
+### 4.4 Example Trace: Luggage Packing
 
-The Brain invokes four tool interfaces as function calls within the goal-stack loop.
+User says: *"I'm traveling tomorrow. Help me pack."*
+
+1. **Check calendar for destination** → CLI queries calendar, finds "Flight to Tokyo, 9am, 7-day trip"
+2. **Search Internet for weather** → CLI searches "Tokyo weather this week" → 18-24°C, rain on Thursday
+3. **Recall past trips** → Episodic memory: "user forgot phone charger last time"
+4. **Decide what to pack** → Brain reasons: business attire (3 meetings on calendar), casual clothes, rain jacket, toiletries, charger, adapter plug
+5. **Locate items** → Spatial memory: suitcase in bedroom closet, dress shirts on wardrobe second shelf, rain jacket by the door
+6. **Get suitcase** → Spine navigates to bedroom, retrieves suitcase from closet, places on bed
+7. **Pack items one by one** → Spine fetches dress shirts, trousers, casual clothes, rain jacket, toiletries, charger, adapter plug — Brain tracks progress
+8. **Verify** → Brain perceives suitcase contents via camera, cross-checks against packing list
+9. **Report** → "All packed. Your flight is at 9am — want me to set an alarm?"
+
+## 5. CLI Capabilities
+
+The CLI (CUA) exposes four tool interfaces that the Brain invokes as function calls within the goal-stack loop.
 
 ### 5.1 Web Agent
 
@@ -175,70 +195,23 @@ Manages all user-facing communication, mirroring input modality.
 
 Modality selection is automatic: if the user's last input was voice, responses are spoken. If text, responses are displayed as text.
 
-## 6. Safety Model
+## 6. System Lifecycle
 
-Every action passes through the Safety Gate (step 5 of the loop) before dispatch.
-
-### 6.1 Three Risk Tiers
-
-**✅ AUTO — Execute Immediately**
-Low-risk, reversible, or purely informational actions.
-- Turn on/off lights
-- Check calendar
-- Search the web
-- Navigate to a room
-- Pick up common household objects
-- Report information to user
-- Play/pause music
-
-**⚠️ CONFIRM — Ask User First**
-Medium-risk actions with meaningful consequences.
-- Unlock/lock doors
-- Place online orders
-- Create/modify/delete calendar events
-- Operate kitchen appliances (stove, oven, microwave)
-- Send messages on behalf of user
-- Adjust thermostat beyond normal range
-
-**🛑 BLOCK — Never Execute Autonomously**
-High-risk actions that could cause harm or irreversible damage.
-- Actions that could cause physical harm to people
-- Disabling safety systems (smoke detectors, alarms)
-- Financial transactions above a configurable threshold
-- Sharing personal data with external parties
-- Any action the user has explicitly blocklisted
-
-### 6.2 Configuration
-
-Risk tiers are user-configurable. Users can:
-- **Promote** actions: move "unlock front door" from CONFIRM → AUTO if they trust the agent
-- **Demote** actions: move "place orders" from CONFIRM → BLOCK if they don't want the agent shopping
-- **Blocklist** specific actions entirely
-
-Defaults are conservative — the system ships with strict tier assignments, and the user relaxes them over time as trust builds.
-
-### 6.3 Hardware Emergency Stop
-
-A physical E-stop button on the robot that cuts motor power immediately. Independent of all software layers — works even if the Brain and Spine are both unresponsive. Always accessible.
-
-## 7. System Lifecycle
-
-### 7.1 Phase 1 — Onboarding (First Hours/Days)
+### 6.1 Phase 1 — Onboarding (First Hours/Days)
 
 - Agent explores the home, building the initial semantic spatial map
 - Discovers and registers smart home devices
 - User teaches preferences ("I like the thermostat at 72°F", "don't enter the bedroom without asking")
-- User configures safety tier overrides
 - Episodic memory starts accumulating
 
-### 7.2 Phase 2 — Active Operation (Daily Use)
+### 6.2 Phase 2 — Active Operation (Daily Use)
 
 - Reactive goal-stack loop running continuously
 - Spatial map refined with every movement
 - Episodic memory growing — task outcomes, user corrections, learned procedures
 - Agent becomes more efficient at repeated tasks
 
-### 7.3 Phase 3 — Mature Agent (Weeks/Months)
+### 6.3 Phase 3 — Mature Agent (Weeks/Months)
 
 - Rich, detailed spatial map of the entire home
 - Deep episodic memory with learned procedures for common tasks
@@ -246,43 +219,27 @@ A physical E-stop button on the robot that cuts motor power immediately. Indepen
 - Minimal user correction needed
 - Memory consolidation keeps storage manageable
 
-## 8. Failure Modes & Recovery
+## 7. Failure Modes & Recovery
 
 | Failure | Detection | Recovery |
 |---------|-----------|----------|
 | Spine execution fails | VLA reports failure or timeout; Brain perceives no progress | Retry with rephrased instruction → try alternative approach → ask user for help |
 | Brain VLM unavailable | API timeout or error | Spine holds position (safe stop). Retry with backoff. Alert user via fallback channel (speaker beep, LED). |
-| Network down | No connectivity to cloud VLM / web / calendar | Digital tools disabled. Physical actions continue if Spine VLA runs on-device. Inform user of degraded mode. |
+| Network down | No connectivity to cloud VLM / web / calendar | CLI disabled. Physical actions continue if Spine VLA runs on-device. Inform user of degraded mode. |
 | Ambiguous instruction | Brain confidence below threshold | Ask user to clarify. Use episodic memory to disambiguate when possible. |
 | Unexpected obstacle | Spine cannot reach target; camera shows blocked path | Brain re-plans route via spatial map. If no route exists, inform user. |
 | Memory corruption | Spatial map contradicts current perception | Re-verify via active perception. Mark stale entries. Partial map rebuild for affected area if needed. |
 
 **Graceful degradation principle**: The system always degrades to a safe state.
-- Network down → physical-only mode
+- Network down → Spine-only mode (physical actions)
 - Brain down → safe stop
-- Spine down → digital-only mode
+- Spine down → CLI-only mode (digital actions)
+- CLI down → Spine-only mode (physical actions)
 - Everything down → E-stop
 
 The agent never thrashes. After N failed retries on any action, it stops and asks the user for help.
 
-## 9. Design Decisions Summary
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Architecture | Two-layer (Brain + Spine) | Separates reasoning from control; safety by design |
-| Brain model | VLM | Multimodal understanding; tool-use capability |
-| Spine model | VLA | End-to-end visuomotor control; handles nav + manip |
-| Brain → Spine interface | Natural language | Simple, model-agnostic, no custom protocol |
-| Perception | Brain processes camera feeds | Scene understanding requires VLM-level reasoning |
-| Spatial memory | Semantic spatial map | Persistent model of home layout, objects, states |
-| Episodic memory | Event/procedure/preference store | Agent improves over time; learns user habits |
-| Planning approach | Reactive goal-stack loop | Robust to real-world unpredictability; interruptible |
-| Autonomy level | Act autonomously, safety-gated | Natural interaction; configurable risk tiers |
-| Appliance control | Smart (API) + Dumb (physical) | Covers all home appliances regardless of connectivity |
-| Web access | Full web agent | Browse, interact, transact — not just search |
-| Communication | Mirror input modality | Voice in → voice out; text in → text out |
-
-## 10. Out of Scope (for this design)
+## Out of Scope (for this design)
 
 - Specific VLM/VLA model selection and training
 - Hardware specifications for the robot platform

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Embodied Home Agent — Architecture + Examples</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f1117;
+    color: #e0e0e0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    padding: 2.5rem 2rem;
+  }
+  h1 { text-align: center; font-size: 1.5rem; color: #fff; margin-bottom: 0.25rem; font-weight: 700; }
+  .page-sub { text-align: center; color: #777; font-size: 0.82rem; margin-bottom: 2.5rem; }
+
+  /* ===== MAIN LAYOUT ===== */
+  .top-section {
+    max-width: 1060px;
+    margin: 0 auto;
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* ===== ENV ===== */
+  .env {
+    width: 155px;
+    flex-shrink: 0;
+    border: 1.5px solid #546e7a;
+    border-radius: 14px;
+    padding: 0.9rem;
+    background: rgba(69,90,100,0.06);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.9rem;
+  }
+  .env-title { text-align: center; font-size: 0.88rem; font-weight: 700; color: #90a4ae; }
+  .env-sub { text-align: center; font-size: 0.58rem; color: #6b7f8a; margin-top: 0.05rem; margin-bottom: 0.2rem; }
+  .env-box {
+    background: rgba(69,90,100,0.12);
+    border: 1px solid rgba(84,110,122,0.3);
+    border-radius: 9px;
+    padding: 0.55rem;
+    text-align: center;
+  }
+  .env-box .ei { font-size: 1.2rem; }
+  .env-box .en { font-weight: 600; font-size: 0.76rem; color: #b0bec5; margin-top: 0.08rem; }
+  .env-box .ed { font-size: 0.58rem; color: #6b7f8a; margin-top: 0.03rem; }
+
+  /* ===== ENV ARROWS ===== */
+  .env-arrows {
+    width: 88px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.8rem 0.15rem;
+  }
+  .ea { display: flex; align-items: center; gap: 0.12rem; white-space: nowrap; }
+  .ea .al { font-size: 0.56rem; line-height: 1.12; }
+  .ea .as { font-size: 0.9rem; }
+  .ea.to-b .al, .ea.to-b .as { color: #a594ff; }
+  .ea.from-b .al, .ea.from-b .as { color: #9688e8; opacity: 0.6; }
+  .ea.to-s .al, .ea.to-s .as { color: #4db6ac; }
+  .ea.from-s .al, .ea.from-s .as { color: #3d9e94; opacity: 0.6; }
+
+  /* ===== AGENT ===== */
+  .agent { flex: 1; display: flex; flex-direction: column; gap: 0; }
+
+  /* ===== BRAIN ===== */
+  .brain {
+    border: 2px solid #7c6ef0;
+    border-radius: 14px;
+    padding: 1.1rem;
+    background: rgba(124,110,240,0.04);
+  }
+  .brain .lt { text-align: center; font-size: 1.05rem; font-weight: 700; color: #a594ff; margin-bottom: 0.12rem; }
+  .brain .ls { text-align: center; font-size: 0.66rem; color: #888; margin-bottom: 0.85rem; }
+
+  .loop {
+    background: rgba(124,110,240,0.07);
+    border: 1px solid rgba(124,110,240,0.2);
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+  .loop-t { text-align: center; font-weight: 600; font-size: 0.76rem; color: #b0a4ff; margin-bottom: 0.4rem; }
+  .loop-s { display: flex; justify-content: center; align-items: center; gap: 0.18rem; flex-wrap: wrap; }
+  .lsi {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 0.2rem 0.42rem;
+    font-size: 0.65rem;
+    color: #ccc;
+  }
+  .lsa { color: #555; font-size: 0.68rem; }
+  .loop-b { text-align: center; font-size: 0.58rem; color: #7c6ef0; margin-top: 0.22rem; }
+
+  .mem-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+  .mc { border-radius: 10px; padding: 0.65rem; }
+  .mc-s { background: rgba(92,107,192,0.08); border: 1px solid rgba(92,107,192,0.35); }
+  .mc-e { background: rgba(255,160,0,0.06); border: 1px solid rgba(255,160,0,0.35); }
+  .mc h3 { font-size: 0.78rem; margin-bottom: 0.28rem; }
+  .mc-s h3 { color: #8c9eff; }
+  .mc-e h3 { color: #ffcc02; }
+  .mc ul { list-style: none; font-size: 0.63rem; color: #999; line-height: 1.55; }
+  .mc ul li::before { content: "· "; color: #666; }
+  .mq { margin-top: 0.25rem; font-style: italic; font-size: 0.58rem; padding: 0.18rem 0.38rem; border-radius: 5px; }
+  .mc-s .mq { color: #8c9eff; background: rgba(92,107,192,0.08); }
+  .mc-e .mq { color: #ffcc02; background: rgba(255,160,0,0.05); }
+
+  /* ===== BRAIN ↔ EXECUTORS ARROWS ===== */
+  .bx-arrows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+    padding: 0.4rem 0;
+  }
+  .bx-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+  .bx-label { line-height: 1.15; text-align: center; }
+  .bx-arrows-sym {
+    font-size: 0.9rem;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .bx-group.spine-g .bx-label.left { color: #a594ff; }
+  .bx-group.spine-g .bx-arrows-sym { color: #6a5ed0; }
+  .bx-group.spine-g .bx-label.right { color: #4db6ac; }
+  .bx-group.cli-g .bx-label.left { color: #a594ff; }
+  .bx-group.cli-g .bx-arrows-sym { color: #cc8500; }
+  .bx-group.cli-g .bx-label.right { color: #ffb74d; }
+
+  /* ===== EXECUTORS ===== */
+  .exec-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+
+  .spine {
+    border: 2px solid #26a69a;
+    border-radius: 14px;
+    padding: 0.8rem;
+    background: rgba(38,166,154,0.04);
+  }
+  .spine .lt { text-align: center; font-size: 0.88rem; font-weight: 700; color: #4db6ac; margin-bottom: 0.08rem; }
+  .spine .ls { text-align: center; font-size: 0.6rem; color: #888; margin-bottom: 0.5rem; }
+  .sp-caps { display: flex; justify-content: center; gap: 0.35rem; margin-bottom: 0.5rem; }
+  .sp-cap {
+    background: rgba(38,166,154,0.1);
+    border: 1px solid rgba(38,166,154,0.3);
+    border-radius: 7px;
+    padding: 0.28rem 0.7rem;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #80cbc4;
+  }
+  .sp-hw {
+    border-top: 1px solid rgba(38,166,154,0.15);
+    padding-top: 0.4rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.28rem;
+    flex-wrap: wrap;
+  }
+  .sp-hb {
+    background: rgba(38,166,154,0.06);
+    border: 1px solid rgba(38,166,154,0.18);
+    border-radius: 5px;
+    padding: 0.18rem 0.45rem;
+    font-size: 0.6rem;
+    color: #6dbdb4;
+  }
+  .sp-hl { text-align: center; font-size: 0.52rem; color: #5a8a83; margin-top: 0.18rem; }
+
+  .cli {
+    border: 2px solid #ff9800;
+    border-radius: 14px;
+    padding: 0.8rem;
+    background: rgba(255,152,0,0.03);
+  }
+  .cli .lt { text-align: center; font-size: 0.88rem; font-weight: 700; color: #ffb74d; margin-bottom: 0.08rem; }
+  .cli .ls { text-align: center; font-size: 0.6rem; color: #888; margin-bottom: 0.5rem; }
+  .tg { display: grid; grid-template-columns: 1fr 1fr; gap: 0.32rem; }
+  .tc { border-radius: 7px; padding: 0.38rem; text-align: center; }
+  .tc .ti { font-size: 0.95rem; }
+  .tc .tn { font-weight: 600; font-size: 0.68rem; margin-top: 0.02rem; }
+  .tc .td { font-size: 0.54rem; color: #999; margin-top: 0.02rem; }
+  .tc-w { background: rgba(255,152,0,0.07); border: 1px solid rgba(255,152,0,0.25); }
+  .tc-w .tn { color: #ffb74d; }
+  .tc-c { background: rgba(33,150,243,0.07); border: 1px solid rgba(33,150,243,0.25); }
+  .tc-c .tn { color: #64b5f6; }
+  .tc-h { background: rgba(233,30,99,0.07); border: 1px solid rgba(233,30,99,0.25); }
+  .tc-h .tn { color: #f06292; }
+  .tc-d { background: rgba(156,39,176,0.07); border: 1px solid rgba(156,39,176,0.25); }
+  .tc-d .tn { color: #ce93d8; }
+
+  /* ===== EXAMPLES ===== */
+  .examples {
+    max-width: 1060px;
+    margin: 2rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .examples-title {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+  .example {
+    border: 1.5px solid #333;
+    border-radius: 14px;
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.015);
+  }
+  .example-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+  }
+  .example-icon { font-size: 1.3rem; }
+  .example-title { font-size: 0.95rem; font-weight: 700; color: #e0e0e0; }
+  .example-user {
+    background: rgba(76,175,80,0.08);
+    border: 1px solid rgba(76,175,80,0.3);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.78rem;
+    color: #a5d6a7;
+  }
+  .example-user span { color: #81c784; font-weight: 600; }
+  .steps { display: flex; flex-direction: column; gap: 0.35rem; }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+  .step-num {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.58rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+  .step-text { color: #ccc; }
+  .step-text .comp {
+    font-weight: 600;
+    font-size: 0.65rem;
+    padding: 0.08rem 0.35rem;
+    border-radius: 4px;
+    margin-right: 0.25rem;
+    display: inline-block;
+  }
+  .comp-brain { background: rgba(124,110,240,0.15); color: #a594ff; }
+  .comp-spine { background: rgba(38,166,154,0.15); color: #4db6ac; }
+  .comp-cli { background: rgba(255,152,0,0.15); color: #ffb74d; }
+  .comp-spatial { background: rgba(92,107,192,0.12); color: #8c9eff; }
+  .comp-episodic { background: rgba(255,160,0,0.1); color: #ffcc02; }
+
+  .step.brain-step .step-num { background: rgba(124,110,240,0.2); color: #a594ff; }
+  .step.cli-step .step-num { background: rgba(255,152,0,0.2); color: #ffb74d; }
+  .step.spine-step .step-num { background: rgba(38,166,154,0.2); color: #4db6ac; }
+  .step.mem-step .step-num { background: rgba(92,107,192,0.15); color: #8c9eff; }
+  .step.result-step .step-num { background: rgba(76,175,80,0.15); color: #81c784; }
+
+  .step-divider {
+    border: none;
+    border-top: 1px dashed #2a2a30;
+    margin: 0.2rem 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Embodied Home Agent — Final Architecture</h1>
+<p class="page-sub">🧠 Brain (VLM) + 🦴 Spine (VLA) + 🖥️ CLI (CUA) · Dual Memory · Reactive Goal Stack</p>
+
+<div class="top-section">
+
+  <!-- ENV -->
+  <div class="env">
+    <div>
+      <div class="env-title">🌍 Environment</div>
+      <div class="env-sub">Indoor scene</div>
+    </div>
+    <div class="env-box">
+      <div class="ei">👤</div>
+      <div class="en">User</div>
+      <div class="ed">Voice & text instructions</div>
+    </div>
+    <div class="env-box">
+      <div class="ei">📷</div>
+      <div class="en">Cameras</div>
+      <div class="ed">RGB-D observations</div>
+    </div>
+  </div>
+
+  <!-- ENV ARROWS -->
+  <div class="env-arrows">
+    <div class="ea to-b"><span class="al">User<br>input</span><span class="as"> →</span></div>
+    <div class="ea from-b"><span class="as">← </span><span class="al">Response</span></div>
+    <div class="ea to-b"><span class="al">Camera<br>→ Brain</span><span class="as"> →</span></div>
+    <div class="ea to-s"><span class="al">Camera<br>→ Spine</span><span class="as"> →</span></div>
+    <div class="ea from-s"><span class="as">← </span><span class="al">Actions</span></div>
+  </div>
+
+  <!-- AGENT -->
+  <div class="agent">
+
+    <!-- BRAIN -->
+    <div class="brain">
+      <div class="lt">🧠 BRAIN — VLM Orchestrator</div>
+      <div class="ls">Perceives scene · Reasons · Manages memory · Decides actions</div>
+
+      <div class="loop">
+        <div class="loop-t">⟳ Reactive Goal-Stack Loop</div>
+        <div class="loop-s">
+          <span class="lsi">1. Perceive</span><span class="lsa">→</span>
+          <span class="lsi">2. Update Memory</span><span class="lsa">→</span>
+          <span class="lsi">3. Evaluate Goals</span><span class="lsa">→</span>
+          <span class="lsi">4. Decide Action</span><span class="lsa">→</span>
+          <span class="lsi">5. Decide Route</span><span class="lsa">→</span>
+          <span class="lsi">6. Dispatch</span>
+        </div>
+        <div class="loop-b">↩ loop</div>
+      </div>
+
+      <div class="mem-row">
+        <div class="mc mc-s">
+          <h3>🗺️ Spatial Memory</h3>
+          <ul>
+            <li>Room topology & connectivity</li>
+            <li>Object locations & affordances</li>
+            <li>Appliance states & smart/dumb tags</li>
+          </ul>
+          <div class="mq">"Where is the mug?" → kitchen counter</div>
+        </div>
+        <div class="mc mc-e">
+          <h3>📖 Episodic Memory</h3>
+          <ul>
+            <li>Task events & outcomes</li>
+            <li>Learned procedures</li>
+            <li>User preferences & corrections</li>
+          </ul>
+          <div class="mq">"How does user take coffee?" → black</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAIN ↔ EXECUTORS -->
+    <div class="bx-arrows">
+      <div class="bx-group spine-g">
+        <span class="bx-label left">NL Instruction</span>
+        <span class="bx-arrows-sym">↓↑</span>
+        <span class="bx-label right">Robot Status</span>
+      </div>
+      <div class="bx-group cli-g">
+        <span class="bx-label left">Tool Call</span>
+        <span class="bx-arrows-sym">↓↑</span>
+        <span class="bx-label right">Tool Result</span>
+      </div>
+    </div>
+
+    <!-- EXECUTORS -->
+    <div class="exec-row">
+      <div class="spine">
+        <div class="lt">🦴 SPINE — VLA</div>
+        <div class="ls">Language-conditioned visuomotor policy</div>
+        <div class="sp-caps">
+          <div class="sp-cap">🗺️ Navigate</div>
+          <div class="sp-cap">🤖 Manipulate</div>
+        </div>
+        <div class="sp-hw">
+          <div class="sp-hb">🦾 Mobile Base</div>
+          <div class="sp-hb">🦿 Arm</div>
+          <div class="sp-hb">✊ Gripper</div>
+        </div>
+        <div class="sp-hl">Hardware controlled by VLA</div>
+      </div>
+
+      <div class="cli">
+        <div class="lt">🖥️ CLI — CUA</div>
+        <div class="ls">Operates digital interfaces via computer-using</div>
+        <div class="tg">
+          <div class="tc tc-w"><div class="ti">🌐</div><div class="tn">Web</div><div class="td">Search · Browse · Orders</div></div>
+          <div class="tc tc-c"><div class="ti">📅</div><div class="tn">Calendar</div><div class="td">Query · Create · Update</div></div>
+          <div class="tc tc-h"><div class="ti">🏠</div><div class="tn">Smart Home</div><div class="td">Lights · Locks · HVAC</div></div>
+          <div class="tc tc-d"><div class="ti">💬</div><div class="tn">Dialogue</div><div class="td">STT · TTS · Mirror</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== EXAMPLES ===== -->
+<div class="examples">
+  <div class="examples-title">Example Traces</div>
+
+  <!-- Example 1: Coffee -->
+  <div class="example">
+    <div class="example-header">
+      <span class="example-icon">☕</span>
+      <span class="example-title">Make Coffee & Check Schedule</span>
+    </div>
+    <div class="example-user"><span>User:</span> "Make me a coffee and check my afternoon schedule."</div>
+    <div class="steps">
+      <div class="step brain-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><span class="comp comp-brain">Brain</span> Parse instruction → push 2 goals: [make_coffee, check_schedule]</div>
+      </div>
+      <div class="step cli-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><span class="comp comp-cli">CLI</span> Query calendar → "Team sync at 2pm." Speak result to user.</div>
+      </div>
+      <div class="step spine-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><span class="comp comp-spine">Spine</span> Navigate to kitchen (parallel with calendar check)</div>
+      </div>
+      <div class="step mem-step">
+        <div class="step-num">4</div>
+        <div class="step-text"><span class="comp comp-spatial">Spatial</span> Coffee machine on counter, mugs in upper cabinet</div>
+      </div>
+      <div class="step spine-step">
+        <div class="step-num">5</div>
+        <div class="step-text"><span class="comp comp-spine">Spine</span> Get mug from cabinet → place under coffee machine</div>
+      </div>
+      <div class="step mem-step">
+        <div class="step-num">6</div>
+        <div class="step-text"><span class="comp comp-episodic">Episodic</span> "Last time, pressed left button to brew"</div>
+      </div>
+      <div class="step spine-step">
+        <div class="step-num">7</div>
+        <div class="step-text"><span class="comp comp-spine">Spine</span> Press left button → wait for brew → pick up mug → bring to user</div>
+      </div>
+      <div class="step result-step">
+        <div class="step-num">✓</div>
+        <div class="step-text"><span class="comp comp-brain">Brain</span> "Here's your coffee. You have a team sync at 2pm." → idle</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 2: Luggage Packing -->
+  <div class="example">
+    <div class="example-header">
+      <span class="example-icon">🧳</span>
+      <span class="example-title">Luggage Packing for Travel</span>
+    </div>
+    <div class="example-user"><span>User:</span> "I'm traveling tomorrow. Help me pack."</div>
+    <div class="steps">
+      <div class="step cli-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><span class="comp comp-cli">CLI</span> Check calendar → "Flight to Tokyo, 9am, 7-day trip, 3 meetings"</div>
+      </div>
+      <div class="step cli-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><span class="comp comp-cli">CLI</span> Search web → "Tokyo weather: 18-24°C, rain on Thursday"</div>
+      </div>
+      <div class="step mem-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><span class="comp comp-episodic">Episodic</span> "User forgot phone charger last trip"</div>
+      </div>
+      <div class="step brain-step">
+        <div class="step-num">4</div>
+        <div class="step-text"><span class="comp comp-brain">Brain</span> Decide packing list: business attire, casual, rain jacket, toiletries, charger, adapter</div>
+      </div>
+      <div class="step mem-step">
+        <div class="step-num">5</div>
+        <div class="step-text"><span class="comp comp-spatial">Spatial</span> Suitcase → bedroom closet. Shirts → wardrobe shelf 2. Rain jacket → by door.</div>
+      </div>
+      <div class="step spine-step">
+        <div class="step-num">6</div>
+        <div class="step-text"><span class="comp comp-spine">Spine</span> Navigate to bedroom → get suitcase from closet → place on bed</div>
+      </div>
+      <div class="step spine-step">
+        <div class="step-num">7</div>
+        <div class="step-text"><span class="comp comp-spine">Spine</span> Fetch items one by one: shirts, trousers, casual clothes, rain jacket, toiletries, charger, adapter</div>
+      </div>
+      <div class="step brain-step">
+        <div class="step-num">8</div>
+        <div class="step-text"><span class="comp comp-brain">Brain</span> Perceive suitcase via camera → cross-check against packing list</div>
+      </div>
+      <div class="step result-step">
+        <div class="step-num">✓</div>
+        <div class="step-text"><span class="comp comp-brain">Brain</span> "All packed. Your flight is at 9am — want me to set an alarm?"</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

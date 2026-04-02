@@ -1,5 +1,7 @@
 .DS_Store
 
+.superpowers/
+
 # Obsidian - all config and plugins
 .obsidian/
 
