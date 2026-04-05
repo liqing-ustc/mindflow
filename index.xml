@@ -6,65 +6,65 @@
       <description>Last 10 notes on MindFlow</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/6-orchestration/autoresearch/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/6-orchestration/autoresearch/SKILL</guid>
-    <description>MindFlow 的核心研究循环。当 Supervisor 说"自己干活吧""开始研究"， 或系统需要自主推进研究时启动。 持续运行：读取当前状态 → 判断最高价值行动 → 调用卫星 skill → 记录 → 循环 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>MindFlow</title>
+    <link>https://liqing.io/mindflow/</link>
+    <guid>https://liqing.io/mindflow/</guid>
+    <description>A mind space for both human and AI. Author: Qing Li Source: github.com/liqing-ustc/mindflow.</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/5-evolution/memory-retrieve/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/5-evolution/memory-retrieve/SKILL</guid>
-    <description>被其他 skill 内部调用，从 Workbench/memory/ 中检索与当前任务相关的历史经验。 当 idea-generate 需要查失败方向、experiment-design 需要查有效方法、 或任何 skill 需要历史上下文时调用 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>llms.txt: 让网站对 LLM 可读的新标准</title>
+    <link>https://liqing.io/mindflow/Topics/llms-txt</link>
+    <guid>https://liqing.io/mindflow/Topics/llms-txt</guid>
+    <description>是什么 llms.txt 是由 Jeremy Howard（fast.ai 创始人）提出的 Web 标准提案，在网站根目录放置一个 Markdown 格式的文件，为 LLM 和 AI agent 提供网站的结构化概览。 核心理念：LLM 的 context window 无法处理整个网站，而将复杂 HTML 转换为 LLM-friendly 纯文本既困难又有损 ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/5-evolution/memory-distill/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/5-evolution/memory-distill/SKILL</guid>
-    <description>当积累了多天工作日志、或 Supervisor 说"整理记忆""蒸馏"时，从日志中提取 pattern 和 insight 到记忆库。也可被 autoresearch 在合适时机自动调用 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>World Model Survey</title>
+    <link>https://liqing.io/mindflow/Topics/WorldModel-Survey</link>
+    <guid>https://liqing.io/mindflow/Topics/WorldModel-Survey</guid>
+    <description>Overview World model 是 AI 系统中用于理解环境动态并预测未来状态的内部模拟器。这一概念源于 Kenneth Craik (1943) 的 mental model 理论，在深度学习时代获得了全新的技术内涵。如 2411-WorldModelSurvey 所总结，world model 的核心功能可分为两大类：implicit ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/5-evolution/agenda-evolve/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/5-evolution/agenda-evolve/SKILL</guid>
-    <description>当积累了新的 validated insight、实验结果改变了方向判断、 或 Supervisor 说"更新研究方向""复盘 agenda"时， 根据记忆和发现演化研究议程 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>World Action Model Survey</title>
+    <link>https://liqing.io/mindflow/Topics/WorldActionModel-Survey</link>
+    <guid>https://liqing.io/mindflow/Topics/WorldActionModel-Survey</guid>
+    <description>Overview World Action Model (WAM) 是 embodied AI 领域的新兴范式，核心思想是将 world modeling（理解和预测物理世界动态）与 action prediction（生成机器人控制信号）统一到同一框架中。这一范式的兴起源于一个关键洞察：video generation model ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/4-writing/writing-refine/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/4-writing/writing-refine/SKILL</guid>
-    <description>当 Supervisor 说"打磨一下""改改这段""逻辑不通顺"， 或 autoresearch 在写作阶段自检时， 从结构/清晰度/论据三个维度打磨已有文稿 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>WebMCP: 让网站成为 AI Agent 的结构化工具</title>
+    <link>https://liqing.io/mindflow/Topics/WebMCP</link>
+    <guid>https://liqing.io/mindflow/Topics/WebMCP</guid>
+    <description>是什么 Google 提出的 Web 标准提案，让网站主动声明自己能执行哪些操作，AI agent 可以直接调用结构化的 tool，而不需要解析 UI 或模拟人类交互。 核心理念：网站不再是 agent 需要”看”的页面，而是可以直接”调用”的服务。 官方博客：Chrome Developers Blog GitHub：webmachinelearning/webmcp ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/4-writing/draft-section/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/4-writing/draft-section/SKILL</guid>
-    <description>当 Supervisor 说"写一下 introduction""起草 related work"， 或 autoresearch 判断某 direction 已积累足够素材需要成文时， 起草论文或报告的指定章节 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>VLN-VLA Unification: Foundation Models for Indoor Robot Navigation and Manipulation</title>
+    <link>https://liqing.io/mindflow/Topics/VLN-VLA-Unification</link>
+    <guid>https://liqing.io/mindflow/Topics/VLN-VLA-Unification</guid>
+    <description>Overview 本 survey 从 foundation model 视角，系统梳理了 VLN（Vision-and-Language Navigation）和 VLA（Vision-Language-Action）两个领域的技术演进与架构趋同。通过分析 20 篇核心论文，我们发现：VLN 和 VLA 在四个维度上正在趋同——VLM ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/3-experiment/result-analysis/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/3-experiment/result-analysis/SKILL</guid>
-    <description>当 Supervisor 说"分析一下实验结果"， 或实验 status 变为 completed 后 autoresearch 自动调用， 分析实验数据并判断假设是否成立 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>Vision-Language Navigation Survey</title>
+    <link>https://liqing.io/mindflow/Topics/VLN-Survey</link>
+    <guid>https://liqing.io/mindflow/Topics/VLN-Survey</guid>
+    <description>Overview Vision-and-Language Navigation (VLN) 是 embodied AI 的核心任务之一，要求 agent 根据自然语言指令在视觉环境中导航到目标位置。自 2018 年 R2R benchmark 提出以来，VLN 经历了从 discrete navigation graph 到 continuous ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/3-experiment/experiment-track/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/3-experiment/experiment-track/SKILL</guid>
-    <description>当 Supervisor 说"记录一下实验结果""实验跑完了"， 或 Researcher 完成一轮实验需要记录时， 在 Experiment 笔记中追加 Run Entry 并更新状态 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>Vision-Language-Action (VLA) Models Survey</title>
+    <link>https://liqing.io/mindflow/Topics/VLA-Survey</link>
+    <guid>https://liqing.io/mindflow/Topics/VLA-Survey</guid>
+    <description>Overview Vision-Language-Action (VLA) 模型是将预训练 Vision-Language Models (VLMs) 扩展为 robot policy 的新范式，旨在通过统一视觉感知、语言理解和动作生成，构建跨任务、跨平台的通用机器人基础模型。该领域自 2023 年 RT-2 开创以来，经历了爆发式增长，短短三年内从”概念验证”演进到”真实家庭部署”。 ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/3-experiment/experiment-design/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/3-experiment/experiment-design/SKILL</guid>
-    <description>当 Supervisor 说"设计个实验""怎么验证这个 idea"， 或 autoresearch 判断某个 developing/validated idea 需要实验验证时， 为 idea 设计完整实验方案 .</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>Language-Conditioned Mobile Manipulation: From Modular Pipelines to End-to-End VLA</title>
+    <link>https://liqing.io/mindflow/Topics/LanguageConditioned-MobileManipulation-Survey</link>
+    <guid>https://liqing.io/mindflow/Topics/LanguageConditioned-MobileManipulation-Survey</guid>
+    <description>Overview Language-conditioned mobile manipulation（LCMM）是 embodied AI 的核心挑战之一：机器人需要理解自然语言指令，在大规模环境中自主导航到目标位置，并完成精细操作。它同时涉及 language understanding、spatial reasoning、navigation ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item><item>
-    <title>SKILL</title>
-    <link>https://liqing.io/mindflow/skills/2-ideation/idea-generate/SKILL</link>
-    <guid>https://liqing.io/mindflow/skills/2-ideation/idea-generate/SKILL</guid>
-    <description>Generate and rank research ideas given a broad direction. Use when user says "找idea", "brainstorm ideas", "generate research ideas", or "what can we work on".</description>
-    <pubDate>Sun, 05 Apr 2026 01:24:01 GMT</pubDate>
+    <title>Embodied Reasoning Survey</title>
+    <link>https://liqing.io/mindflow/Topics/Embodied-Reasoning-Survey</link>
+    <guid>https://liqing.io/mindflow/Topics/Embodied-Reasoning-Survey</guid>
+    <description>Overview Embodied Reasoning 指 AI agent 在物理世界（或其仿真）中，基于感知输入进行推理并输出可执行动作的能力。它是连接 foundation model 的通用智能与具身控制的核心桥梁——不仅要 “看懂” 场景，还要 “想明白” 该怎么操作、怎么导航。 这一领域在 2023-2026 年间经历了爆发式增长。2023 ...</description>
+    <pubDate>Sun, 05 Apr 2026 01:53:02 GMT</pubDate>
   </item>
     </channel>
   </rss>
