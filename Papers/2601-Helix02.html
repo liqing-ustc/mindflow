@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Helix 02: A Unified Whole-Body Loco-Manipulation VLA</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=Schibsted Grotesk:wght@400;700&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="MindFlow"/><meta property="og:title" content="Helix 02: A Unified Whole-Body Loco-Manipulation VLA"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Helix 02: A Unified Whole-Body Loco-Manipulation VLA"/><meta name="twitter:description" content="Summary Helix 02: Full-Body Autonomy 核心: 把 Helix 从「上半身 VLA」扩展为「全身 VLA」——单一神经网络从 pixels 直接控制整机（腿+躯干+臂+手），统一 walking、manipulation、balance 方法: 三层 S0/S1/S2 分时层级。S0（1 kHz，10M ..."/><meta property="og:description" content="Summary Helix 02: Full-Body Autonomy 核心: 把 Helix 从「上半身 VLA」扩展为「全身 VLA」——单一神经网络从 pixels 直接控制整机（腿+躯干+臂+手），统一 walking、manipulation、balance 方法: 三层 S0/S1/S2 分时层级。S0（1 kHz，10M ..."/><meta property="og:image:alt" content="Summary Helix 02: Full-Body Autonomy 核心: 把 Helix 从「上半身 VLA」扩展为「全身 VLA」——单一神经网络从 pixels 直接控制整机（腿+躯干+臂+手），统一 walking、manipulation、balance 方法: 三层 S0/S1/S2 分时层级。S0（1 kHz，10M ..."/><meta property="og:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:url" content="https://liqing.io/mindflow/static/og-image.png"/><meta name="twitter:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="liqing.io/mindflow"/><meta property="og:url" content="https://liqing.io/mindflow/Papers/2601-Helix02"/><meta property="twitter:url" content="https://liqing.io/mindflow/Papers/2601-Helix02"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="Summary Helix 02: Full-Body Autonomy 核心: 把 Helix 从「上半身 VLA」扩展为「全身 VLA」——单一神经网络从 pixels 直接控制整机（腿+躯干+臂+手），统一 walking、manipulation、balance 方法: 三层 S0/S1/S2 分时层级。S0（1 kHz，10M ..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvbWluZGZsb3cvbWluZGZsb3cvd2Vic2l0ZS9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://liqing.io/mindflow/index.xml"/></head><body data-slug="Papers/2601-Helix02"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">MindFlow</a></h2><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="false" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>{let order=[\&quot;DomainMaps\&quot;,\&quot;Papers\&quot;,\&quot;Topics\&quot;,\&quot;Ideas\&quot;,\&quot;Projects\&quot;],aIdx=order.indexOf(a.displayName),bIdx=order.indexOf(b.displayName);return aIdx!==-1&amp;&amp;bIdx!==-1?aIdx-bIdx:aIdx!==-1?-1:bIdx!==-1?1:a.slug?.startsWith(\&quot;Papers/\&quot;)&amp;&amp;b.slug?.startsWith(\&quot;Papers/\&quot;)?b.displayName.localeCompare(a.displayName):a.displayName.localeCompare(b.displayName)}&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>{node.isFolder||(node.displayName=node.slugSegment)}&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="lrzxnl"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div><div class="sidebar-tags"><span class="sidebar-tags-title">Popular Tags</span><div class="sidebar-tag-cloud"><a href="/mindflow/tags/VLA" class="sidebar-tag-pill">#VLA</a><a href="/mindflow/tags/manipulation" class="sidebar-tag-pill">#manipulation</a><a href="/mindflow/tags/embodied-reasoning" class="sidebar-tag-pill">#embodied-reasoning</a><a href="/mindflow/tags/VLM" class="sidebar-tag-pill">#VLM</a><a href="/mindflow/tags/VLN" class="sidebar-tag-pill">#VLN</a><a href="/mindflow/tags/navigation" class="sidebar-tag-pill">#navigation</a><a href="/mindflow/tags/task-planning" class="sidebar-tag-pill">#task-planning</a><a href="/mindflow/tags/computer-use" class="sidebar-tag-pill">#computer-use</a><a href="/mindflow/tags/agentic-RL" class="sidebar-tag-pill">#agentic-RL</a><a href="/mindflow/tags/world-model" class="sidebar-tag-pill">#world-model</a></div></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../Papers/">Papers</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>2601-Helix02</a></div></nav><h1 class="article-title">Helix 02: A Unified Whole-Body Loco-Manipulation VLA</h1><div class="paper-meta"><span class="paper-venue">Figure AI Blog</span><span class="paper-authors"><span class="meta-sep">·</span>Figure AI</span></div><p show-comma="true" class="content-meta"><time datetime="2026-01-27T00:00:00.000Z">Jan 27, 2026</time><span>21 min read</span></p><ul class="tags"><li><a href="../tags/VLA" class="internal tag-link">VLA</a></li><li><a href="../tags/mobile-manipulation" class="internal tag-link">mobile-manipulation</a></li><li><a href="../tags/manipulation" class="internal tag-link">manipulation</a></li></ul></div></div><article class="popover-hint"><h2 id="summary">Summary<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#summary" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<blockquote class="callout abstract" data-callout="abstract">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>Helix 02: Full-Body Autonomy </p></div>
+                  
+                </div>
+<div class="callout-content">
+<ul>
+<li><strong>核心</strong>: 把 Helix 从「上半身 VLA」扩展为「全身 VLA」——单一神经网络从 pixels 直接控制整机（腿+躯干+臂+手），统一 walking、manipulation、balance</li>
+<li><strong>方法</strong>: 三层 S0/S1/S2 分时层级。S0（1 kHz，10M 参数）由 1000+ 小时人类动作数据 + sim2real RL 学到的 whole-body controller，替换 109,504 行手写 C++；S1（200 Hz）transformer 从所有 sensors（头/掌相机 + 指尖触觉 + 全身 proprio）→ 全身 joint targets；S2 做场景理解和语言规划</li>
+<li><strong>结果</strong>: 单一 demo——4 分钟、61 个连续 loco-manipulation 动作的洗碗机装卸；四个 dexterous 任务（拧瓶盖 / 取药片 / 5 ml 注射器配量 / 杂堆中取金属件）作为定性展示。<strong>无定量指标，无 baseline，无 ablation</strong></li>
+<li><strong>Sources</strong>: <a href="https://www.figure.ai/news/helix-02" class="external">website<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+<li><strong>Rating</strong>: 2 - Frontier。架构方向（S0/S1/S2 hierarchy + 触觉/掌相机 + 全身 end-to-end）切中 humanoid VLA 前沿，但只是 company blog 级 demo，缺技术细节和可验证证据，待技术报告或第三方复现</li>
+</ul>
+</div>
+</blockquote>
+<p><strong>Key Takeaways:</strong></p>
+<ol>
+<li><strong>Loco-manipulation 是 humanoid 核心瓶颈</strong>: 业界 demo 多停留在 short-horizon 行为（跳/跳舞/瑜伽），且非 steerable——靠 offline plan replay，物体偏移就 collapse。传统 pipeline 把 locomotion 和 manipulation 拆成独立 controller 加 state machine 拼接，handoff 慢且 brittle。Helix 02 主张「单一学习系统整体推理整机」</li>
+<li><strong>新加一层 System 0</strong>: 在原 Helix 的 S1/S2 下方加 1 kHz 的 whole-body controller。S0 不是手写平衡控制器，而是从人类动作数据中学到的 motion prior——这是 humanoid 控制层”去手写化”的代表</li>
+<li><strong>All sensors in, all actuators out</strong>: S1 从仅头相机+关节扩展到头相机+掌相机+指尖触觉+全身 proprio → 全身 joint 输出。掌相机解决头部相机遮挡，指尖触觉（3g 力分辨率）支持力调制抓取</li>
+<li><strong>依赖 Figure 03 新硬件</strong>: 掌相机和指尖触觉是 Figure 03 才有的硬件能力，本文是该硬件首次被神经策略消费的报告</li>
+<li><strong>“single neural network” 措辞要打折看</strong>: 博客在开头 “All sensors in. All actuators out” 那段写”a single unified visuomotor neural network”连接所有 sensor 到所有 actuator；但讲架构时又明确说是 S0/S1/S2 三个网络组成的 <strong>hierarchy</strong> 在不同时钟跑（且讲 pixels→torque 时用的也是 “hierarchy”）。两种口径并存——前者是宣传话术，后者才是技术描述。此外没披露 S0/S1/S2 是否联合训练，也没披露 demo 的成功率 / 泛化性 / 任务多样性</li>
+</ol>
+<p><strong>Teaser. 4 分钟、61 个动作的洗碗机装卸全流程，单网络从机载 sensor 端到端控制，无人工干预、无 reset。</strong></p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/1cKhxhvotDvkyJx2rfq2IN/94f100629ab7a0bdb37d5b248f8f5760/Kitchen_Tidy_MP4_Compressed.mp4" controls muted playsinline width="720"></video></p>
+<hr/>
+<h2 id="问题设定为什么-loco-manipulation-难">问题设定：为什么 Loco-Manipulation 难<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#问题设定为什么-loco-manipulation-难" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Figure 把 loco-manipulation 列为「robotics 数十年未解的硬问题」，原因不是单独的 locomotion 或 manipulation 难，而是两者耦合无法 clean decomposition：</p>
+<blockquote>
+<p>Lift something and your balance changes; step forward and your reach changes. Arms and legs constrain each other continuously.</p>
+</blockquote>
+<p>业界现状的两个观察：</p>
+<ul>
+<li><strong>短视野行为成熟但不 steerable</strong>：跳跃、跳舞、瑜伽多为 offline planned motion + 有限 feedback 的 replay。物体位置一变或接触意外，policy collapse</li>
+<li><strong>分模块拼接 brittle</strong>：walk → stop → stabilize → reach → grasp → walk again 这种 state machine 在 handoff 处脆弱、推理慢、动作不自然</li>
+</ul>
+<p>Figure 主张的破解路径：<strong>一个统一的学习系统同时推理整机</strong>——边走边搬、边伸手边调平衡、错误实时恢复。这正是 Helix 02 的目标设定。</p>
+<blockquote>
+<p>❓ 这段论证里有一个隐含跳跃：「单一学习系统」并不天然等于「能同时推理整机」。后续描述里 S0/S1/S2 仍然是三个独立网络在不同时钟跑——只是接口从 hand-engineered state machine 换成了 latent / joint target。这究竟比传统 hierarchical 强多少，blog 没有给量化对比。</p>
+</blockquote>
+<hr/>
+<h2 id="架构s0--s1--s2-三层--时钟分离">架构：S0 / S1 / S2 三层 + 时钟分离<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#架构s0--s1--s2-三层--时钟分离" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Helix 02 在原 Helix 的 “System 1 / System 2” 上加了 System 0，三层各自跑在不同时钟：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Layer</th><th>频率</th><th>职责</th><th>数据 / 训练</th><th>接口</th></tr></thead><tbody><tr><td><strong>S2</strong></td><td>慢</td><td>场景理解、语言、行为 sequencing</td><td>(沿用 Helix)</td><td>输出 semantic latents 给 S1</td></tr><tr><td><strong>S1</strong></td><td>200 Hz</td><td>Pixels → 全身 joint target</td><td>imitation / VLA-style</td><td>输入 head+palm cam + tactile + proprio；输出全身 joint target</td></tr><tr><td><strong>S0</strong></td><td>1 kHz</td><td>Whole-body 平衡、接触、协调</td><td>1000h 人类动作 + sim2real RL</td><td>输入 S1 给的 joint target + 当前状态；输出 actuator 命令</td></tr></tbody></table></div>
+<p>「pixels → torque」的总链路：相机/触觉 → S1 → 全身 joint target → S0 → actuator 命令。</p>
+<h4 id="概念澄清joint-target-vs-actuator-command">概念澄清：joint target vs actuator command<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#概念澄清joint-target-vs-actuator-command" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th></th><th><strong>Joint target</strong>（S1 输出）</th><th><strong>Actuator command</strong>（S0 输出）</th></tr></thead><tbody><tr><td>是什么</td><td>想让关节”到达”的状态：角度 / 角速度</td><td>实际发给电机的物理信号：力矩 / 电流 / PWM</td></tr><tr><td>抽象层级</td><td>运动学 (kinematic)——只说<strong>去哪儿</strong></td><td>动力学 (dynamic)——说<strong>怎么去</strong></td></tr><tr><td>频率</td><td>200 Hz</td><td>1 kHz（跟得上接触动力学）</td></tr><tr><td>是否考虑物理</td><td>不管重力 / 惯性 / 接触力</td><td>必须算重力补偿 / 惯性 / 摩擦 / 外力</td></tr></tbody></table></div>
+<p><strong>例 1（抬手抓杯子）</strong>：S1 说”右肘从 30° 弯到 90°“——只是 6 个角度+角速度目标。S0 接到后必须算：手里 200g 的杯子重力补偿多少？左腿正在迈步、重心偏移、抬手会不会摔？最终输出”右肩 +3.2 Nm、右肘 +1.8 Nm、腰部 -0.5 Nm（反向补偿前倾）……”——每个电机的瞬时力矩。</p>
+<p><strong>例 2（拧瓶盖）</strong>：S1 输出”腕关节绕 z 轴 60°“；S0 必须根据触觉判断是否打滑、实时调手指抓握电流、协调另一只手施加反扭矩。</p>
+<p><strong>类比</strong>：汽车巡航控制。Joint target = “我想 100 km/h”；actuator command = “油门 23%、刹车 0%“——油门开度依赖坡度、风阻、当前车速，不是固定映射。</p>
+<p><strong>为什么要分两层</strong>：(1) <strong>时钟不匹配</strong>——电机需要 1 kHz 才稳定，vision-based 的 S1 在 200 Hz 已是上限；(2) <strong>抽象解耦</strong>——S1 学”语义动作”（伸手、抓、走），不用学”怎么不摔倒”；S0 专心学动力学和平衡。历史上 actuator command 这一层就是被那 109,504 行 C++（逆动力学 + PID + 平衡控制器 + 摩擦补偿）填的，Helix 02 把它换成神经网络。</p>
+<h3 id="system-0-human-like-whole-body-control">System 0: Human-like Whole-Body Control<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#system-0-human-like-whole-body-control" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>S0 是核心新增。Figure 的核心 claim 是 <strong>S0 替换了 109,504 行手写 C++</strong>——即用一个 neural prior 取代了传统人形机器人的整个底层平衡/步态控制栈。</p>
+<p>关键参数：</p>
+<ul>
+<li><strong>训练数据</strong>：1000+ 小时 joint-level retargeted 人类动作数据</li>
+<li><strong>网络规模</strong>：10M 参数</li>
+<li><strong>输入</strong>：full-body joint state + base motion</li>
+<li><strong>输出</strong>：joint-level actuator command @ 1 kHz</li>
+<li><strong>训练</strong>：纯仿真，<strong>> 200,000 个 parallel environment</strong>，强 domain randomization；sim2real 直接迁移到全 fleet</li>
+</ul>
+<p>关键设计选择：<strong>不分别为 walk / turn / crouch / reach 设计 reward function</strong>，而是让 S0 直接 track 人类动作。Figure 的逻辑是：模仿人类动作的过程中，policy 自动学到力的协调、姿态调整、平衡维持等通用能力。</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/7qSj4fZrRA81NXTPthJWMl/64cfead818c3f106ef28f115693ec839/Dexterity_4UP_Jan_26.mp4" controls muted playsinline width="720"></video></p>
+<blockquote>
+<p>❓ “替换 109,504 行 C++” 是非常 marketing 的表述。问题：(1) 这 10.9 万行原本做什么——纯平衡控制？还是包括 motion planning / safety / state estimation？(2) S0 是否还依赖外部 state estimator？(3) sim2real 在 fleet 上的成功率分布是多少？blog 完全没披露。</p>
+</blockquote>
+<blockquote>
+<p>❓ 「学 human motion 就自动学到平衡」这个 claim 与 humanoid imitation 文献里常见的 reward shaping / 残差校正实践有张力。10M 参数 + sim2real 是否足以在真实接触丰富场景下保持稳定，需要 ablation 或失败案例支持。</p>
+</blockquote>
+<h3 id="system-1-all-sensors-in-all-joints-out">System 1: “All sensors in, all joints out”<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#system-1-all-sensors-in-all-joints-out" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>S1 在 Helix v1 里只控制上身且只读关节+头相机。Helix 02 里：</p>
+<ul>
+<li><strong>新增输入</strong>：palm cameras（手掌相机）、fingertip tactile sensors（指尖触觉）；保留 head cameras + full-body proprioception</li>
+<li><strong>新增输出</strong>：腿、躯干、头、双臂、双手腕、单根手指——全身 joint-level 控制</li>
+<li><strong>架构</strong>：仍然是 transformer，conditioning on S2 latents</li>
+</ul>
+<p>新硬件能力（依赖 Figure 03 的本体）：</p>
+<ul>
+<li><strong>Palm cameras</strong>：head camera 被遮挡时提供 in-hand 视觉反馈</li>
+<li><strong>Tactile sensors</strong>：每个指尖嵌入触觉，可检测<strong>小至 3 克</strong>的力（敏感到能”摸到回形针”），支持 contact-aware、force-modulated grasping</li>
+</ul>
+<blockquote>
+<p>❓ Helix 02 是「首次在神经策略中使用这些 modality」——这是 Figure 自己的”首次”，不是全行业的。文献里其他团队（如 TacSL、ALOHA tactile 变体）早已在用触觉策略。读 blog 时要避免被 marketing first 误导。</p>
+</blockquote>
+<h3 id="system-2-scope-expansion">System 2: Scope Expansion<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#system-2-scope-expansion" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>S2 还是负责场景理解 + 语言 → semantic latents，但<strong>可指令的行为 scope 显著扩大</strong>。原来：</p>
+<blockquote>
+<p>“Pick up the ketchup.”</p>
+</blockquote>
+<p>现在：</p>
+<blockquote>
+<p>“Walk to the dishwasher and open it”
+“Carry the bowls to the counter”
+“Go back to the top rack and pick up the cups”</p>
+</blockquote>
+<p>S2 不再需要 plan 低层 footstep 或显式协调四肢。</p>
+<hr/>
+<h2 id="结果一long-horizon-loco-manipulation">结果一：Long-Horizon Loco-Manipulation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#结果一long-horizon-loco-manipulation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>主 demo——洗碗机装卸（已嵌于 Summary 顶部），共 <strong>4 分钟、61 个连续动作</strong>，全自主、无 reset、无人工干预。Figure 自称是 “the most complex autonomous manipulation sequence demonstrated to date”。</p>
+<p>Figure 列出该 demo 同时展示的能力：</p>
+<ul>
+<li><strong>Locomotion under manipulation constraints</strong>：边走边稳定握持脆弱物体</li>
+<li><strong>Whole-body as a tool</strong>：手被占用时<strong>用髋部关抽屉、用脚抬洗碗机门</strong>——下肢不只是 locomotion 工具</li>
+<li><strong>Bimanual coordination</strong>：双手 pick / 转手 / 堆叠 / 放置</li>
+<li><strong>Motor range across scales</strong>：同一网络产生 mm 级手指动作和 room 级 locomotion——<strong>动态范围跨四个数量级</strong></li>
+<li><strong>Long-horizon sequencing</strong>：61 个动作正确排序，跨分钟保持 task state，含隐式 error recovery</li>
+</ul>
+<p>辅助 demo（用脚踢开门 / 用髋部关抽屉的特写）：</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/2b36iK1TCgsGHXcvfpWae2/d7ce9140db0aa32c83f671dc1c37dd90/SBS_Door_Kick_v2.mp4" controls muted playsinline width="720"></video></p>
+<blockquote>
+<p>❓ 单次 4 分钟成功 demo ≠ 鲁棒 policy。关键缺失：成功率（n 次试验中几次完成）、failure mode、是否人工挑选过 take、Reset 定义（“无 reset” 是指 4 分钟内还是跨 trial？）、跨场景泛化（这台洗碗机以外行不行？）。本质上是 “最佳 take” demo 级证据，影响力指标只能打 demo 折扣。</p>
+</blockquote>
+<blockquote>
+<p>❓ “61 个 loco-manipulation actions” 的 action 边界由谁定义？人工切分还是网络内部？是否包含小动作（如手指微调）来”凑数”？</p>
+</blockquote>
+<hr/>
+<h2 id="结果二dexterous-manipulation触觉--掌相机">结果二：Dexterous Manipulation（触觉 + 掌相机）<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#结果二dexterous-manipulation触觉--掌相机" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>四个 fine manipulation 任务，全部自主：</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/749el66RcDQN3DCqj6OAiM/32eb1ec086a821b0b65b7d1c81cf9339/BPSP2_012626B.mp4" controls muted playsinline width="720"></video></p>
+<p><strong>Task 1: 拧开瓶盖</strong> — 双手稳定瓶身 + 持续可控扭矩；触觉调节抓握力避免压碎或滑脱。</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/21mBdGqjGKhKNDFaj8Km9o/511c689af0765c49efea64a6f1c3b64d/W-WOUT_HAND_SENSING_Bottle_2.mp4" controls muted playsinline width="720"></video></p>
+<p><strong>Task 2: 从药盒中取出单粒药片</strong> — 头相机常被遮挡，依赖掌相机视觉反馈 + 触觉精抓。</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/4qmA4zOxRnMFB8I78fCpUE/8b33300fc6e1e0503680bb38d0d256f3/W-WOUT_HAND_SENSING_PILLS.mp4" controls muted playsinline width="720"></video></p>
+<p><strong>Task 3: 注射器精确推出 5 ml</strong> — 力控驱动 + 触觉反馈 + 多指协调稳定。容差紧 + 阻力变化是难点。</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/4muRTBb9YPxrgBvrgrQjkO/d9b2d16b4ae07d7139ca6adc6143228b/W-WOUT_HAND_SENSING_Syringe.mp4" controls muted playsinline width="720"></video></p>
+<p><strong>Task 4: 从杂堆中取金属件</strong> — 实际场景是 Figure 自家的 BotQ 工厂；物体重叠 / 互相遮挡 / 交互时移动。</p>
+<p><video src="https://videos.ctfassets.net/qx5k8y1u9drj/5wDQzY6MclJxCm62bKDOqt/8615e8369f182f45c316b139a2b2ce4c/W-WOUT_HAND_SENSING_METAL.mp4" controls muted playsinline width="720"></video></p>
+<blockquote>
+<p>❓ “W-WOUT_HAND_SENSING” 文件名暗示这些视频可能是「有触觉 vs 无触觉」的对比——blog 文本没明确解读，但若是对比，会是一个 informative 的隐式 ablation。建议看原网页是否有 split-screen 标注。</p>
+</blockquote>
+<hr/>
+<h2 id="关联工作">关联工作<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关联工作" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="基于">基于<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#基于" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Helix v1 (Figure, 2025-02)</strong>: 同样的 S1/S2 框架；Helix 02 加 S0、扩展到全身、增加触觉/掌相机感知。本文是直接续作。原 blog: <a href="https://www.figure.ai/news/helix" class="external">https://www.figure.ai/news/helix<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+<li><strong>Figure 03 (Figure, 2025-10)</strong>: 提供本文所有新硬件能力——掌相机、指尖触觉传感器。Helix 02 是这些硬件首次被神经策略消费</li>
+</ul>
+<h3 id="对比--同范式">对比 / 同范式<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#对比--同范式" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>NVIDIA <a href="../Papers/2503-GR00TN1" class="internal alias" data-slug="Papers/2503-GR00TN1">GR00T N1</a> / Isaac Sim humanoid 家族</strong>：同样押注 humanoid VLA + sim2real，但 Figure 强调”单一网络覆盖整机”，而 GR00T 通常 manipulation + locomotion 分头训练后组合</li>
+<li><strong>传统 humanoid 控制栈</strong>（如 MIT / Boston Dynamics 风格的 MPC + 优化）：Figure 直接对标这类「数十万行手写 C++」的方案，把 S0 作为替代品</li>
+<li><strong>Imitation / motion-tracking from human data</strong>（如 PHC、H2O、Unitree humanoid demo）：S0 的训练范式（retarget 人类动作 + sim2real RL）与这条线一脉相承，但作为整机 VLA 的底层使用</li>
+</ul>
+<h3 id="方法相关">方法相关<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#方法相关" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Dual / Hierarchical VLA（System 1 + System 2）</strong>：与 Physical Intelligence 的 <a href="../Papers/2410-Pi0" class="internal alias" data-slug="Papers/2410-Pi0">π0</a> / <a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a> 走 dual-process 路线类似，但 Helix 把”system thinking 时钟分离”做得更彻底（S0 1 kHz / S1 200 Hz / S2 慢）</li>
+<li><strong>Tactile-augmented manipulation policies</strong>：触觉嵌入 manipulation policy 是活跃方向（TacSL、ALOHA tactile、DexNet 系列）。Helix 02 在 humanoid loco-manipulation 场景下首次组合掌相机 + 触觉 + 全身 control</li>
+<li><strong>Long-horizon manipulation</strong>：业内已有的多分钟 long-horizon 工作（如 RT-X、AnyBody、<a href="../Papers/2204-SayCan" class="internal alias" data-slug="Papers/2204-SayCan">SayCan</a> 风格）依赖 high-level planner + skill library；Helix 02 主张端到端单网络处理 long horizon，更激进</li>
+</ul>
+<hr/>
+<h2 id="论文点评">论文点评<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#论文点评" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="strengths">Strengths<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#strengths" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>架构方向选对</strong>: S0 layer 把”学到的 motion prior”作为整机 VLA 的底层，与”端到端 single policy”和”分模块手写控制”之间走了一条更平衡的路。在 humanoid 上这是合理的归纳偏置——人也是「平衡是反射 + 上层是任务规划」</li>
+<li><strong>触觉 + 掌相机的工程落地</strong>: 把 fingertip tactile（3g 分辨率）和 palm camera 整合进单一 policy，且能跑通拧瓶盖 / 取药片 / 5ml syringe 这类 contact-rich 任务，是真功夫——多数 humanoid 团队还在用 RGB-only policy</li>
+<li><strong>Long-horizon demo 有视觉冲击力</strong>: 4 分钟 61 步无 reset 的 dishwasher 任务，无论挑过多少 take，都比业内常见的 30 秒 manipulation snippet 走得更远</li>
+<li><strong>“全身作为工具”的范式信号</strong>: 用髋关抽屉、用脚抬门——这种”非典型 affordance”通常被 manipulation policy 忽略，是 generalist humanoid 的应有姿态</li>
+</ol>
+<h3 id="weaknesses">Weaknesses<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#weaknesses" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>Marketing-grade evidence</strong>: 完全没有定量指标——无成功率、无 baseline、无 ablation、无失败案例分析、无跨场景泛化测试。“the most complex demonstrated to date” 这类话只能算 advertising</li>
+<li><strong>关键技术细节缺失</strong>: S0/S1/S2 是联合训练还是分阶段？S1 的训练数据规模和来源？S2 用什么 VLM？S0 的 sim2real success rate 在 fleet 上分布？data scaling 曲线？这些 paper 必备信息一律 null</li>
+<li><strong>“109,504 行 C++ 替换” 是话术</strong>: 这 10.9 万行原本承担什么职责没说清。可能包括 state estimation / safety guard / hardware abstraction 等仍需保留的部分，单纯说”被神经网络替换”是 oversimplified</li>
+<li><strong>没有技术报告</strong>: Helix v1 在 2025-02 时还出过 technical report（社交媒体公告但未发 arXiv），Helix 02 当前完全是 marketing blog 形式。一年后回看可能有 paper，但当前无法严肃评估</li>
+<li><strong>依赖封闭硬件</strong>: 触觉 + 掌相机只在 Figure 03 上有，社区无法复现或独立验证</li>
+</ol>
+<h3 id="可信评估">可信评估<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#可信评估" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="artifact-可获取性">Artifact 可获取性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#artifact-可获取性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li><strong>代码</strong>: 未开源</li>
+<li><strong>模型权重</strong>: 未发布</li>
+<li><strong>训练细节</strong>: 仅高层描述（S0 参数 10M / 训练数据 1000h / 200k env 仿真），缺数据配比、超参、训练步数、loss 曲线</li>
+<li><strong>数据集</strong>: 未说明（1000h 人类动作数据来源未披露）</li>
+</ul>
+<h4 id="claim-可验证性">Claim 可验证性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#claim-可验证性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li>✅ <strong>能跑 4 分钟洗碗机装卸 demo</strong>：视频可见</li>
+<li>✅ <strong>触觉 + 掌相机 + 全身 control 的硬件存在并被使用</strong>：Figure 03 已发布，视频展示了 fine manipulation</li>
+<li>⚠️ <strong>“61 actions long-horizon”</strong>：action 切分定义不明，可能凑数；单次 demo 不代表稳定能力</li>
+<li>⚠️ <strong>“a single unified visuomotor neural network … all sensors … all actuators”</strong>（开头宣传段原话）：与同篇的架构描述自相矛盾——后者明确说是 S0/S1/S2 三个独立网络的 hierarchy，且讲 pixels→torque 时用的也是 “hierarchy” 而非 “single network”。是否联合训练为可微链路，blog 未说</li>
+<li>⚠️ <strong>“S0 替换 10.9 万行 C++“</strong>：替换比例不明，原代码职责模糊</li>
+<li>❌ <strong>“the most complex autonomous manipulation sequence demonstrated to date”</strong>：竞品（NVIDIA GR00T demo、π0.5 长时任务等）有可比 demo，且无统一 benchmark 支撑”most complex”</li>
+<li>❌ <strong>“first time neural policies depend on these modalities”</strong>：Figure 内部首次，但行业内触觉 policy 已有多年工作</li>
+</ul>
+<h3 id="notes">Notes<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#notes" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li>Helix v1 (2025-02) + Helix 02 (2026-01) 节奏：约一年一次的 major release，与 π0 / π0.5 / GR00T 系列节奏类似——humanoid VLA 进入按年迭代的 cadence</li>
+<li>值得跟进的开放问题：(1) S0 这种 1 kHz neural controller 是否会进 arXiv 形成可引论文（独立成单点贡献）；(2) Figure 是否会发布 Helix scaling laws（数据 / 参数 / 任务复杂度）</li>
+<li>给自己的 reminder：<strong>company blog 默认按 rating=2 上限处理</strong>——除非后续有技术报告 + 第三方复现，否则不升 3。这与 demo-level 证据的本质相符</li>
+</ul>
+<h3 id="rating">Rating<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#rating" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Metrics</strong> (as of 2026-05-11): citation=N/A（非 arXiv，无 paper 源）, influential=N/A, velocity=N/A; HF upvotes=N/A（非 HF paper）; github N/A（未开源）</p>
+<p><strong>分数</strong>：2 - Frontier
+<strong>理由</strong>：架构方向（learned whole-body motion prior + 全身 VLA + 触觉/掌相机）与 humanoid VLA 前沿一致，作为 Helix v1 的直接续作具有 reference 价值；但作为 company blog 缺技术细节、缺定量证据、无开源，离 “Foundation” 还差一份技术报告 + 第三方复现。不属于 Archived，因为方向选择本身对跟进 humanoid VLA 的研究判断有信息量。</p></article><hr/><div class="page-footer"><div class="giscus" data-repo="liqing-ustc/MindFlow" data-repo-id="R_kgDORucr2w" data-category="Comments" data-category-id="DIC_kwDORucr284C5LSt" data-mapping="pathname" data-strict="1" data-reactions-enabled="1" data-input-position="bottom" data-light-theme="light" data-dark-theme="dark" data-theme-url="https://liqing.io/mindflow/static/giscus"></div></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-content" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="toc-content"><ul id="u3bngi" class="overflow"><li class="depth-0"><a href="#summary" data-for="summary">Summary</a></li><li class="depth-0"><a href="#问题设定为什么-loco-manipulation-难" data-for="问题设定为什么-loco-manipulation-难">问题设定：为什么 Loco-Manipulation 难</a></li><li class="depth-0"><a href="#架构s0--s1--s2-三层--时钟分离" data-for="架构s0--s1--s2-三层--时钟分离">架构：S0 / S1 / S2 三层 + 时钟分离</a></li><li class="depth-1"><a href="#system-0-human-like-whole-body-control" data-for="system-0-human-like-whole-body-control">System 0: Human-like Whole-Body Control</a></li><li class="depth-1"><a href="#system-1-all-sensors-in-all-joints-out" data-for="system-1-all-sensors-in-all-joints-out">System 1: “All sensors in, all joints out”</a></li><li class="depth-1"><a href="#system-2-scope-expansion" data-for="system-2-scope-expansion">System 2: Scope Expansion</a></li><li class="depth-0"><a href="#结果一long-horizon-loco-manipulation" data-for="结果一long-horizon-loco-manipulation">结果一：Long-Horizon Loco-Manipulation</a></li><li class="depth-0"><a href="#结果二dexterous-manipulation触觉--掌相机" data-for="结果二dexterous-manipulation触觉--掌相机">结果二：Dexterous Manipulation（触觉 + 掌相机）</a></li><li class="depth-0"><a href="#关联工作" data-for="关联工作">关联工作</a></li><li class="depth-1"><a href="#基于" data-for="基于">基于</a></li><li class="depth-1"><a href="#对比--同范式" data-for="对比--同范式">对比 / 同范式</a></li><li class="depth-1"><a href="#方法相关" data-for="方法相关">方法相关</a></li><li class="depth-0"><a href="#论文点评" data-for="论文点评">论文点评</a></li><li class="depth-1"><a href="#strengths" data-for="strengths">Strengths</a></li><li class="depth-1"><a href="#weaknesses" data-for="weaknesses">Weaknesses</a></li><li class="depth-1"><a href="#可信评估" data-for="可信评估">可信评估</a></li><li class="depth-1"><a href="#notes" data-for="notes">Notes</a></li><li class="depth-1"><a href="#rating" data-for="rating">Rating</a></li><li class="overflow-end"></li></ul></div></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.4.1</a> © 2026</p><ul><li><a href="https://github.com/liqing-ustc/MindFlow">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../postscript.js" type="module"></script></html>

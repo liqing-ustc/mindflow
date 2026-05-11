@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=Schibsted Grotesk:wght@400;700&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="MindFlow"/><meta property="og:title" content="Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments"/><meta name="twitter:description" content="Summary Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments 核心: 把 R2R / VLN 从离散 nav-graph teleport 提升到 Habitat 中的连续低层动作空间, 同时把 R2R 7,189 条 nav-graph ..."/><meta property="og:description" content="Summary Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments 核心: 把 R2R / VLN 从离散 nav-graph teleport 提升到 Habitat 中的连续低层动作空间, 同时把 R2R 7,189 条 nav-graph ..."/><meta property="og:image:alt" content="Summary Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments 核心: 把 R2R / VLN 从离散 nav-graph teleport 提升到 Habitat 中的连续低层动作空间, 同时把 R2R 7,189 条 nav-graph ..."/><meta property="og:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:url" content="https://liqing.io/mindflow/static/og-image.png"/><meta name="twitter:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="liqing.io/mindflow"/><meta property="og:url" content="https://liqing.io/mindflow/Papers/2004-VLNCE"/><meta property="twitter:url" content="https://liqing.io/mindflow/Papers/2004-VLNCE"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="Summary Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments 核心: 把 R2R / VLN 从离散 nav-graph teleport 提升到 Habitat 中的连续低层动作空间, 同时把 R2R 7,189 条 nav-graph ..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvbWluZGZsb3cvbWluZGZsb3cvd2Vic2l0ZS9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://liqing.io/mindflow/index.xml"/></head><body data-slug="Papers/2004-VLNCE"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">MindFlow</a></h2><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="false" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>{let order=[\&quot;DomainMaps\&quot;,\&quot;Papers\&quot;,\&quot;Topics\&quot;,\&quot;Ideas\&quot;,\&quot;Projects\&quot;],aIdx=order.indexOf(a.displayName),bIdx=order.indexOf(b.displayName);return aIdx!==-1&amp;&amp;bIdx!==-1?aIdx-bIdx:aIdx!==-1?-1:bIdx!==-1?1:a.slug?.startsWith(\&quot;Papers/\&quot;)&amp;&amp;b.slug?.startsWith(\&quot;Papers/\&quot;)?b.displayName.localeCompare(a.displayName):a.displayName.localeCompare(b.displayName)}&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>{node.isFolder||(node.displayName=node.slugSegment)}&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="lrzxnl"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div><div class="sidebar-tags"><span class="sidebar-tags-title">Popular Tags</span><div class="sidebar-tag-cloud"><a href="/mindflow/tags/VLA" class="sidebar-tag-pill">#VLA</a><a href="/mindflow/tags/manipulation" class="sidebar-tag-pill">#manipulation</a><a href="/mindflow/tags/embodied-reasoning" class="sidebar-tag-pill">#embodied-reasoning</a><a href="/mindflow/tags/VLM" class="sidebar-tag-pill">#VLM</a><a href="/mindflow/tags/VLN" class="sidebar-tag-pill">#VLN</a><a href="/mindflow/tags/navigation" class="sidebar-tag-pill">#navigation</a><a href="/mindflow/tags/task-planning" class="sidebar-tag-pill">#task-planning</a><a href="/mindflow/tags/computer-use" class="sidebar-tag-pill">#computer-use</a><a href="/mindflow/tags/agentic-RL" class="sidebar-tag-pill">#agentic-RL</a><a href="/mindflow/tags/world-model" class="sidebar-tag-pill">#world-model</a></div></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../Papers/">Papers</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>2004-VLNCE</a></div></nav><h1 class="article-title">Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments</h1><div class="paper-meta"><span class="paper-venue">ECCV 2020</span><span class="paper-authors"><span class="meta-sep">·</span>Jacob Krantz <button class="et-al-btn" aria-expanded="false">et al.</button><span class="authors-full" style="display:none"><span>, Erik Wijmans</span><span>, Arjun Majumdar</span><span>, Dhruv Batra</span><span>, Stefan Lee</span></span></span></div><p show-comma="true" class="content-meta"><time datetime="2020-04-06T00:00:00.000Z">Apr 06, 2020</time><span>22 min read</span></p><ul class="tags"><li><a href="../tags/VLN" class="internal tag-link">VLN</a></li><li><a href="../tags/navigation" class="internal tag-link">navigation</a></li><li><a href="../tags/instruction-following" class="internal tag-link">instruction-following</a></li></ul></div></div><article class="popover-hint"><h2 id="summary">Summary<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#summary" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<blockquote class="callout abstract" data-callout="abstract">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>Beyond the Nav-Graph: Vision-and-Language Navigation in Continuous Environments </p></div>
+                  
+                </div>
+<div class="callout-content">
+<ul>
+<li><strong>核心</strong>: 把 R2R / VLN 从离散 nav-graph teleport 提升到 Habitat 中的连续低层动作空间, 同时把 R2R 7,189 条 nav-graph 轨迹移植成 4,475 条连续可达轨迹, 形成 VLN-CE benchmark, 并展示 nav-graph 假设在 VLN 性能里贡献了至少 ~25 SPL</li>
+<li><strong>方法</strong>: 把 MP3D nav-graph 节点 ray-cast 到地面 mesh 上得 waypoint, A* 验证两两可达; 4 个低层动作 (FORWARD 0.25m / TURN ±15° / STOP); 提出 Seq2Seq 与 Cross-Modal Attention (CMA) 两个 baseline + Progress Monitor / DAgger / 合成数据增强</li>
+<li><strong>结果</strong>: best CMA (PM+DA*+Aug) val-unseen 32 SR / 30 SPL (VLN-CE); 把同模型 path 反投到 nav-graph 在 VLN test 拿 24 SR / 21 SPL, 远低于同期 nav-graph SOTA Back-Translation 的 51 SR / 47 SPL —— 量化 nav-graph “暗补贴”</li>
+<li><strong>Sources</strong>: <a href="https://arxiv.org/abs/2004.02857" class="external">paper<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> | <a href="https://jacobkrantz.github.io/vlnce/" class="external">website<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> | <a href="https://github.com/jacobkrantz/VLN-CE" class="external">github<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+<li><strong>Rating</strong>: 3 - Foundation（VLN-CE 的奠基论文，2024 年后几乎所有 VLN 工作 <a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> / <a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a> / <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> / <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> / <a href="../Papers/2507-VLNPE" class="internal alias" data-slug="Papers/2507-VLNPE">VLN-PE</a> / <a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a> / <a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLN-Verse</a> 报告 VLN-CE 数字；485 citations + 782⭐ 的官方 codebase 仍是 de facto 起点）</li>
+</ul>
+</div>
+</blockquote>
+<p><strong>Key Takeaways:</strong></p>
+<ol>
+<li><strong>“Beyond the nav-graph” 是 setup-level pivot, 不是模型贡献</strong>: 论文真正的资产是 VLN-CE benchmark 本身——把 VLN 从 “visually-guided graph search” 改成 “low-level visuomotor instruction following”, 这一步把任务难度抬高 ~2x (best SR 32 vs 同期 nav-graph 51), 并把 VLN 第一次和 robotics-style action space 接上</li>
+<li><strong>77% trajectory 可移植率是隐藏的 dataset filter</strong>: 23% 不可达不是噪声而是结构性的——MP3D mesh 有洞、家具被移动、panorama 之间人手添加的边 ray-trace 验证不过。结果 VLN-CE 的 4,475 条轨迹在分布上<strong>比原 R2R 更”干净”</strong> (更少跨 region jump), 这件事至今很少被讨论但会偏向 well-reconstructed 大房间场景</li>
+<li><strong>Depth 远比 RGB 重要 (反 VLN 直觉)</strong>: ablation 里 No Depth → 4% SR, No RGB → 17% SR (Tab. 2)。VLN 几乎不用 depth, 但 CE 没 depth 连避障都学不会——这是连续环境的”第一公民信号”, 直接决定了后续 <a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> 用 depth-only waypoint predictor 等设计</li>
+<li><strong>Cross-Modal Attention 必须配 trick stack 才有用</strong>: 裸 CMA 比裸 Seq2Seq 仅 +0.04 SPL; 加 Progress Monitor + DAgger + 合成数据后 +0.12 SPL。说明在长序列 (avg 88 actions) 场景下 attention 增益不再”白来”, 训练 regime 主导, 这条结论被后续 LLM-based agent 路线 (StreamVLN / NaVILA) 间接继承</li>
+<li><strong>Nav-graph 反投影实验是论文最锋利的一刀</strong>: 同一个 agent 在 VLN-CE 跑 32 SR, 把 path snap 到 nav-graph 后只有 24 SR, 而同期带 nav-graph 训练的 Back-Translation 51 SR——直接给出了”nav-graph 假设值 ~25 SR”的量化证据。这是 <a href="../Papers/2507-VLNPE" class="internal alias" data-slug="Papers/2507-VLNPE">VLN-PE</a> / <a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLN-Verse</a> 后来继续追问的 “embodied gap” 第一次被严肃定量</li>
+</ol>
+<p><strong>Teaser. R2R 离散 teleport vs VLN-CE 连续低层动作的对比 (官方 project page)</strong></p>
+<p><img src="../Papers/assets/VLNCE/teaser-VLNCEvsVLN.gif" alt/></p>
+<hr/>
+<h2 id="background--motivation">Background &amp; Motivation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#background--motivation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>VLN (Anderson et al. 2018) 在 Matterport3D 上把任务定义为<strong>离散 nav-graph 上的 viewpoint hopping</strong>——节点是预采集的 360° panorama (每个环境约 117 个), 边是人工审过的可达性。Agent 每步从当前 panorama 选一个相邻节点, 然后<strong>瞬移</strong>过去, 平均一条轨迹只要 4-6 步。这个设定让数据收集和训练都高效, 但偷偷植入三条与真实机器人不符的假设:</p>
+<ul>
+<li><strong>Known topology</strong>: agent 拿到完整可达图, 即使在 “unseen” split 也是。真实机器人没有这个 prior</li>
+<li><strong>Oracle navigation</strong>: 节点间瞬移意味着障碍规避被外包给一个不存在的 oracle, 平均跨度 2.25m</li>
+<li><strong>Perfect localization</strong>: 全程精确 pose, 大量方法 (e.g. RCM) 把节点间几何编码进决策</li>
+</ul>
+<p>这三条加起来, VLN 实质退化成 “visually-guided graph search”。论文的 framing 是: 如果想让 VLN agent 真的转化为机器人能力, 必须先把这些假设拿掉, 看看现有方法剩下多少。</p>
+<blockquote>
+<p>❓ 论文的 motivation 其实有两个 layer 没区分清楚: (1) “nav-graph 假设不真实” 是工程批评, (2) “nav-graph 性能是高估” 是经验 claim。前者是 priori 论断, 后者需要 §5.3 的反投影实验支持。后续工作 (LAW, ETPNav, NaVid) 大多只引用 layer (1) 的 framing, 但 layer (2) 的 ~25 SPL gap 才是更硬的科学贡献。</p>
+</blockquote>
+<hr/>
+<h2 id="vln-ce-任务定义">VLN-CE 任务定义<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#vln-ce-任务定义" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="仿真平台与-action-space">仿真平台与 Action Space<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#仿真平台与-action-space" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>维度</th><th>设定</th></tr></thead><tbody><tr><td>Simulator</td><td>Habitat (Savva et al. ICCV 2019) on MP3D mesh</td></tr><tr><td>Embodiment</td><td>LoCoBot 风格地面机器人, 1.5m 高、0.2m 直径圆柱体</td></tr><tr><td>Observation</td><td>单目 forward-mounted RGB-D, 256×256, FoV 90°</td></tr><tr><td>Action space</td><td><code>MOVE-FORWARD 0.25m</code>, <code>TURN-LEFT 15°</code>, <code>TURN-RIGHT 15°</code>, <code>STOP</code> (低层离散)</td></tr><tr><td>Pose</td><td><strong>GT pose 在训练时可用; agent 推理时无 GPS/heading</strong></td></tr></tbody></table></div>
+<p>注意: action 仍然是离散的 (4 个原子动作), 但<strong>位移粒度从 ~2.25m teleport 降到 0.25m forward</strong>, 且<strong>会真的撞墙 / 卡家具</strong>。一条 R2R 轨迹 4-6 hops 在 VLN-CE 平均要 <strong>55.88 步</strong>, 极端长度可超 100。</p>
+<h3 id="trajectory-移植-nav-graph--continuous-mesh">Trajectory 移植: nav-graph → continuous mesh<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#trajectory-移植-nav-graph--continuous-mesh" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Figure 2. Nav-graph 节点投影流程: 直投失败的 73% 改用向下 ray-cast 找最近 navigable mesh 点</strong></p>
+<p><img src="../Papers/assets/VLNCE/fig2-NodeProjection.png" alt/></p>
+<p>直接拿 R2R 节点的 (x, y, z) 当 waypoint 不可行——很多 panorama 来自三脚架/桌面, <strong>直接投到最近 mesh 点对 73% 的节点会失败</strong> (>0.5m 偏移或落到不可达位置, e.g. 天花板、柜面)。论文的 fix:</p>
+<ul>
+<li>从节点位置向下 cast 2m, 在间隔点上投到最近 mesh</li>
+<li>取 horizontal displacement 最小的 navigable point</li>
+<li>偏移 > 0.5m 视为 invalid; 人工复核所有 invalid 节点</li>
+<li><strong>98.3% 节点最终成功转化</strong> (3% 需要平均 0.19m 横向调整)</li>
+</ul>
+<p>然后用 A* 启发式搜索验证两两 waypoint 可达 (能走到 0.5m 内)。最终结果:</p>
+<ul>
+<li>7,189 R2R train+val 轨迹中 <strong>77% (4,475 条) 在连续环境可达</strong></li>
+<li>23% 不可达的失败模式: 22% 包含某个 invalid 节点, 78% 是因为 reconstruction 把空间切成 disjoint region (mesh 洞、家具被移动后阻断 panorama 之间的人工添加边)</li>
+</ul>
+<p>这是论文里 dataset 工程最重的部分, 后续 VLN-CE 数据规模就锁定在 ~4.5k 训练轨迹。</p>
+<blockquote>
+<p>❓ 这个 23% drop 不是随机采样: 倾向于丢掉 “panorama 间有可疑可达性、reconstruction 又有问题” 的轨迹——大概率偏向<strong>结构复杂/家具密集/重建质量低</strong>的子集。所以 VLN-CE 的”难度” 不只比 R2R 高, 它的难度<strong>分布也偏了</strong>——R2R 上做的某些 generalization 结论在 VLN-CE 不一定 hold。论文没讨论这件事。</p>
+</blockquote>
+<hr/>
+<h2 id="baseline-模型">Baseline 模型<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#baseline-模型" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>论文提了两个 baseline 方便后续工作做对比, 不主张方法贡献:</p>
+<p><strong>Figure 4. Sequence-to-Sequence baseline 与 Cross-Modal Attention 模型架构示意</strong></p>
+<p><img src="../Papers/assets/VLNCE/fig4-ModelArchitecture.png" alt/></p>
+<h3 id="seq2seq-baseline">Seq2Seq Baseline<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#seq2seq-baseline" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>最朴素的 RNN policy:</p>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7312em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5812em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.016em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0812em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">mean-pool</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathcal" style="margin-right:0.08222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0822em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8312em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">d</span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0833em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">s</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">LSTM</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.016em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf" style="margin-right:0.01597em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.016em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2906em;vertical-align:-0.2458em;"></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4542em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2458em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3694em;vertical-align:-0.3246em;"></span><span class="mord text"><span class="mord">GRU</span></span><span class="mopen">([</span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5812em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.016em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8312em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">d</span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0833em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">s</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4337em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3246em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2948em;vertical-align:-0.25em;"></span><span class="mop">ar<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">max</span><span class="mspace nobreak"> </span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord">softmax</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4542em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2458em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+<p>RGB 用 ImageNet-ResNet50 mean-pool, depth 用 PointGoal 预训练 ResNet50 (Wijmans et al. DD-PPO), instruction 用 GLoVE + LSTM。</p>
+<h3 id="cross-modal-attention-cma">Cross-Modal Attention (CMA)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#cross-modal-attention-cma" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>两层 GRU, 第一层跟踪视觉历史, 第二层基于 attended instruction → vision/depth 做决策:</p>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8579em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7079em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">s</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2948em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">Attn</span></span><span class="mopen">(</span><span class="mord mathcal" style="margin-right:0.075em;">S</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4542em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">tt</span><span class="mord mathnormal mtight">n</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2458em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7079em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.016em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2079em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">Attn</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathcal" style="margin-right:0.08222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0822em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7079em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">s</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9579em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">d</span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0833em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">Attn</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathcal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7079em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">s</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2906em;vertical-align:-0.2458em;"></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4542em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2458em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.3694em;vertical-align:-0.3246em;"></span><span class="mord text"><span class="mord">GRU</span></span><span class="mopen">([</span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7079em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">s</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7079em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span><span style="top:-3.0134em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.016em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9579em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathbf">d</span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0833em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4542em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">tt</span><span class="mord mathnormal mtight">n</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2458em;"><span></span></span></span></span></span></span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0448em;"><span style="top:-2.4337em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2198em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathnormal mtight">a</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3246em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+<p>这个 CMA 直接对应当时 nav-graph VLN 的主流架构 (RCM 等), 用来回答 “nav-graph 上的 attention 范式迁移到 CE 还剩多少收益”。</p>
+<h3 id="训练-trick">训练 trick<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#训练-trick" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>Inflection-weighted teacher forcing</strong>: 给 action 切换的时间步加 3.2x loss weight, 防止 GRU 学成”一直 forward”</li>
+<li><strong>DAgger</strong>: 第 n 轮以概率 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6644em;"></span><span class="mord">0.7</span><span class="mord"><span class="mord">5</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span></span></span></span> 用 oracle action, 否则 policy action; 累积 5,000 trajectory/轮 + 4 epoch 训练 (6-10 轮收敛)</li>
+<li><strong>Progress Monitor (Ma et al. ICLR’19)</strong>: 辅助回归任务, 预测当前完成进度</li>
+<li><strong>Synthetic augmentation (Tan et al. NAACL’19)</strong>: 把 ~150k speaker-生成的 R2R 增强轨迹也移植到连续环境</li>
+</ul>
+<hr/>
+<h2 id="关键实验结果">关键实验结果<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关键实验结果" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="51-no-learning-baseline-揭示-nav-graph-隐性-prior">5.1 No-learning baseline 揭示 nav-graph 隐性 prior<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#51-no-learning-baseline-揭示-nav-graph-隐性-prior" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Table 2 摘要 (val-unseen)</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Model</th><th>Vision</th><th>Instruction</th><th>TL ↓</th><th>NE ↓</th><th>OS ↑</th><th>SR ↑</th><th>SPL ↑</th></tr></thead><tbody><tr><td>Random (按训练动作分布)</td><td>-</td><td>-</td><td>3.74</td><td>9.51</td><td>0.04</td><td>0.03</td><td>0.02</td></tr><tr><td>Hand-Crafted (37 步直走)</td><td>-</td><td>-</td><td>3.71</td><td>10.34</td><td>0.04</td><td>0.03</td><td>0.02</td></tr><tr><td>Seq2Seq RGBD</td><td>RGBD</td><td>✓</td><td>7.67</td><td>8.94</td><td>0.25</td><td>0.20</td><td>0.18</td></tr><tr><td>– No Image</td><td>D only</td><td>✓</td><td>7.87</td><td>9.09</td><td>0.23</td><td>0.17</td><td>0.15</td></tr><tr><td>– No Depth</td><td>RGB only</td><td>✓</td><td>5.54</td><td>9.89</td><td>0.11</td><td>0.04</td><td>0.04</td></tr><tr><td>– No Vision</td><td>-</td><td>✓</td><td>4.68</td><td>10.06</td><td>0.07</td><td>0.00</td><td>0.00</td></tr><tr><td>– No Instruction</td><td>RGBD</td><td>-</td><td>7.27</td><td>9.03</td><td>0.22</td><td>0.17</td><td>0.16</td></tr></tbody></table></div>
+<p><strong>关键观察</strong>:</p>
+<ol>
+<li>Random/Hand-crafted 在 VLN-CE 只有 3% SR, 而同样的策略在原 nav-graph VLN 有 16.3% SR——nav-graph 自带的”边都连着 navigable 区域”的 prior 直接送你 13%。这是论文最有力的 1 个数字</li>
+<li><strong>Depth 是必要条件</strong>: No Depth → SR 4% (跟 random 差不多)。No RGB → 17%, 几乎跟 No Instruction 持平。结论: <strong>agent 先要会避障再谈 grounding</strong>。直接催生了后续 <a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> 的 depth-only waypoint predictor 设计哲学</li>
+<li><strong>No Instruction 17% 与全模型 20% 仅差 3 SR</strong>: 说明 VLN-CE 早期 baseline 的 instruction grounding 信号非常弱——“按平均轨迹长度直走 + 学会避障” 已经能拿大头分数</li>
+</ol>
+<h3 id="52-模型与-trick-组合">5.2 模型与 trick 组合<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#52-模型与-trick-组合" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Table 3 摘要 (val-unseen, SPL)</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>#</th><th>Model</th><th>PM</th><th>DAgger</th><th>Aug</th><th>TL</th><th>NE</th><th>OS</th><th>SR</th><th>SPL</th></tr></thead><tbody><tr><td>1</td><td>Seq2Seq</td><td>-</td><td>-</td><td>-</td><td>7.67</td><td>8.94</td><td>0.25</td><td>0.20</td><td>0.18</td></tr><tr><td>5</td><td>Seq2Seq</td><td>✓</td><td>✓*</td><td>✓</td><td>9.32</td><td>7.77</td><td>0.37</td><td>0.25</td><td>0.22</td></tr><tr><td>6</td><td>CMA</td><td>-</td><td>-</td><td>-</td><td>7.71</td><td>8.14</td><td>0.31</td><td>0.23</td><td>0.22</td></tr><tr><td><strong>10</strong></td><td><strong>CMA</strong></td><td>✓</td><td>✓*</td><td>✓</td><td><strong>8.64</strong></td><td><strong>7.37</strong></td><td><strong>0.40</strong></td><td><strong>0.32</strong></td><td><strong>0.30</strong></td></tr><tr><td>12</td><td>CMA</td><td>-</td><td>✓*</td><td>✓</td><td>8.27</td><td>7.76</td><td>0.37</td><td>0.29</td><td>0.26</td></tr></tbody></table></div>
+<p>(<code>*</code> 表示先 IL pre-train 再 DAgger fine-tune)</p>
+<p><strong>关键观察</strong>:</p>
+<ul>
+<li><strong>DAgger 普遍有效</strong> (Seq2Seq +0.05 SPL, CMA +0.03 SPL), 因为长 horizon 下 exposure bias 被严重放大</li>
+<li><strong>Progress Monitor 单独用反而掉点</strong> (-0.01–0.03 SPL); 必须配 augmentation 才能 hold 住——augmentation 提供更多样的 progress label, 缓解过拟合</li>
+<li><strong>CMA 的最大收益来自 trick stack 而非架构</strong>: 裸 CMA vs 裸 Seq2Seq +0.04 SPL, 但加全套后差距拉到 +0.08 SPL。说明 attention 在长 horizon 任务下需要更好的训练信号才能体现优势</li>
+</ul>
+<h3 id="53-nav-graph-反投影-量化-embodied-gap">5.3 Nav-graph 反投影: 量化 “embodied gap”<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#53-nav-graph-反投影-量化-embodied-gap" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Table 4 摘要 (VLN test, nav-graph 评测)</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Setting</th><th>Model</th><th>NE ↓</th><th>SR ↑</th><th>SPL ↑</th></tr></thead><tbody><tr><td>Nav-graph 训练+测</td><td>VLN-Seq2Seq</td><td>7.85</td><td>0.20</td><td>0.18</td></tr><tr><td>同上</td><td>RCM</td><td>6.12</td><td>0.43</td><td>0.38</td></tr><tr><td>同上</td><td>Back-Translation</td><td>-</td><td>0.51</td><td>0.47</td></tr><tr><td><strong>CE 训练, 反投到 nav-graph</strong></td><td>CMA (PM+DA*+Aug)</td><td>8.55</td><td>0.24</td><td>0.21</td></tr></tbody></table></div>
+<p>把同一个 CMA agent 在连续环境跑出的 path snap 到 nav-graph 节点序列, 提交 VLN leaderboard:</p>
+<ul>
+<li>反投 SPL = 0.21, vs 同期 SOTA Back-Translation = 0.47——<strong>~26 SPL 的 gap</strong></li>
+<li>论文承认 gap 包含两类损耗: (a) ~20% trajectory 在 VLN-CE 直接不可达, agent 必败; (b) 连续 path 通过 sparse panorama 区域时反投质量差。粗估这两项加起来 ~10 SPL</li>
+<li>即便扣掉这 10 SPL, <strong>剩余 ~16 SPL 是 nav-graph 假设的纯红利</strong></li>
+</ul>
+<p>这是论文真正的科学 punchline——之前 VLN 的进步, 至少有相当部分<strong>不是 instruction-following 能力的进步</strong>, 而是 nav-graph 假设的兑现。</p>
+<p><strong>Figure 5. CMA agent 在 unseen 环境的成功 (上, 62 actions) 与失败 (下, 在 wrong couch 处停止) 案例</strong></p>
+<p><img src="../Papers/assets/VLNCE/fig5-Qualitative.png" alt/></p>
+<hr/>
+<h2 id="关联工作">关联工作<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关联工作" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="基于">基于<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#基于" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong><a href="../Papers/2202-DUET" class="internal alias" data-slug="Papers/2202-DUET">DUET</a></strong> &amp; nav-graph VLN 系列 (R2R, RCM, Back-Translation, Self-Monitoring): 论文要反对的对象, 同时也是 baseline 架构灵感来源 (CMA 直接对标 RCM)</li>
+<li><strong>Habitat (Savva et al. ICCV 2019)</strong>: 提供高吞吐 RGB-D simulator, 是 VLN-CE 能跑起来的工程前提</li>
+<li><strong>DD-PPO (Wijmans et al. ICLR 2020)</strong>: PointGoal 预训练 depth ResNet50 直接被 reused, 也奠定了 “depth-first navigation” 的工程惯例</li>
+<li><strong>Matterport3D (Chang et al. 3DV 2017)</strong>: 90 个 indoor 场景的 mesh + panorama, 整个 R2R/VLN-CE 都站在它上面</li>
+</ul>
+<h3 id="后续-vln-ce-作为-benchmark">后续 (VLN-CE 作为 benchmark)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#后续-vln-ce-作为-benchmark" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong><a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a></strong> (TPAMI 2024): VLN-CE 上 topological planning + waypoint predictor 的代表 SOTA, 直接处理了本文留下的 “low-level controller 卡死” 痛点 (Tryout 机制)</li>
+<li><strong><a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a></strong> (RSS 2024): 第一个 video-VLM end-to-end 跑 VLN-CE, 完全甩开 depth/odometry, 论证 LLM scaling 路线在 VLN-CE 的可行性</li>
+<li><strong><a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a></strong>: 双 VLM 架构 + 真机部署, 把 VLN-CE 当作中间 benchmark</li>
+<li><strong><a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a></strong>: streaming video VLM, 在 VLN-CE 上拿 SOTA</li>
+<li><strong><a href="../Papers/2506-VLNR1" class="internal alias" data-slug="Papers/2506-VLNR1">VLN-R1</a></strong> / <strong><a href="../Papers/2512-ETPR1" class="internal alias" data-slug="Papers/2512-ETPR1">ETP-R1</a></strong>: 把 VLN-CE 作为 RL fine-tuning 目标, 延续 R1 范式</li>
+<li><strong><a href="../Papers/2603-DyGeoVLN" class="internal alias" data-slug="Papers/2603-DyGeoVLN">DyGeoVLN</a></strong>: 在 VLN-CE 上加几何先验</li>
+<li><strong><a href="../Papers/2502-VLNav" class="internal alias" data-slug="Papers/2502-VLNav">VLNav</a></strong> / <strong><a href="../Papers/2412-LHVLN" class="internal alias" data-slug="Papers/2412-LHVLN">LH-VLN</a></strong> / <strong><a href="../Papers/2407-VLNFoundationSurvey" class="internal alias" data-slug="Papers/2407-VLNFoundationSurvey">VLN Foundation Survey</a></strong>: 把 VLN-CE 当 reference benchmark 引用</li>
+</ul>
+<h3 id="推进-embodiment-realism-本论文的延伸-arc">推进 embodiment realism (本论文的延伸 arc)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#推进-embodiment-realism-本论文的延伸-arc" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong><a href="../Papers/2507-VLNPE" class="internal alias" data-slug="Papers/2507-VLNPE">VLN-PE</a></strong> (2025): 进一步把 VLN-CE 的 abstracted controller 替换成真实物理 agent, 暴露 VLN-CE 仍残留的”低层离散动作”假设</li>
+<li><strong><a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLN-Verse</a></strong> (2025): 多 embodiment + 物理仿真, 把 “beyond the nav-graph” 推到 “beyond the abstracted controller”</li>
+<li><strong><a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a></strong> (2025): 关注 VLN-CE 推理效率, 是 benchmark 成熟后才会出现的工作类型</li>
+</ul>
+<p>整体看, “beyond the nav-graph” 不是终点, 而是 <strong>embodiment realism arc 的第一步</strong>。本文论证 “nav-graph 假设值 ~25 SPL”; VLN-PE / VLN-Verse 延续追问 “GT pose / abstracted controller 假设还值多少”。可见 <a href="../Topics/VLN-Survey" class="internal alias" data-slug="Topics/VLN-Survey">VLN-Survey</a> 中关于 VLN-CE 在 leaderboard 上的角色梳理。</p>
+<h3 id="方法相关">方法相关<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#方法相关" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>DAgger (Ross et al. AISTATS 2011)</strong>: imitation learning + interactive correction, 论文用来缓解长 horizon 的 exposure bias</li>
+<li><strong>Progress Monitor (Ma et al. ICLR 2019)</strong>: aux loss 监督 agent 估计当前完成度, 这里被发现需要配合数据增强才有效</li>
+<li><strong>Speaker-Follower (Fried et al. NeurIPS 2018) / Back-Translation (Tan et al. NAACL 2019)</strong>: 提供 ~150k 合成 trajectory-instruction pair, 论文直接 reuse</li>
+<li><strong>nDTW (Magalhaes et al. 2019)</strong>: dynamic time warping based metric, 论文采纳后成为后续 VLN-CE 通用 metric</li>
+</ul>
+<hr/>
+<h2 id="论文点评">论文点评<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#论文点评" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="strengths">Strengths<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#strengths" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>Setup-level contribution 极高</strong>: 论文最有价值的是 VLN-CE benchmark 本身——清晰的 trajectory 转换协议、可复现的 Habitat 流水线、open-source codebase + EvalAI leaderboard。从 2022 起几乎所有 VLN 工作都报告 VLN-CE 数字, 一个 benchmark 能塑造一个 sub-field 五年以上的研究节奏, 这是教科书级 Foundation</li>
+<li><strong>5.3 节的反投影实验是论证设计的典范</strong>: 把 “nav-graph 高估真实能力” 这个抽象 claim 落到 ~25 SPL gap 的具体数字。同行可以反驳 caveat (~10 SPL 的 dataset filter 损耗) 但很难否认核心 trend。这种 quantify-the-assumption 的实验范式后来被 VLN-PE / VLN-Verse 继承</li>
+<li><strong>Single-modality ablation 很硬核</strong>: No Vision / No Image / No Depth / No Instruction 全做了, 直接揭示 VLN-CE 早期 baseline 的 grounding 弱点 (No Instruction 17% vs 全模型 20%)。这种诚实 ablation 在当时 VLN 论文里不常见</li>
+<li><strong>依赖 Habitat 的工程选择是对的</strong>: 高吞吐渲染让 DAgger (要 5k trajectory × 6-10 轮) 在合理时间训完, 没有这点 VLN-CE 不可能成为大家都跑得起的 benchmark</li>
+</ol>
+<h3 id="weaknesses">Weaknesses<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#weaknesses" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>23% trajectory 损失被严重 under-discussed</strong>: 论文在 5.3 节用 “10 SPL caveat” 一句带过, 但事实上这意味着 VLN-CE <strong>不是 R2R 的 unbiased subsample</strong>——大概率偏向 well-reconstructed 简单场景。这件事到 2026 年仍然没有被仔细审视</li>
+<li><strong>所有”continuous”都还是离散原子动作</strong>: action space 是 4 个固定 (FORWARD 0.25m / TURN ±15° / STOP), 不是真正的连续控制。一个轮式机器人不会以这种方式执行命令——“continuous environments” 名字略微 oversell, 真正连续的是 environment representation, 不是 action</li>
+<li><strong>GT pose 在训练时仍然给</strong>: 论文虽然说 “agent 推理时无 GPS/heading”, 但训练阶段 supervision 依赖准确 path——agent 本质上学到的 policy 是基于”我知道自己在哪”训出来的。这个隐性假设到 <a href="../Papers/2507-VLNPE" class="internal alias" data-slug="Papers/2507-VLNPE">VLN-PE</a> 才被认真挑战</li>
+<li><strong>Baseline 弱到几乎不能算 strong evidence for nav-graph effect</strong>: best 模型 32 SR, 跟同期 nav-graph SOTA 51 SR 比, 部分 gap 也可能来自架构/训练资源差距而不是 nav-graph prior 本身。理想的反事实是”同样架构 + 训练 budget 下 nav-graph vs CE 的差异”, 论文没做</li>
+<li><strong>Instructions 是 R2R 直接复用</strong>: R2R 的 instruction 是写给 nav-graph 上 4-6 hop 路径的, 在 55 步连续 trajectory 上颗粒度严重不匹配 (“turn left, and enter the hallway” 在 CE 里 “left” 要 turn 几次?)。论文承认这点 (qualitative 5) 但没去重新众包 CE-friendly instructions——后来的 RxR + RxR-CE 弥补了这一缺口</li>
+</ol>
+<h3 id="可信评估">可信评估<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#可信评估" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="artifact-可获取性">Artifact 可获取性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#artifact-可获取性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li><strong>代码</strong>: inference + training, <a href="https://github.com/jacobkrantz/VLN-CE" class="external">github.com/jacobkrantz/VLN-CE<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>, 782⭐ + MIT license, 支持 VLN-CE 与 RxR-CE 两个 dataset</li>
+<li><strong>模型权重</strong>: README 提供 Seq2Seq 与 CMA baseline checkpoint 下载</li>
+<li><strong>训练细节</strong>: 完整 (Adam lr=2.5e-4, batch=5 trajectories, inflection weight=3.2, DAgger β=0.75^n, 5k trajectory/轮, 4 epoch/轮, 6-10 轮收敛)</li>
+<li><strong>数据集</strong>: 开源 (VLN-CE = 4,475 trajectories from R2R train+val splits + ~150k synthetic augmentation, 通过 Matterport3D license 获取)</li>
+</ul>
+<h4 id="claim-可验证性">Claim 可验证性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#claim-可验证性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li>✅ <strong>R2R 的 77% 可移植到连续环境</strong>: 直接由数据集统计可验证, 后续多个工作复现</li>
+<li>✅ <strong>Depth 是 VLN-CE 的关键信号</strong>: ablation Tab. 2 + 后续 ETPNav / Sim2Sim 多个 follow-up 一致复现</li>
+<li>✅ <strong>CMA + 全 trick 在 val-unseen 拿 30 SPL</strong>: 公开 codebase 可复现, EvalAI leaderboard 上多次被 reproduce</li>
+<li>✅ <strong>同 agent 反投到 nav-graph 拿 21 SPL, 远低于 nav-graph 训练的 47 SPL</strong>: VLN test leaderboard 数字可查</li>
+<li>⚠️ <strong>“~25 SPL gap = nav-graph 假设的红利”</strong>: 包含 ~10 SPL 的 dataset filter 损耗 (论文自己 caveat); 严格分离 architecture/training-budget vs nav-graph prior 的两类贡献需要更控制的实验, 论文没做</li>
+<li>⚠️ <strong>“VLN-CE 是更接近真实机器人的设定”</strong>: 仍然依赖 GT pose, abstracted controller, 离散 atomic actions, 90 MP3D scenes 都是 static——比 nav-graph 接近真实, 但远不是 ground truth realism (这个 claim 后来被 VLN-PE 用更严格的 setup 部分反驳)</li>
+</ul>
+<h3 id="notes">Notes<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#notes" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li>
+<p>VLN-CE 至今未脱开的 5 个假设, 写在这里作为后续阅读 anchor:</p>
+<ol>
+<li><strong>MP3D 90 scenes 上限</strong>: 数据规模封顶, 大模型时代显得严重不足 (NaVILA / StreamVLN 都补充 web video / 跨数据集 co-train)</li>
+<li><strong>GT pose 在训练 supervision 中可用</strong>, 推理阶段 odometry 也通常默认完美</li>
+<li><strong>No dynamic obstacles</strong>: 场景里没有人/动物/移动家具</li>
+<li><strong>Abstracted low-level controller</strong>: 4 个原子动作不等于真机控制——FORWARD 0.25m 默认成功, 没有滑动/碰撞物理</li>
+<li><strong>VLN-CE 是 R2R 的 biased subset</strong> (77% 可达率), 偏向 reconstruction 质量好的场景</li>
+</ol>
+</li>
+<li>
+<p>这篇论文真正的思考价值不在它的方法, 而在它”问对了 problem formulation”。VLN 社区如果一直在 nav-graph 上做下去, 大概率走向 over-engineering 在一个极度 abstract 的玩具任务上, 这篇论文把战场拽回 embodied 这边, 才有 2024-2026 年 LLM-based VLN-CE 的爆发</p>
+</li>
+<li>
+<p>❓ 一个开放问题: 既然 5.3 节论证了 “nav-graph 高估了 ~25 SPL”, 那 VLN-CE 上 2024 年 SOTA (NaVILA / StreamVLN ~70 SR) 是不是又把 VLN-CE 的某个隐性假设用到极致了? 如果把 VLN-CE 上的 SOTA agent 放到 VLN-PE 物理 agent 设定下, 还剩多少 SR? 这是 <a href="../Papers/2507-VLNPE" class="internal alias" data-slug="Papers/2507-VLNPE">VLN-PE</a> 在追的问题</p>
+</li>
+</ul>
+<h3 id="rating">Rating<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#rating" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Metrics</strong> (as of 2026-04-28): citation=485, influential=105 (21.6%), velocity=6.7/mo; HF upvotes=N/A (paper page 在 HF 上没创建); github 782⭐ / forks=82 / 90d commits=0 / pushed 477d ago · stale</p>
+<p><strong>分数</strong>: 3 - Foundation</p>
+<p><strong>理由</strong>: 这是 VLN-CE 的奠基论文, 不是因为方法有突破 (CMA 32 SR 早被超过几十个百分点), 而是因为它<strong>定义了一个 sub-field 用 6 年的 benchmark 和 problem formulation</strong>。485 citations + 21.6% influential ratio (远高于典型 ~10%, 说明大量后续工作<strong>实质性继承</strong>了它的 task setup 而非只 cite 一下) + 几乎所有 VLN 现代工作 (<a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> / <a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a> / <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> / <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> / <a href="../Papers/2507-VLNPE" class="internal alias" data-slug="Papers/2507-VLNPE">VLN-PE</a> / <a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a> / <a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLN-Verse</a>) 都在 VLN-CE 上报数, 满足 Foundation rubric 中的 “已成为方向的 de facto 标准评测”。github stale (1.3 年没更新) 不影响——benchmark 类工作的影响力靠 dataset/protocol 沉淀, 不靠 codebase 持续维护。不打 2 - Frontier 是因为它早已超越”前沿”的范畴, 是 VLN-CE 方向的入门必读。</p></article><hr/><div class="page-footer"><div class="giscus" data-repo="liqing-ustc/MindFlow" data-repo-id="R_kgDORucr2w" data-category="Comments" data-category-id="DIC_kwDORucr284C5LSt" data-mapping="pathname" data-strict="1" data-reactions-enabled="1" data-input-position="bottom" data-light-theme="light" data-dark-theme="dark" data-theme-url="https://liqing.io/mindflow/static/giscus"></div></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-content" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="toc-content"><ul id="u3bngi" class="overflow"><li class="depth-0"><a href="#summary" data-for="summary">Summary</a></li><li class="depth-0"><a href="#background--motivation" data-for="background--motivation">Background &amp; Motivation</a></li><li class="depth-0"><a href="#vln-ce-任务定义" data-for="vln-ce-任务定义">VLN-CE 任务定义</a></li><li class="depth-1"><a href="#仿真平台与-action-space" data-for="仿真平台与-action-space">仿真平台与 Action Space</a></li><li class="depth-1"><a href="#trajectory-移植-nav-graph--continuous-mesh" data-for="trajectory-移植-nav-graph--continuous-mesh">Trajectory 移植: nav-graph → continuous mesh</a></li><li class="depth-0"><a href="#baseline-模型" data-for="baseline-模型">Baseline 模型</a></li><li class="depth-1"><a href="#seq2seq-baseline" data-for="seq2seq-baseline">Seq2Seq Baseline</a></li><li class="depth-1"><a href="#cross-modal-attention-cma" data-for="cross-modal-attention-cma">Cross-Modal Attention (CMA)</a></li><li class="depth-1"><a href="#训练-trick" data-for="训练-trick">训练 trick</a></li><li class="depth-0"><a href="#关键实验结果" data-for="关键实验结果">关键实验结果</a></li><li class="depth-1"><a href="#51-no-learning-baseline-揭示-nav-graph-隐性-prior" data-for="51-no-learning-baseline-揭示-nav-graph-隐性-prior">5.1 No-learning baseline 揭示 nav-graph 隐性 prior</a></li><li class="depth-1"><a href="#52-模型与-trick-组合" data-for="52-模型与-trick-组合">5.2 模型与 trick 组合</a></li><li class="depth-1"><a href="#53-nav-graph-反投影-量化-embodied-gap" data-for="53-nav-graph-反投影-量化-embodied-gap">5.3 Nav-graph 反投影: 量化 “embodied gap”</a></li><li class="depth-0"><a href="#关联工作" data-for="关联工作">关联工作</a></li><li class="depth-1"><a href="#基于" data-for="基于">基于</a></li><li class="depth-1"><a href="#后续-vln-ce-作为-benchmark" data-for="后续-vln-ce-作为-benchmark">后续 (VLN-CE 作为 benchmark)</a></li><li class="depth-1"><a href="#推进-embodiment-realism-本论文的延伸-arc" data-for="推进-embodiment-realism-本论文的延伸-arc">推进 embodiment realism (本论文的延伸 arc)</a></li><li class="depth-1"><a href="#方法相关" data-for="方法相关">方法相关</a></li><li class="depth-0"><a href="#论文点评" data-for="论文点评">论文点评</a></li><li class="depth-1"><a href="#strengths" data-for="strengths">Strengths</a></li><li class="depth-1"><a href="#weaknesses" data-for="weaknesses">Weaknesses</a></li><li class="depth-1"><a href="#可信评估" data-for="可信评估">可信评估</a></li><li class="depth-1"><a href="#notes" data-for="notes">Notes</a></li><li class="depth-1"><a href="#rating" data-for="rating">Rating</a></li><li class="overflow-end"></li></ul></div></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.4.1</a> © 2026</p><ul><li><a href="https://github.com/liqing-ustc/MindFlow">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../postscript.js" type="module"></script></html>

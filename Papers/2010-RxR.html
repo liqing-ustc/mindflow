@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Room-Across-Room: Multilingual Vision-and-Language Navigation with Dense Spatiotemporal Grounding</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=Schibsted Grotesk:wght@400;700&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="MindFlow"/><meta property="og:title" content="Room-Across-Room: Multilingual Vision-and-Language Navigation with Dense Spatiotemporal Grounding"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Room-Across-Room: Multilingual Vision-and-Language Navigation with Dense Spatiotemporal Grounding"/><meta name="twitter:description" content="Summary Room-Across-Room (RxR): Multilingual VLN with Dense Spatiotemporal Grounding 核心: 一个比 R2R 大 10× 的多语言 VLN benchmark——126K 指令 × {en, hi, te}，路径平均 14.9 m / 8 edges（vs R2R 的 9.4 ..."/><meta property="og:description" content="Summary Room-Across-Room (RxR): Multilingual VLN with Dense Spatiotemporal Grounding 核心: 一个比 R2R 大 10× 的多语言 VLN benchmark——126K 指令 × {en, hi, te}，路径平均 14.9 m / 8 edges（vs R2R 的 9.4 ..."/><meta property="og:image:alt" content="Summary Room-Across-Room (RxR): Multilingual VLN with Dense Spatiotemporal Grounding 核心: 一个比 R2R 大 10× 的多语言 VLN benchmark——126K 指令 × {en, hi, te}，路径平均 14.9 m / 8 edges（vs R2R 的 9.4 ..."/><meta property="og:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:url" content="https://liqing.io/mindflow/static/og-image.png"/><meta name="twitter:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="liqing.io/mindflow"/><meta property="og:url" content="https://liqing.io/mindflow/Papers/2010-RxR"/><meta property="twitter:url" content="https://liqing.io/mindflow/Papers/2010-RxR"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="Summary Room-Across-Room (RxR): Multilingual VLN with Dense Spatiotemporal Grounding 核心: 一个比 R2R 大 10× 的多语言 VLN benchmark——126K 指令 × {en, hi, te}，路径平均 14.9 m / 8 edges（vs R2R 的 9.4 ..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvbWluZGZsb3cvbWluZGZsb3cvd2Vic2l0ZS9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://liqing.io/mindflow/index.xml"/></head><body data-slug="Papers/2010-RxR"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">MindFlow</a></h2><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="false" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>{let order=[\&quot;DomainMaps\&quot;,\&quot;Papers\&quot;,\&quot;Topics\&quot;,\&quot;Ideas\&quot;,\&quot;Projects\&quot;],aIdx=order.indexOf(a.displayName),bIdx=order.indexOf(b.displayName);return aIdx!==-1&amp;&amp;bIdx!==-1?aIdx-bIdx:aIdx!==-1?-1:bIdx!==-1?1:a.slug?.startsWith(\&quot;Papers/\&quot;)&amp;&amp;b.slug?.startsWith(\&quot;Papers/\&quot;)?b.displayName.localeCompare(a.displayName):a.displayName.localeCompare(b.displayName)}&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>{node.isFolder||(node.displayName=node.slugSegment)}&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="lrzxnl"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div><div class="sidebar-tags"><span class="sidebar-tags-title">Popular Tags</span><div class="sidebar-tag-cloud"><a href="/mindflow/tags/VLA" class="sidebar-tag-pill">#VLA</a><a href="/mindflow/tags/manipulation" class="sidebar-tag-pill">#manipulation</a><a href="/mindflow/tags/embodied-reasoning" class="sidebar-tag-pill">#embodied-reasoning</a><a href="/mindflow/tags/VLM" class="sidebar-tag-pill">#VLM</a><a href="/mindflow/tags/VLN" class="sidebar-tag-pill">#VLN</a><a href="/mindflow/tags/navigation" class="sidebar-tag-pill">#navigation</a><a href="/mindflow/tags/task-planning" class="sidebar-tag-pill">#task-planning</a><a href="/mindflow/tags/computer-use" class="sidebar-tag-pill">#computer-use</a><a href="/mindflow/tags/agentic-RL" class="sidebar-tag-pill">#agentic-RL</a><a href="/mindflow/tags/world-model" class="sidebar-tag-pill">#world-model</a></div></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../Papers/">Papers</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>2010-RxR</a></div></nav><h1 class="article-title">Room-Across-Room: Multilingual Vision-and-Language Navigation with Dense Spatiotemporal Grounding</h1><div class="paper-meta"><span class="paper-venue">EMNLP 2020</span><span class="paper-authors"><span class="meta-sep">·</span>Alexander Ku <button class="et-al-btn" aria-expanded="false">et al.</button><span class="authors-full" style="display:none"><span>, Peter Anderson</span><span>, Roma Patel</span><span>, Eugene Ie</span><span>, Jason Baldridge</span></span></span></div><p show-comma="true" class="content-meta"><time datetime="2020-10-15T00:00:00.000Z">Oct 15, 2020</time><span>31 min read</span></p><ul class="tags"><li><a href="../tags/VLN" class="internal tag-link">VLN</a></li><li><a href="../tags/navigation" class="internal tag-link">navigation</a></li><li><a href="../tags/instruction-following" class="internal tag-link">instruction-following</a></li></ul></div></div><article class="popover-hint"><h2 id="summary">Summary<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#summary" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<blockquote class="callout abstract" data-callout="abstract">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>Room-Across-Room (RxR): Multilingual VLN with Dense Spatiotemporal Grounding </p></div>
+                  
+                </div>
+<div class="callout-content">
+<ul>
+<li><strong>核心</strong>: 一个比 R2R 大 10× 的多语言 VLN benchmark——126K 指令 × {en, hi, te}，路径平均 14.9 m / 8 edges（vs R2R 的 9.4 m / 5 edges），每条指令都带 word-level 与 viewpoint-level pose trace 对齐，主评测指标从 SR/SPL 切到 nDTW/sDTW（path fidelity）。</li>
+<li><strong>方法</strong>: Two-level path sampling（room-graph → panorama-graph + greedy coverage）刻意打破 R2R 的”shortest path / 直线 prior”；Guide annotator 边走边说，annotation tool 同步记录 6-DoF pose 和 ASR-aligned 文本时间戳；Follower 听音频复现路径，pose trace 也保留作为额外训练信号。</li>
+<li><strong>结果</strong>: 多语言 RCM-style baseline 在 val-unseen 上 SR ≈ 22-23 / nDTW ≈ 38-40（人类 SR ≈ 90-97 / nDTW ≈ 78-82），头顶空间巨大；monolingual > multilingual > MT-cross-translation；Guide+Follower 路径联合训练全 metric 提升；R2R↔RxR transfer 失败但多任务训练在两个 dataset 上都最好。</li>
+<li><strong>Sources</strong>: <a href="https://arxiv.org/abs/2010.07954" class="external">paper<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> | <a href="https://research.google/blog/rxr-a-multilingual-benchmark-for-navigation-instruction-following/" class="external">website<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> | <a href="https://github.com/google-research-datasets/RxR" class="external">github<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+<li><strong>Rating</strong>: 3 - Foundation（VLN 子领域 de facto 第二大 benchmark，nDTW/sDTW 作为 path-fidelity 主指标的奠基，社区移植成的 RxR-CE 是 <a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> / <a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a> / <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> / <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> / <a href="../Papers/2509-NavFoM" class="internal alias" data-slug="Papers/2509-NavFoM">NavFoM</a> / <a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a> / <a href="../Papers/2603-PROSPECT" class="internal alias" data-slug="Papers/2603-PROSPECT">PROSPECT</a> 的标配评测）</li>
+</ul>
+</div>
+</blockquote>
+<p><strong>Key Takeaways:</strong></p>
+<ol>
+<li><strong>Path biases 是 R2R 的隐藏作弊面</strong>: R2R 全是 start→goal 的最短路径且长度集中在 4-6 edges，agent 学到 “go straight” prior 就能拿到不平凡 SR。RxR 用 two-level sampling 显式破坏这个 prior（44.5% 路径非 shortest，平均比 shortest 长 27.4%，长度从 ~5 到 ~20 edges 高方差）。“random-heading-then-go-straight” baseline 在 R2R 上 SR=8.2、在 RxR 上只有 8.0 但 nDTW 从 28.3 跌到 16.3——长指令 + 弯路让 path-fidelity 类 metric 真正分得开。</li>
+<li><strong>Pose trace = word-pixel level dense alignment</strong>: Guide 边在 simulator 里走边说话，tool 记录 6-DoF camera pose 时间戳；之后 annotator 自己转写音频，再用 ASR + DTW 把转写文本时间戳化。结果是一个**“每个词在哪个 viewpoint / 视角朝向被说出”** 的 ground truth, 可以投回 panorama 的 2D heatmap 或 3D semantic mesh。这是 R2R 完全没有的 supervisory signal——R2R 后续的 sub-instruction-to-viewpoint 对齐（如 FGR2R, Hong 2020）都是事后人工标的。</li>
+<li><strong>nDTW/sDTW 是为 RxR 量身定的指标</strong>: SR 在长弯路 + 大方差长度下退化（agent 走错很远但终点恰好在 3m 内也算成功）；SPL 用 path length 归一但只看终点。nDTW = 1 / mean DTW distance to ground-truth trajectory，sDTW = nDTW × SR，明确惩罚 fidelity 偏离。RxR 论文显式声明 “we focus primarily on NDTW and SDTW”——把社区注意力从 goal-reaching 拽向 instruction-following。</li>
+<li><strong>Multilingual ≠ multilingual win</strong>: 把三种语言混训（experiment 4）反而比 monolingual（experiment 3）差（~3-7 SR/nDTW points），<strong>机器翻译的 cross-translation 反而再降一档</strong>（experiment 5）。这复现了 multilingual MT/ASR 里”高资源语言被稀释”的现象，但说明纯靠 scale + 翻译对 grounded language 学不到 transfer。</li>
+<li><strong>Annotator 行为本身是数据</strong>: Fig. 5 显示 Guide / Follower 在每个 viewpoint 平均只观察 27% 的全景，<strong>远小于</strong> 一般 VLN agent 默认 attend 整个 panorama 的假设——这是为 visual attention supervision 提供 evidence-based prior 的依据，但论文自己实验（exp. 6）显示 supervise visual attention 给 mixed results（NDTW 涨、SR 跌），说明这个先验和 RL/SR 优化目标存在张力。</li>
+</ol>
+<p><strong>Teaser. RxR 把 annotator 的 virtual pose 与口述指令对齐到 Matterport mesh 上</strong></p>
+<p><img src="https://ar5iv.labs.arxiv.org/html/2010.07954/assets/figures/fig1image-alex.png" alt/></p>
+<p>Fig. 1 把一条 RxR 指令展示在 Matterport3D 室内 mesh 的鸟瞰里：彩色路径是 Guide 走过的 viewpoints，文本气泡里的词被着色对应到说出该词时 Guide 所在的 viewpoint 与朝向。这种”词→3D pose 对齐”是 RxR 区别于所有先前 VLN dataset 的核心 artifact。</p>
+<hr/>
+<h2 id="1-motivationr2r-的四个-gap">1. Motivation：R2R 的四个 gap<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#1-motivationr2r-的四个-gap" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>VLN 的标准 setup 自 R2R (Anderson 2018b) 起就被 4 个性质卡住，RxR 一一对应解决：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>维度</th><th>R2R</th><th>RxR</th><th>解决方式</th></tr></thead><tbody><tr><td>语言</td><td>单一英文</td><td>en (US/IN) + hi + te</td><td>三个 typologically diverse 语言独立采集，非翻译</td></tr><tr><td>规模</td><td>22K instr</td><td>126K instr / 9.8M words</td><td>14K paths × 3 instr × 3 lang</td></tr><tr><td>Grounding 粒度</td><td>段落级（与 viewpoint sequence 对齐）</td><td>词级（与 6-DoF pose 时间戳对齐）</td><td>边说边录音，ASR + DTW 时间戳化</td></tr><tr><td>路径分布</td><td>shortest 4-6 edges</td><td>high-variance, 非最短</td><td>Two-level room-graph sampling + greedy coverage</td></tr><tr><td>Demonstrations</td><td>仅 Guide instruction</td><td>Guide + Follower pose trace</td><td>Follower 验证 + 数据增益</td></tr></tbody></table></div>
+<p>为什么 multilinguality 是关键？论文引 Munnich (2001), Haun (2011), Bender &amp; Beller (2014) 论证不同语言对<strong>接触/支撑关系</strong>、<strong>reference frame</strong>（egocentric vs allocentric）、<strong>时态指代</strong>有不同编码方式——这些恰好是 navigation instruction 的核心要素。en/hi/te 三个语系（Indo-European Germanic / Indo-European Indo-Aryan / Dravidian）各异，把”VLN model 是否真在做语言 grounding”从 anglocentric 假设里解放出来。</p>
+<blockquote>
+<p>❓ 但论文的 Table 3 已经显示，allocentric relation 比例在 hi (68%) / te (76%) / en-IN (92%) 都比 en-US (76%) 高，coreference 在 hi (40%) / en-US (64%) / te (76%) 也差异巨大——这究竟是<strong>语言</strong>的差异，还是<strong>annotator pool 习惯</strong>的差异？论文自己也承认 “not clear how much … can be attributed to language, dialect, annotator pools, or other factors”。这是个 confound，讨论 multilingual VLN 时要小心。</p>
+</blockquote>
+<hr/>
+<h2 id="2-two-level-path-sampling">2. Two-Level Path Sampling<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#2-two-level-path-sampling" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>RxR 路径要满足 4 个 desiderata：(a) 长度高方差；(b) 允许 indirect approach；(c) 自然（不绕圈、不频繁折返）；(d) 视点覆盖均匀。直接在 panorama graph 上随机采样很难同时满足，论文设计了<strong>两层采样</strong>。</p>
+<p><strong>Figure 2. Two-level path sampling: 先在 room graph 上采 simple path，再在每个 room 内取 panorama 最短路径</strong></p>
+<p><img src="https://ar5iv.labs.arxiv.org/html/2010.07954/assets/x1.png" alt/></p>
+<h3 id="preliminaries">Preliminaries<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#preliminaries" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>：panorama navigation graph，节点是 360° 全景图（约每 2.2 m 一个），90 个 indoor environments</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.00773em;">R</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>：MP3D 提供的 human-defined room 划分，每个 room <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> 节点的非重叠子集</li>
+<li><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span></span>：room graph，节点是每个 room 的连通分量，<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> 之间有边当且仅当合并子图连通</li>
+</ul>
+<h3 id="path-generation">Path Generation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#path-generation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>枚举 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span></span> 上<strong>最多 5 个 rooms / 跨 2 个 building level</strong> 的所有 simple paths <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。给定一个 room path：</p>
+<ol>
+<li>在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span>（被 room path 限制的 panorama 子图）里</li>
+<li>随机从 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 取 start <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，从 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 取 goal <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>panorama 路径 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 取 start→goal 在 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span> 里的最短路径</li>
+</ol>
+<p><strong>为什么这样设计</strong>：room 大小变化大（卧室 vs 客厅），room path 限制保证 naturalness（人倾向于按 room 描述：“穿过这扇雕花木门”），且最短路径在 room graph 而非 panorama graph 上算 → panorama graph 上的最终路径<strong>不一定是</strong>全局最短路径，自动满足 desideratum (b)。</p>
+<h3 id="greedy-coverage-selection">Greedy Coverage Selection<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#greedy-coverage-selection" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>从所有候选路径里，按</p>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.7076em;vertical-align:-1.3861em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">m</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.05em;"><span style="top:-1.9em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3281em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mrel mtight">∈</span><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3173em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">m</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3861em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathcal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+<p>的最小值贪心挑选下一条加入数据集 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。第一项 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mord">/</span><span class="mord mathnormal">L</span></span></span></span>（直线距离 / 路径长度）偏小 → 偏好绕路；第二项是已选路径里 panorama 出现次数的均值 → 偏好覆盖低频 viewpoint。max path 40 m，每个 building 最多 500 paths。</p>
+<h3 id="path-statistics">Path Statistics<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#path-statistics" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>最终 16,522 paths：11,089 train / 1,232 val-seen / 1,517 val-unseen / 2,684 test，环境划分与 R2R 一致。</p>
+<p><strong>Figure 3. RxR vs R2R 路径分布对比</strong></p>
+<p><img src="https://ar5iv.labs.arxiv.org/html/2010.07954/assets/x3.png" alt/></p>
+<p>Fig. 3 同时展示三个对比：(1) 路径长度（米）的方差 RxR 远大于 R2R；(2) edges 数从 R2R 的 4-6 集中分布扩展到 RxR 的 4-20 长尾；(3) panorama 覆盖度更均匀（R2R 大量 viewpoint 从未被任何 path 覆盖）。</p>
+<hr/>
+<h2 id="3-data-collection">3. Data Collection<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3-data-collection" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>RxR 的 annotation tool 是论文真正的 engineering contribution，不只是采更多数据。</p>
+<h3 id="guide-task">Guide Task<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#guide-task" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Guide 在 web-based MP3D simulator 里<strong>边走边口述</strong>指令（不像 R2R 是写）。Tool 同步记录：</p>
+<ul>
+<li>6-DoF camera pose 时间序列（heading, elevation, position）</li>
+<li>音频文件</li>
+<li>annotator 自己事后转写的高质量文本</li>
+</ul>
+<p>文本和 pose 通过 Google Cloud ASR 输出 + DTW 对齐 → 得到 word-level timestamp，进而每个词关联到 Guide 当时的 6-DoF pose。这个流程灵感来自 Localized Narratives (Pont-Tuset 2020)——image captioning 里让 annotator 一边描述一边移动鼠标。</p>
+<p>每语言 14K paths × 3 instr，其中 12.8K paths 在三种语言里共享（→ 跨语言对齐研究的天然 testbed），1.2K paths 各语言独有（→ 增加多样性）。Guide 任务平均 458 秒（60s 录音 + ~400s 转写）。</p>
+<h3 id="follower-task">Follower Task<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#follower-task" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Annotator 听 Guide 的音频，在 simulator 里复现路径，可暂停 / 倒退 / 快进。完成后给 instruction 打分。Follower task 平均 132 秒。</p>
+<p><strong>质量控制流程</strong>：如果 Follower 没成功（终点 >3 m），换一个 Follower；再失败则<strong>重新生成</strong> Guide+Follower 标注。最终保留三对里最成功的一个。这个 multi-pass 验证是 RxR human SR=93.9% 的关键。</p>
+<p><strong>Follower pose trace</strong> 也被记录——这给了第二条 grounding signal：同一条 instruction 下，<strong>人类听者</strong>怎么解读它，与 Guide 自己的 pose trace 对照。Fig. 4 给出 en-US 例子，Follower 路径稍长但 visual-textual alignment 模式与 Guide 类似。</p>
+<p><strong>Figure 4. Guide vs Follower 同一指令下的 pose trace 与全景图对齐</strong></p>
+<p><img src="https://ar5iv.labs.arxiv.org/html/2010.07954/assets/%22figures/example1/rxr_exampled_Guide_0%22.png" alt/></p>
+<h3 id="dataset-statistics">Dataset Statistics<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#dataset-statistics" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Table 2. Per-language summary</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th></th><th>en-IN</th><th>en-US</th><th>en</th><th>hi</th><th>te</th><th>Total</th></tr></thead><tbody><tr><td>Instructions</td><td>28010</td><td>13992</td><td>42002</td><td>42068</td><td>41999</td><td>126069</td></tr><tr><td>Paths</td><td>14005</td><td>13992</td><td>14005</td><td>14026</td><td>14003</td><td>16522</td></tr><tr><td>Avg words</td><td>87</td><td>129</td><td>101</td><td>76</td><td>56</td><td>78</td></tr><tr><td>Avg WordPieces</td><td>104</td><td>159</td><td>123</td><td>143</td><td>184</td><td>150</td></tr><tr><td>Avg audio (s)</td><td>64</td><td>80</td><td>69</td><td>53</td><td>58</td><td>60</td></tr></tbody></table></div>
+<p>平均 78 词 vs R2R 的 29 词，最长的 en-US 平均 129 词。<strong>用 wordpiece 衡量更公平</strong>（te 是黏着语，wordpiece 平均 184），不同语系拉到可比刻度。</p>
+<h3 id="语言学特征对比-table-3-摘要">语言学特征对比 (Table 3 摘要)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#语言学特征对比-table-3-摘要" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>人工分析 25 paths 的 instruction，统计每种 phenomenon 在多少句子里出现 (<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">p</span></span></span></span>%) 和平均出现次数 (<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">μ</span></span></span></span>)：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Phenomenon</th><th>R2R en</th><th>RxR en-US</th><th>解读</th></tr></thead><tbody><tr><td>Reference (entity 提及)</td><td>100% / 3.7</td><td>100% / 8.3</td><td>RxR 长指令必然提更多 entity</td></tr><tr><td>Coreference</td><td>32% / 0.5</td><td>64% / 5.3</td><td>discourse coherence 远高</td></tr><tr><td>Allocentric relation</td><td>20% / 0.2</td><td>76% / 2.4</td><td>”桌子下方” 这种第三人称空间关系</td></tr><tr><td>Egocentric relation</td><td>80% / 1.2</td><td>60% / 2.3</td><td>”your left/right” 等同水平</td></tr><tr><td>State verification</td><td>8% / 0.1</td><td>84% / 3.1</td><td>”你应该在 balcony” 这种自检</td></tr><tr><td>Temporal condition</td><td>28% / 0.4</td><td>52% / 0.8</td><td>”until you see…”</td></tr></tbody></table></div>
+<blockquote>
+<p>RxR 比 R2R 在 coreference / allocentric / state verification 三处量级跃升——这意味着光靠 R2R 训练的 model 对这些语言现象 underfit，难直接迁移到 RxR。这正是后面 Table 6 transfer learning 失败的语言学根源。</p>
+</blockquote>
+<hr/>
+<h2 id="4-evaluation-metrics">4. Evaluation Metrics<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#4-evaluation-metrics" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>RxR 用 6 个 metrics：PL (path length), NE↓ (navigation error to goal), SR↑, SPL↑ (Anderson 2018a), nDTW↑, sDTW↑ (Ilharco 2019)。</p>
+<p><strong>为什么 RxR 必须用 nDTW/sDTW</strong>：</p>
+<ul>
+<li><strong>SR / SPL</strong> 只看 goal 是否到达 / 路径效率，<strong>对走错弯路但凑巧到达不敏感</strong>。R2R shortest-path setting 下两者足够；RxR 路径绕行 27.4%，agent 完全可能”无视指令直奔终点”还拿满 SR。</li>
+<li><strong>NDTW</strong> = <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0812em;vertical-align:-0.25em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mord">−</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8312em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">d</span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0833em;"><span class="mord">ˉ</span></span></span></span></span></span></span><span class="mord">/</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">h</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，其中 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8312em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8312em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">d</span></span><span style="top:-3.2634em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.0833em;"><span class="mord">ˉ</span></span></span></span></span></span></span></span></span></span> 是 agent path 与 reference path 的 mean DTW distance，<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">h</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是阈值（3 m）。它<strong>显式衡量 fidelity</strong>——绕远 / 抄近 / 错入 detour 都被 penalty。</li>
+<li><strong>SDTW</strong> = NDTW × SR，结合 success 与 fidelity。是 RxR-CE leaderboard 的主排名指标。</li>
+</ul>
+<p><strong>Table 4. Simple baselines on val-unseen</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Setting</th><th>Dataset</th><th>PL</th><th>NE↓</th><th>SR↑</th><th>SPL↑</th><th>SDTW↑</th><th>NDTW↑</th></tr></thead><tbody><tr><td>Random walk</td><td>R2R</td><td>10.4</td><td>9.5</td><td>5.1</td><td>3.6</td><td>3.8</td><td>27.6</td></tr><tr><td>Random walk</td><td>RxR</td><td>16.8</td><td>12.4</td><td>8.8</td><td>2.5</td><td>3.8</td><td>18.2</td></tr><tr><td>Rand head + go straight</td><td>R2R</td><td>9.7</td><td>9.9</td><td>8.2</td><td>7.2</td><td>6.6</td><td>28.3</td></tr><tr><td>Rand head + go straight</td><td>RxR</td><td>15.1</td><td>13.5</td><td>8.0</td><td>3.4</td><td>3.9</td><td>16.3</td></tr><tr><td>GT first step + straight</td><td>R2R</td><td>9.5</td><td>6.2</td><td>27.2</td><td>25.7</td><td>23.6</td><td>52.6</td></tr><tr><td>GT first step + straight</td><td>RxR</td><td>15.3</td><td>11.4</td><td>13.7</td><td>7.5</td><td>8.3</td><td>25.9</td></tr></tbody></table></div>
+<p>“给对第一步然后直走”在 R2R 拿 SR=27.2 / NDTW=52.6（接近半数 R2R 路径就是直线到目标），在 RxR 跌到 SR=13.7 / NDTW=25.9。这组 baseline 直接证明 R2R 的 shortest-path bias 给了 dumb agent 多大便宜，也说明 RxR 在结构上拒绝了这种 free lunch。</p>
+<hr/>
+<h2 id="5-baselines--experiments">5. Baselines &amp; Experiments<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#5-baselines--experiments" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="agent-架构">Agent 架构<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#agent-架构" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>类 RCM (Wang 2019) 的 LSTM decoder + dot-product attention，但因 RxR 指令长（平均 78 词），把 bidirectional LSTM instruction encoder 换成更并行的 <strong>CNN encoder</strong>（1D conv + ReLU + residual）。Word embedding 来自预训练 multilingual BERT（同一个 BERT cover 所有三种语言）。</p>
+<p><strong>视觉 encoder</strong>：EfficientNet-B4，预训练用 Conceptual Captions image-text dual encoder 而非 ImageNet classification——论文报这给”noticeable improvements”，与 <a href="../Papers/2407-VLNFoundationSurvey" class="internal alias" data-slug="Papers/2407-VLNFoundationSurvey">VLN survey</a> 里 “in-domain VL pre-training > 通用 ImageNet” 的结论一致。</p>
+<h3 id="主要实验结论">主要实验结论<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#主要实验结论" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Table 5. Monolingual vs multilingual on val-unseen</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Exp</th><th>Method</th><th>G</th><th>F</th><th>X</th><th>NE↓ (en/hi/te)</th><th>SR↑ (en/hi/te)</th><th>NDTW↑ (en/hi/te)</th></tr></thead><tbody><tr><td>(1)</td><td>Mono</td><td>✓</td><td></td><td></td><td>10.1/9.7/9.4</td><td>25.6/24.8/28.0</td><td>41.3/38.8/43.7</td></tr><tr><td>(2)</td><td>Mono</td><td></td><td>✓</td><td></td><td>10.3/9.2/9.5</td><td>23.9/28.0/27.0</td><td>37.0/45.9/43.9</td></tr><tr><td>(3)</td><td>Mono</td><td>✓</td><td>✓</td><td></td><td>9.8/9.2/9.1</td><td>26.1/29.6/29.8</td><td>42.4/45.5/45.6</td></tr><tr><td>(4)</td><td>Multi</td><td>✓</td><td>✓</td><td></td><td>11.0/10.9/11.0</td><td>22.2/23.0/23.1</td><td>38.6/39.2/38.8</td></tr><tr><td>(5)</td><td>Multi</td><td>✓</td><td>✓</td><td>✓</td><td>11.5/11.4/11.4</td><td>20.0/18.7/20.3</td><td>36.3/36.0/36.7</td></tr><tr><td>(6)</td><td>Multi*</td><td>✓</td><td>✓</td><td></td><td>11.0/10.7/10.7</td><td>21.9/22.6/23.2</td><td>38.6/39.9/39.7</td></tr><tr><td>(H)</td><td>Human</td><td></td><td></td><td></td><td>1.3/0.6/0.8</td><td>90.4/96.8/94.7</td><td>77.7/82.2/79.2</td></tr></tbody></table></div>
+<p>(G = Guide path / F = Follower path / X = MT cross-translation; Multi* = + visual attention supervision from pose traces)</p>
+<p>四个核心观察：</p>
+<ol>
+<li><strong>Guide + Follower 联合训练 (3) 全面超过单独 (1) 或 (2)</strong>：Follower path 提供了”同一指令下的不同有效路径”，data augmentation 效果稳。</li>
+<li><strong>Monolingual (3) > Multilingual (4) ~ 3-7 points across metrics</strong>: 多语言混训稀释了高资源语言，复现 MT/ASR 经典现象。</li>
+<li><strong>加 MT cross-translation (5) 进一步降</strong>: 翻译噪声 + 大多数 Guide path 已被三种语言原生覆盖 → 翻译对增量信息少，反而引入分布噪声。</li>
+<li><strong>Visual attention supervision (6) mixed</strong>: NDTW 略涨（38.6→38.6/39.9/39.7）但 SR 略跌——supervision 把 agent 的 attention 推向”人类实际看的部分”，这是更 faithful 的信号但与 RL reward (NDTW + NE) 不完全对齐，<strong>揭示 SR-driven 训练目标和 fidelity-driven 数据信号的张力</strong>。</li>
+</ol>
+<p><strong>Table 6. Multitask R2R + RxR</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Exp</th><th>R2R train</th><th>RxR train</th><th>R2R SR</th><th>en SR</th><th>hi SR</th><th>te SR</th></tr></thead><tbody><tr><td>(7) R2R only</td><td>✓</td><td></td><td>36.5</td><td>14.5</td><td>9.6</td><td>9.7</td></tr><tr><td>(4) RxR only</td><td></td><td>✓</td><td>19.2</td><td>22.2</td><td>23.0</td><td>23.1</td></tr><tr><td>(8) Both</td><td>✓</td><td>✓</td><td>37.8</td><td>22.5</td><td>23.6</td><td>23.1</td></tr></tbody></table></div>
+<p><strong>Multitask (8) 在两个 dataset 上都最好</strong>，但 transfer (R2R→RxR 或 RxR→R2R) 比 in-domain 差很多——RxR 长指令 + 弯路 + 多语言对 R2R agent out-of-domain，反向 R2R agent 在 RxR 上无法 exploit shortest-path bias。这是支持 “RxR 才是真正测试 grounded language understanding 的 benchmark” 的关键证据。</p>
+<p><strong>Unimodal ablation (Table 7)</strong>: vision-only SR=7.8 vs language-only SR=16-18 vs full SR=22-23——<strong>语言占主要信息</strong>。原因：即使没视觉，“turn left” / “go upstairs” 在 navigation graph 拓扑里仍部分可解（限定了候选 viewpoint）。这也是 RCM-style baseline 的局限——视觉信号在长指令下没充分利用。</p>
+<p><strong>Pose trace 的 attention 统计 (Fig. 5)</strong>: Guide / Follower 在第一个 viewpoint 平均观察 43% / 44% 的 panorama，后续 viewpoint 只看 27% / 28%。<strong>远低于</strong> 标准 VLN agent 默认 attend 整张 panorama 的假设。这是论文留给后续工作的重要 evidence——agent 应该学会<strong>选择性观察</strong>，而不是 panorama-wide attention。</p>
+<p><strong>Figure 5. 上：Instruction progress vs path progress 对齐；下：Guide/Follower 在 panorama 上的注视 heatmap（centered on initial perspective）</strong></p>
+<p><img src="https://ar5iv.labs.arxiv.org/html/2010.07954/assets/x4.png" alt/></p>
+<h3 id="test-split">Test split<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#test-split" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Test 分 test-standard / test-challenge 两个 split, 长期保留作为 leaderboard 评测，对应 RxR-Habitat Challenge（CVPR 2022 起）。</p>
+<hr/>
+<h2 id="6-rxr-ce社区移植到连续环境">6. RxR-CE：社区移植到连续环境<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#6-rxr-ce社区移植到连续环境" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>⚠️ 这部分<strong>不在本论文里</strong>，但理解 RxR 在 2026 年的影响必须提到。</p>
+<p>原 RxR 仍在 panorama navigation graph 上（discrete VLN），与 R2R 同 setup。社区（VLN-CE 框架, Krantz 2020）将 RxR 路径<strong>移植到 Habitat 连续环境</strong>：每个 panorama → 3D Matterport mesh 上的位置；动作变为 FORWARD 0.25 m / TURN 15° / STOP 的 low-level control。</p>
+<p>RxR-CE 关键设定（与 VLN-CE 不同）：</p>
+<ul>
+<li><strong>Chassis radius 0.18 m</strong>（VLN-CE 是 0.10 m）—— agent 体型更大，更容易卡墙</li>
+<li><strong>Sliding forbidden</strong> —— 撞墙后不能贴墙滑行（VLN-CE 允许）</li>
+<li><strong>Path 平均 14.9 m</strong>（VLN-CE 9.89 m）—— 长程导航 + 障碍避让难度叠加</li>
+</ul>
+<p>这三个性质让 RxR-CE 成为<strong>所有现代 VLN-CE 方法的核心试金石</strong>。<a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> 用 Tryout 解决 sliding-forbidden deadlock 在 RxR-CE 上拿 51.21 SR / 41.30 SDTW (test-unseen)，比前任 CWP-RecBERT +26.36 SR / +22.25 SDTW，是 VLN-CE 史上最大单步跃升之一。后续：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>方法</th><th>RxR-CE val-unseen SR</th><th>备注</th></tr></thead><tbody><tr><td><a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a></td><td>54.79</td><td>topological planner + Tryout</td></tr><tr><td><a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a></td><td>~45</td><td>video-LLM, monocular RGB</td></tr><tr><td><a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a></td><td>~50+</td><td>dual-system VLA</td></tr><tr><td><a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a></td><td>~60+</td><td>streaming video VLA</td></tr><tr><td><a href="../Papers/2509-NavFoM" class="internal alias" data-slug="Papers/2509-NavFoM">NavFoM</a></td><td>64.4</td><td>VLN foundation model</td></tr><tr><td><a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a></td><td>67.0</td><td>efficient streaming VLA</td></tr><tr><td><a href="../Papers/2603-PROSPECT" class="internal alias" data-slug="Papers/2603-PROSPECT">PROSPECT</a></td><td>60.3</td><td>prospective planning</td></tr></tbody></table></div>
+<p><strong>nDTW/sDTW 在 RxR-CE 上的角色更重要</strong>：sliding-forbidden + 长指令 + 大底盘让 SR-only 优化容易陷入”绕一大圈到达”的解，nDTW penalty 把这类解过滤掉。RxR-CE leaderboard 排名以 nDTW（或 SDTW）为主。</p>
+<hr/>
+<h2 id="关联工作">关联工作<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关联工作" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="基于">基于<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#基于" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>R2R</strong> (Anderson 2018b)：VLN 起点 benchmark，RxR 是其 superset / 升级版，path 设计直接对标其 shortcoming</li>
+<li><strong>Localized Narratives</strong> (Pont-Tuset 2020)：image captioning 里 mouse-pointer + speech 的 dense alignment idea, RxR 把它升级到 3D 环境</li>
+<li><strong>RCM</strong> (Wang 2019): baseline agent 架构来源</li>
+<li><strong>Conceptual Captions</strong> (Sharma 2018) + <strong>EfficientNet</strong> (Tan &amp; Le 2019): 视觉 encoder 预训练</li>
+<li><strong>VALAN</strong> (Lansing 2019): 训练框架</li>
+<li><strong>NDTW / SDTW</strong> (Ilharco 2019): metric 来源——RxR 把它从可选指标抬到主指标地位</li>
+<li><strong>DTW for ASR-text alignment</strong>: Google Cloud Speech-to-Text + DTW 做 word-pose 对齐</li>
+</ul>
+<h3 id="对比">对比<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#对比" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>R2R</strong>: 直接对照（Table 1, Table 4, Fig. 3）</li>
+<li><strong>CVDN</strong> (Thomason 2019b): dialogue-based VLN, instruction 数量更小</li>
+<li><strong>Touchdown</strong> (Chen 2019): outdoor VLN, 长指令但单语言</li>
+<li><strong>REVERIE</strong> (Qi 2020): goal-oriented VLN with object grounding</li>
+<li><strong>ALFRED</strong> (Shridhar 2020): 合成环境 + manipulation, 不是 photo-realistic</li>
+<li><strong>R4R</strong> (Jain 2019): R2R 的 longer-paths 扩展, 仍单语言, RxR 更彻底</li>
+</ul>
+<h3 id="方法相关">方法相关<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#方法相关" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>VLN-CE</strong> (Krantz 2020): 连续环境框架，RxR-CE 移植的基础设施</li>
+<li><strong>Marky</strong> (Wang 2022a / Kamath 2023): instruction synthesizer, 在 RxR 上接近 human quality, 是 <a href="../Papers/2407-VLNFoundationSurvey" class="internal alias" data-slug="Papers/2407-VLNFoundationSurvey">VLN survey</a> §4.2 反复引用的代表</li>
+<li><strong>HAMT</strong> (Chen 2021), <a href="../Papers/2202-DUET" class="internal alias" data-slug="Papers/2202-DUET">DUET</a> (Chen 2022): VLN history encoder / planner, 在 R2R 和 RxR 上都被用作 baseline</li>
+<li><strong>FGR2R</strong> (Hong 2020): R2R 的 sub-instruction-to-viewpoint alignment, 是事后人工标注; RxR 的 word-pose alignment 是 collection-time by-product</li>
+</ul>
+<h3 id="后续扩展">后续/扩展<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#后续扩展" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>RxR-Habitat Challenge</strong> (CVPR 2022 起): 把 RxR 作为 sliding-forbidden VLN-CE 的标准评测</li>
+<li><a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a>: RxR-CE +26 SR breakthrough, 范式级跃升</li>
+<li><a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a> / <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> / <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> / <a href="../Papers/2509-NavFoM" class="internal alias" data-slug="Papers/2509-NavFoM">NavFoM</a> / <a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a> / <a href="../Papers/2603-PROSPECT" class="internal alias" data-slug="Papers/2603-PROSPECT">PROSPECT</a>: 新一代 VLA / streaming / foundation model，全部 report RxR-CE</li>
+<li><a href="../Papers/2506-VLNR1" class="internal alias" data-slug="Papers/2506-VLNR1">VLN-R1</a> / <a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLNVerse</a>: RL 训练 / 多 benchmark 框架, RxR 是其评测标配</li>
+<li><strong>ScaleVLN</strong> (Wang 2023): 因 RxR annotation 成本极高 (Guide 458s / Follower 132s = ~10 min/instruction), 推动了 synthetic instruction generation 路线，用 Marky-style speaker 在更大 path 池上自动生成指令补足 scale</li>
+<li><a href="../Papers/2407-VLNFoundationSurvey" class="internal alias" data-slug="Papers/2407-VLNFoundationSurvey">VLN-Foundation Survey</a>: 把 RxR 列为 §3.2 Benchmark 的 multilingual + dense-grounding 代表</li>
+</ul>
+<hr/>
+<h2 id="论文点评">论文点评<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#论文点评" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="strengths">Strengths<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#strengths" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>Annotation tool 是真 contribution</strong>：从”写指令”切到”边走边说 + 同步 pose tracking + ASR + DTW 对齐”，整个 pipeline 让 word-level dense grounding 成为 collection-time by-product 而非事后标注。这种 annotation methodology 本身可迁移到任何”agent in environment”的 grounded language 数据集。</li>
+<li><strong>Path 设计有 principled 反 bias 论证</strong>：Two-level room-graph sampling + greedy coverage 不是拍脑袋的设计，而是对应明确的 4 个 desiderata，并用 simple-baseline ablation (Table 4) 证明 R2R 的 dumb-agent free lunch 在 RxR 不存在。</li>
+<li><strong>指标转向 nDTW/sDTW</strong>：把社区注意力从 goal-reaching 拽到 path-fidelity，这是 long-instruction VLN 必须的转向。RxR-CE leaderboard 用 nDTW 排名是这个 framing 的胜利。</li>
+<li><strong>多语言不是 marketing</strong>：选 typologically diverse 的三种语言（Germanic / Indo-Aryan / Dravidian），不靠翻译，独立采集，且<strong>显式实验证明</strong> multilingual joint 反而不如 monolingual——把 “multilingual VLN 的难点” 量化展示，而非简单宣称 “we support 3 languages”。</li>
+<li><strong>Follower demonstration 提供两类 trace</strong>：Guide 是”指令生成者的视角”，Follower 是”指令解读者的视角”，两套 pose trace 为 grounded language pragmatics 研究 (speaker / listener model) 提供独有数据。</li>
+<li><strong>数据组织对跨语言研究友好</strong>：12.8K paths 在三种语言里共享 → 同一条路径的多语言指令对齐天然存在，是 cross-lingual VLN / parallel instruction 研究的 ready-made testbed。</li>
+<li><strong>作者组合权威</strong>：Google Research VLN 组（Anderson、Baldridge）+ Brown，作为 R2R 原作者的延续，承诺并实际发布了 leaderboard / annotation tool / 全部数据。</li>
+</ol>
+<h3 id="weaknesses">Weaknesses<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#weaknesses" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>Baseline agent 太弱</strong>: RCM-style LSTM + dot-product attention 在 2020 已经不是 SOTA, 论文 SR=22 vs human 90+ 的巨大 gap 主要来自 agent 弱。一个更强 baseline (e.g. PREVALENT / VLN-BERT / HAMT 在 RxR 上的数字) 能让 dataset 难度的真实位置更清楚。后续 <a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> (54.79 SR) 把 gap 缩到 ~40 points 才更准确——所以 “RxR 难” 部分被早期弱 baseline 夸大了。</li>
+<li><strong>Cross-translation 实验设计有问题</strong>: 用 MT 翻译 en→hi/te 然后训练，但<strong>大部分 path 已有原生 hi/te 标注</strong>（12.8K shared），所以 MT 翻译相对原生 instruction 是低质增量，下降可预期。如果在<strong>未原生标注的 1.2K unique paths</strong> 上做 MT 增强对照，结论会更说服力。</li>
+<li><strong>Dense grounding 的下游用法只 hint，没真正打通</strong>: Exp. 6 的 visual attention supervision 是”preliminary investigation”，结果 mixed 且论文也承认。<strong>RxR 最大的 unique signal（pose trace）在自家 baseline 里没发挥效力</strong>——这是个遗憾的 missed opportunity，留给社区做。但社区到 2026 也没大规模利用 dense grounding（<a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> / <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> 等都还是用 instruction → action 的端到端 supervision），说明这个数据资产至今未被充分挖掘。</li>
+<li><strong>Annotator pool 与 dialect confound 未控制</strong>: en-US 和 en-IN 长度差 50% (129 vs 87 words), Hindi vs Telugu 在 coreference / sequencing 差异巨大——究竟是语言差异还是 annotator 习惯？没控制变量实验。</li>
+<li><strong>“Multilingual ≠ multilingual win” 结论被过度解释</strong>: experiment 4 的多语言混训只是把三个 monolingual 数据简单拼接，没用 language adapter / language-conditioned encoder / curriculum 等多语言专门设计。结论应该是 “naive concatenation 不 work”，不是 “multilingual 训练根本不帮 VLN”。</li>
+<li><strong>Telugu / Hindi annotator pool 显著小于英语</strong>: 论文未披露具体 annotator 人数, 但 Telugu 平均指令 56 词远短于 en-US 129 词暗示了 pool 训练程度差异。这影响 cross-lingual 比较的公平性。</li>
+<li><strong>没真正用上 follower confidence rating</strong>: Follower 完成后给 instruction clarity 与自己的 confidence 打分, 但论文实验里没有用这些 metadata（例如做 instruction quality scoring 任务 / curriculum）。又一个 unused signal。</li>
+<li><strong>静态环境</strong>: RxR 沿用 MP3D 的 90 个 indoor scenes, 没有 dynamic obstacle / household activity。在 2026 年看, 这是 “VLN 仍被锁在 90 MP3D scenes” 这一更大问题（<a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLNVerse</a> Table 1 的核心 critique）的源头之一。</li>
+</ol>
+<h3 id="可信评估">可信评估<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#可信评估" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="artifact-可获取性">Artifact 可获取性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#artifact-可获取性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li><strong>代码</strong>：annotation tool / training code / RCM agent 实现 promise 但<strong>主仓库 google-research-datasets/RxR 只发布 dataset、Marky speaker (单独 sub-folder)、visualizations</strong>，没有 baseline RCM agent 训练代码。VALAN (Lansing 2019) 框架本身也未开源。这是个不便。</li>
+<li><strong>模型权重</strong>：未发布 baseline checkpoint</li>
+<li><strong>训练细节</strong>：高层描述完整（Adam, lr 1e-4, batch 32, 100K iter, 50% BC + 50% policy gradient, NDTW reward），但具体 hyperparam（CNN encoder 层数、attention head 数、reward 系数）部分缺失</li>
+<li><strong>数据集</strong>：完整发布——Guide/Follower instructions + pose traces + text features (mBERT) + MT translations，gzipped JSON Lines + numpy archive，CC-BY-4.0 许可，链接 <a href="https://github.com/google-research-datasets/RxR" class="external">https://github.com/google-research-datasets/RxR<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+</ul>
+<h4 id="claim-可验证性">Claim 可验证性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#claim-可验证性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li>✅ <strong>RxR 比 R2R 大 10×、跨三种语言、有 dense word-pose alignment</strong>：dataset 公开可直接验证，Table 1/2 的统计数字可在 raw data 上重算</li>
+<li>✅ <strong>RxR 路径破坏 R2R 的 shortest-path bias</strong>：Fig. 3 + Table 4 的 simple baseline 对比是 hard evidence——R2R 上 27.2 SR、RxR 上 13.7 SR 的 “GT first step + straight” 差异很难争议</li>
+<li>✅ <strong>Multilingual joint training underperforms monolingual</strong> in this setup：Table 5 直接对比，统计上明显</li>
+<li>⚠️ <strong>“Both languages contribute to performance”</strong> (Unimodal ablation)：vision 贡献 SR ~5 points (22→17 from full→language-only), language 贡献 SR ~15 points——结论 OK 但视觉对长程 navigation 的真实贡献被弱 visual encoder 低估</li>
+<li>⚠️ <strong>Visual attention supervision 给 NDTW 涨 / SR 跌的解释</strong>：论文归因为 “preliminary investigation”, 但 supervision loss 的具体实现细节（gating 是否 over-restrictive、loss weight）没扫，结论的鲁棒性不明</li>
+<li>⚠️ <strong>“Human SR 93.9%” 作为 dataset 难度上限</strong>：这是 Follower task 的 multi-pass 后留下来的最佳 Follower SR——但 multi-pass 选择本身偏向了”被人能 follow 的 instruction”，<strong>RxR 实际难度对 random Follower 可能更低</strong>（论文未报 single-pass Follower SR）</li>
+<li>❌ <strong>没有过度营销话术</strong>——论文措辞克制，“only begun to explore” 等承认 limitation 的语气贯穿全文</li>
+</ul>
+<h3 id="notes">Notes<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#notes" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong>这篇论文最被忽略的贡献是 annotation methodology</strong>：词-3D pose 时间戳化的 pipeline 完全可迁移——任何 “agent in environment + speech” 的数据集都能复用。我做 spatial intelligence / VLA 数据集时，“用 ASR + DTW 把 narrator 的话和 robot 视角 pose 对齐” 是个值得借鉴的 collection trick。</li>
+<li><strong>Critical Read 之一：长指令对现代 streaming VLA 的真正影响</strong>——RxR 平均 ~120 词意味着模型必须在 128-512 tokens 的 prompt 里塞下整段 instruction + 视频 history。对 <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> 这类 streaming video LLM, <strong>instruction 占用的 context budget 直接挤压可保留的 frame history</strong>。RxR-CE 上 SR 从 ETPNav 的 54.79 涨到 <a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a> 的 67.0 用了三年, 部分原因就是 streaming VLA 在 context-pressure 下需要更精细的 instruction-frame 调度。NaVILA 的 dual-system 设计（高频 vision-action / 低频 reasoning）某种程度上是回应这个 pressure 的。</li>
+<li><strong>Critical Read 之二：Hindi/Telugu 在 2026 还有没有用？</strong> 实际上几乎所有 published RxR-CE leaderboard 工作都只在 English split 上 train/eval（<a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> / <a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a> / <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> 都是）。Hi/Te 数据成了<strong>未被使用的 idle resource</strong>。原因：(a) baseline 多用 mBERT/CLIP-text，本身英语强 hi/te 弱；(b) 评测以英语 SR 为主，没动力做 multilingual robustness。RxR multilingual 部分<strong>在工程实践上 underused</strong>，但<strong>作为 critique 工具仍有效</strong>——任何宣称 “language-agnostic VLN” 的论文都应该在 hi/te 上验证。这个 idle resource 在 LLM-time 可能被多语言 LLM (Gemma, Aya, Llama) 重新激活。</li>
+<li><strong>Critical Read 之三：RxR 把 VLN 锁死在 MP3D 90 scenes 的代价</strong>——RxR 沿用了 MP3D 同一批 scenes，所以<strong>一切 RxR 上的”环境多样性问题”和 R2R 是同构的</strong>。<a href="../Papers/2512-VLNVerse" class="internal alias" data-slug="Papers/2512-VLNVerse">VLNVerse</a> Table 1 把这个 framing 出来：现代 VLN 的 environment generalization 上限被 MP3D 卡住, RxR 没解决这个 underlying issue, 只解决了 instruction 维度的 diversity。这是 RxR 的 ceiling——它扩展了 instruction space, 没扩展 environment space, 而后者在现实部署中可能更紧迫。</li>
+<li><strong>可借鉴 idea (跨 task)</strong>：Two-level sampling (room-graph → panorama-graph + greedy coverage) 是个<strong>通用的 hierarchical sampling pattern</strong>——任何”在层级结构里采样代表性序列”问题都能用：robot manipulation 的 task → sub-task → primitive 序列、生物路径采样、code generation 的 file → function 序列。</li>
+<li><strong>可借鉴 finding</strong>：annotator 平均只观察 27% 的 panorama → <strong>全 panorama attention 是一种 over-engineering</strong>，agent 应该学”何时看哪里”。这与现代 VLA 用 active perception (NaVILA dual-system 在 reasoning 时只看 keyframes) 的方向一致, 是 evidence-based 的设计 prior。</li>
+<li><strong>方向相关性</strong>：与我的 spatial intelligence / VLN 方向直接相关——RxR-CE 是 VLN-CE 的 de facto benchmark 之一，所有现代 method 都 report 它。理解 RxR 的 path desiderata + nDTW/sDTW metric 是评估任何 VLN paper 的前置条件。</li>
+</ul>
+<h3 id="rating">Rating<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#rating" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Metrics</strong> (as of 2026-04-28): citation=492, influential=66 (13.4%), velocity=7.45/mo (66 months since publish); HF upvotes=N/A（HF Papers 上无对应条目）; github 179⭐ / forks=14 / 90d commits=0 / pushed 1007d ago · stale (repo archived 2023-07)</p>
+<p><strong>分数</strong>：3 - Foundation</p>
+<p><strong>理由</strong>：作为 VLN 子领域的奠基级 benchmark/dataset 工作完全够 Foundation 标准。(a) <strong>影响力指标硬</strong>：492 cite / 13.4% influential ratio 在 dataset 论文里是健康的（比 RT-2 的 6% 高），velocity 7.45/mo 在论文 5.5 年后仍稳定，说明被持续作为新 method 的标配评测引用而非历史 reference；(b) <strong>范式级贡献</strong>：multilingual VLN、word-level dense grounding、nDTW/sDTW 作为 path-fidelity 主指标——三件事任何一件都足够 Frontier，三件合一构成 VLN 子领域的 de facto standard；(c) <strong>生态构建</strong>：RxR-Habitat Challenge / RxR-CE 让所有现代 VLN-CE 工作（<a href="../Papers/2304-ETPNav" class="internal alias" data-slug="Papers/2304-ETPNav">ETPNav</a> / <a href="../Papers/2402-NaVid" class="internal alias" data-slug="Papers/2402-NaVid">NaVid</a> / <a href="../Papers/2412-NaVILA" class="internal alias" data-slug="Papers/2412-NaVILA">NaVILA</a> / <a href="../Papers/2507-StreamVLN" class="internal alias" data-slug="Papers/2507-StreamVLN">StreamVLN</a> / <a href="../Papers/2509-NavFoM" class="internal alias" data-slug="Papers/2509-NavFoM">NavFoM</a> / <a href="../Papers/2512-EfficientVLN" class="internal alias" data-slug="Papers/2512-EfficientVLN">Efficient-VLN</a> / <a href="../Papers/2603-PROSPECT" class="internal alias" data-slug="Papers/2603-PROSPECT">PROSPECT</a>）都必须 report RxR-CE，而 VLN-CE / RxR-CE 是 VLN-CE 仅有的两个公认 benchmark。Stale repo 不扣分——dataset 一旦发布就稳定使用，archived 状态符合 dataset 论文的生命周期（不是 method 库要持续维护）。不达”全 embodied AI 必读”档（如 ImageNet）只因 VLN 是 embodied AI 的子方向, 但<strong>在 VLN 内部它就是必读必引</strong>。</p></article><hr/><div class="page-footer"><div class="giscus" data-repo="liqing-ustc/MindFlow" data-repo-id="R_kgDORucr2w" data-category="Comments" data-category-id="DIC_kwDORucr284C5LSt" data-mapping="pathname" data-strict="1" data-reactions-enabled="1" data-input-position="bottom" data-light-theme="light" data-dark-theme="dark" data-theme-url="https://liqing.io/mindflow/static/giscus"></div></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-content" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="toc-content"><ul id="u3bngi" class="overflow"><li class="depth-0"><a href="#summary" data-for="summary">Summary</a></li><li class="depth-0"><a href="#1-motivationr2r-的四个-gap" data-for="1-motivationr2r-的四个-gap">1. Motivation：R2R 的四个 gap</a></li><li class="depth-0"><a href="#2-two-level-path-sampling" data-for="2-two-level-path-sampling">2. Two-Level Path Sampling</a></li><li class="depth-1"><a href="#preliminaries" data-for="preliminaries">Preliminaries</a></li><li class="depth-1"><a href="#path-generation" data-for="path-generation">Path Generation</a></li><li class="depth-1"><a href="#greedy-coverage-selection" data-for="greedy-coverage-selection">Greedy Coverage Selection</a></li><li class="depth-1"><a href="#path-statistics" data-for="path-statistics">Path Statistics</a></li><li class="depth-0"><a href="#3-data-collection" data-for="3-data-collection">3. Data Collection</a></li><li class="depth-1"><a href="#guide-task" data-for="guide-task">Guide Task</a></li><li class="depth-1"><a href="#follower-task" data-for="follower-task">Follower Task</a></li><li class="depth-1"><a href="#dataset-statistics" data-for="dataset-statistics">Dataset Statistics</a></li><li class="depth-1"><a href="#语言学特征对比-table-3-摘要" data-for="语言学特征对比-table-3-摘要">语言学特征对比 (Table 3 摘要)</a></li><li class="depth-0"><a href="#4-evaluation-metrics" data-for="4-evaluation-metrics">4. Evaluation Metrics</a></li><li class="depth-0"><a href="#5-baselines--experiments" data-for="5-baselines--experiments">5. Baselines &amp; Experiments</a></li><li class="depth-1"><a href="#agent-架构" data-for="agent-架构">Agent 架构</a></li><li class="depth-1"><a href="#主要实验结论" data-for="主要实验结论">主要实验结论</a></li><li class="depth-1"><a href="#test-split" data-for="test-split">Test split</a></li><li class="depth-0"><a href="#6-rxr-ce社区移植到连续环境" data-for="6-rxr-ce社区移植到连续环境">6. RxR-CE：社区移植到连续环境</a></li><li class="depth-0"><a href="#关联工作" data-for="关联工作">关联工作</a></li><li class="depth-1"><a href="#基于" data-for="基于">基于</a></li><li class="depth-1"><a href="#对比" data-for="对比">对比</a></li><li class="depth-1"><a href="#方法相关" data-for="方法相关">方法相关</a></li><li class="depth-1"><a href="#后续扩展" data-for="后续扩展">后续/扩展</a></li><li class="depth-0"><a href="#论文点评" data-for="论文点评">论文点评</a></li><li class="depth-1"><a href="#strengths" data-for="strengths">Strengths</a></li><li class="depth-1"><a href="#weaknesses" data-for="weaknesses">Weaknesses</a></li><li class="depth-1"><a href="#可信评估" data-for="可信评估">可信评估</a></li><li class="depth-1"><a href="#notes" data-for="notes">Notes</a></li><li class="depth-1"><a href="#rating" data-for="rating">Rating</a></li><li class="overflow-end"></li></ul></div></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.4.1</a> © 2026</p><ul><li><a href="https://github.com/liqing-ustc/MindFlow">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../postscript.js" type="module"></script></html>

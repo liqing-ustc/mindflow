@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=Schibsted Grotesk:wght@400;700&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="MindFlow"/><meta property="og:title" content="LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion"/><meta name="twitter:description" content="Summary LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion 核心: 把 UWM 的 joint diffusion 范式 scale 到 1B / 30k h，关键操作有两个：(1) 在 DINO latent space（而非 VAE ..."/><meta property="og:description" content="Summary LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion 核心: 把 UWM 的 joint diffusion 范式 scale 到 1B / 30k h，关键操作有两个：(1) 在 DINO latent space（而非 VAE ..."/><meta property="og:image:alt" content="Summary LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion 核心: 把 UWM 的 joint diffusion 范式 scale 到 1B / 30k h，关键操作有两个：(1) 在 DINO latent space（而非 VAE ..."/><meta property="og:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:url" content="https://liqing.io/mindflow/static/og-image.png"/><meta name="twitter:image" content="https://liqing.io/mindflow/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="liqing.io/mindflow"/><meta property="og:url" content="https://liqing.io/mindflow/Papers/2602-LDA1B"/><meta property="twitter:url" content="https://liqing.io/mindflow/Papers/2602-LDA1B"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="Summary LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion 核心: 把 UWM 的 joint diffusion 范式 scale 到 1B / 30k h，关键操作有两个：(1) 在 DINO latent space（而非 VAE ..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvbWluZGZsb3cvbWluZGZsb3cvd2Vic2l0ZS9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://liqing.io/mindflow/index.xml"/></head><body data-slug="Papers/2602-LDA1B"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">MindFlow</a></h2><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="false" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>{let order=[\&quot;DomainMaps\&quot;,\&quot;Papers\&quot;,\&quot;Topics\&quot;,\&quot;Ideas\&quot;,\&quot;Projects\&quot;],aIdx=order.indexOf(a.displayName),bIdx=order.indexOf(b.displayName);return aIdx!==-1&amp;&amp;bIdx!==-1?aIdx-bIdx:aIdx!==-1?-1:bIdx!==-1?1:a.slug?.startsWith(\&quot;Papers/\&quot;)&amp;&amp;b.slug?.startsWith(\&quot;Papers/\&quot;)?b.displayName.localeCompare(a.displayName):a.displayName.localeCompare(b.displayName)}&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>{node.isFolder||(node.displayName=node.slugSegment)}&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="lrzxnl"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div><div class="sidebar-tags"><span class="sidebar-tags-title">Popular Tags</span><div class="sidebar-tag-cloud"><a href="/mindflow/tags/VLA" class="sidebar-tag-pill">#VLA</a><a href="/mindflow/tags/manipulation" class="sidebar-tag-pill">#manipulation</a><a href="/mindflow/tags/embodied-reasoning" class="sidebar-tag-pill">#embodied-reasoning</a><a href="/mindflow/tags/VLM" class="sidebar-tag-pill">#VLM</a><a href="/mindflow/tags/VLN" class="sidebar-tag-pill">#VLN</a><a href="/mindflow/tags/navigation" class="sidebar-tag-pill">#navigation</a><a href="/mindflow/tags/task-planning" class="sidebar-tag-pill">#task-planning</a><a href="/mindflow/tags/computer-use" class="sidebar-tag-pill">#computer-use</a><a href="/mindflow/tags/agentic-RL" class="sidebar-tag-pill">#agentic-RL</a><a href="/mindflow/tags/world-model" class="sidebar-tag-pill">#world-model</a></div></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../Papers/">Papers</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>2602-LDA1B</a></div></nav><h1 class="article-title">LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion</h1><div class="paper-meta"><span class="paper-venue">arXiv preprint</span><span class="paper-authors"><span class="meta-sep">·</span>Jiangran Lyu <button class="et-al-btn" aria-expanded="false">et al.</button><span class="authors-full" style="display:none"><span>, Kai Liu</span><span>, Xuheng Zhang</span><span>, Haoran Liao</span><span>, Yusen Feng</span><span>, Wenxuan Zhu</span><span>, Tingrui Shen</span><span>, Jiayi Chen</span><span>, Jiazhao Zhang</span><span>, Yifei Dong</span><span>, Wenbo Cui</span><span>, Senmao Qi</span><span>, Shuo Wang</span><span>, Yixin Zheng</span><span>, Mi Yan</span><span>, Xuesong Shi</span><span>, Haoran Li</span><span>, Dongbin Zhao</span><span>, Ming-Yu Liu</span><span>, Zhizheng Zhang</span><span>, Li Yi</span><span>, Yizhou Wang</span><span>, He Wang</span></span></span></div><p show-comma="true" class="content-meta"><time datetime="2026-02-12T00:00:00.000Z">Feb 12, 2026</time><span>23 min read</span></p><ul class="tags"><li><a href="../tags/VLA" class="internal tag-link">VLA</a></li><li><a href="../tags/world-model" class="internal tag-link">world-model</a></li><li><a href="../tags/manipulation" class="internal tag-link">manipulation</a></li></ul></div></div><article class="popover-hint"><h2 id="summary">Summary<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#summary" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<blockquote class="callout abstract" data-callout="abstract">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>LDA-1B: Scaling Latent Dynamics Action Model via Universal Embodied Data Ingestion </p></div>
+                  
+                </div>
+<div class="callout-content">
+<ul>
+<li><strong>核心</strong>: 把 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 的 joint diffusion 范式 scale 到 1B / 30k h，关键操作有两个：(1) 在 <strong>DINO latent space</strong>（而非 VAE pixel space）做 forward dynamics，让 dynamics 学习不被 appearance 噪声主导；(2) <strong>universal data ingestion</strong>——按数据质量把高 / 低质量 robot 轨迹和 action-less 人类视频分配给不同子目标（policy / dynamics / visual forecasting），<strong>低质数据反而成为 dynamics 监督的资源</strong>而非被丢弃</li>
+<li><strong>方法</strong>: 30k h EI-30k 异构数据集（real robot 8.03k + sim robot 8.6k + 人类 with-action 7.2k + 人类 actionless 10k），统一到 LeRobot 格式 + 对齐 hand-centric end-effector 坐标系；MM-DiT（action / visual experts 解耦 + 共享 self-attn）+ frozen Qwen3-VL &amp; DINOv3，flow-matching 训练 4 个 task embedding（policy / FD / ID / VF）</li>
+<li><strong>结果</strong>: RoboCasa-GR1 55.4% > GR00T-N1.6 47.6% / <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 14–20%；real-world Galbot 上 contact-rich +21% / dexterous +48% / long-horizon +23% over <a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a>；mixed-quality finetune 加 30% 低质数据 LDA +10%（<a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a> 反而 -10%–-20%）</li>
+<li><strong>Sources</strong>: <a href="https://arxiv.org/abs/2602.12215" class="external">paper<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> | <a href="https://pku-epic.github.io/LDA/" class="external">website<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> | <a href="https://github.com/PKU-EPIC/LDA" class="external">github<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+<li><strong>Rating</strong>: 2 - Frontier（DINO latent + role-aware data ingestion 是 UWM 路线第一次清晰 scale 到 30k h / 1B，real-world 真机数据漂亮且 mixed-quality finetune 现象具决策价值；但 cite=2/HF=0/⭐=0、距 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 增量主要在 latent space + scale + 数据 curation，未到 paradigm-shifting）</li>
+</ul>
+</div>
+</blockquote>
+<p><strong>Key Takeaways:</strong></p>
+<ol>
+<li><strong>Pixel-space dynamics 是 UWM 路线的瓶颈</strong>：UWM-1B + MM-DiT 仅 20.0%，换成 DINO latent 暴涨到 55.4%（+35.4%）。说明 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 的 joint diffusion <strong>架构本身没问题，问题在于让 1B model 在 VAE pixel latent 里既学 dynamics 又抑制光照 / 纹理 / 视角变化是 ill-posed 的</strong>。这间接给世界模型领域一个清晰的设计指引：dynamics 学习应在 semantic latent 上进行。</li>
+<li><strong>数据质量不是该过滤就是该用，而是该按角色分配</strong>：高质数据进 policy + dynamics + VF；低质 robot 数据只进 dynamics + VF（action 不可信但 transition 仍可信）；actionless 人类视频只进 VF。结果是 BC baseline 加低质数据掉点，LDA 加低质数据涨点，<strong>把”过滤数据”重新定义为”分类使用数据”</strong>——这是 UWM 形式化下的自然结论但 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 自己没系统化做。</li>
+<li><strong>Mixed-frequency 视觉 / 动作流</strong>：vision 3 Hz + action 10 Hz，承认相邻视觉帧高度冗余而 action 高频，这是相比 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> / <a href="../Papers/2512-Motus" class="internal alias" data-slug="Papers/2512-Motus">Motus</a> 比较朴素但务实的设计选择，能省 token。</li>
+<li><strong>RoboCasa-GR1 上 GR00T 范式 vs UWM 范式的当前差距</strong>：GR00T-EI30k（同 1B、同数据、纯 BC）51.3% vs LDA 55.4%，差距 +4.1%。这说明在 simulator benchmark 上 UWM 路线对 BC 的优势其实<strong>很小</strong>，但在 real-world few-shot adaptation 和 long-horizon 上拉开 21–48%——隐含 sim benchmark 已不能区分 foundation model 路线。</li>
+<li><strong>Frozen DINOv3 是双刃剑</strong>：用现成 DINO latent 是 LDA 能 scale 的关键，但 DINO 没在 robot data 上微调过，paper limitation 自己也承认这是制约——下一步 jointly learn visual rep + dynamics 是显然方向（<a href="../Papers/2512-Motus" class="internal alias" data-slug="Papers/2512-Motus">Motus</a> 和 InternVLA-A1 走了另一条用 video generative model 的路，可对比）。</li>
+</ol>
+<p><strong>Teaser. LDA-1B overview.</strong> 30k h heterogeneous embodied data → unified DINO latent dynamics + multi-task co-training → 1B foundation model that is both data-efficient at finetune and beats π0.5 on real-world dexterous / long-horizon tasks.</p>
+<p><img src="https://pku-epic.github.io/LDA/images/lda_teaser.png" alt/></p>
+<hr/>
+<h2 id="i-motivationbc-与-uwm-之间">I. Motivation：BC 与 UWM 之间<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#i-motivationbc-与-uwm-之间" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>主流 robot foundation model（<a href="../Papers/2410-Pi0" class="internal alias" data-slug="Papers/2410-Pi0">π0</a>、<a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a>、RDT、<a href="../Papers/2406-OpenVLA" class="internal alias" data-slug="Papers/2406-OpenVLA">OpenVLA</a>）走的是大规模 BC 路线，本质上<strong>只能消化 expert teleop / sim 数据</strong>——但人类和 OXE-style 异构 robot 数据里的 dynamics 知识被全部丢弃。LDA 把 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 路线推到 foundation scale，要解决三个问题：</p>
+<ol>
+<li><strong>粗粒度数据使用</strong>：UWM 把所有数据当同质的，不区分 quality / 监督信号 → 数据 scale 一上来 policy 学到的就是平均轨迹（包括坏 demonstration）</li>
+<li><strong>缺乏统一的大规模异构数据集</strong>：existing dataset 分散，action 表征不齐</li>
+<li><strong>像素空间 dynamics 学习效率低</strong>：VAE latent 让 dynamics 模型把容量浪费在背景纹理 / 光照 / 视角</li>
+</ol>
+<p>LDA 对应回答：role-aware co-training + EI-30k + DINO latent。</p>
+<p><strong>Table I. 与近期 robot foundation model 的对比</strong>——LDA 是表里 (1) 唯一用 UWM 范式 scale 到 30k+ h 的方法 (2) 1B 参数比 π0.5 (3B) / GR00T (3B) / Being-H0 (14B) 都小。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Model</th><th>Data Src.</th><th># Data</th><th>Action Quality</th><th>Train.</th><th>Param.</th></tr></thead><tbody><tr><td><a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a></td><td>Tele.</td><td>10k+</td><td>High</td><td>BC</td><td>3B</td></tr><tr><td>RDT</td><td>Tele.</td><td>&lt;10k</td><td>High</td><td>BC</td><td>1B</td></tr><tr><td>GraspVLA</td><td>Sim.</td><td>20k+</td><td>High</td><td>BC</td><td>2B</td></tr><tr><td>InternVLA-M1</td><td>Sim.</td><td>&lt;10k</td><td>High</td><td>BC</td><td>3B</td></tr><tr><td>Being-H0</td><td>Hum.</td><td>&lt;10k</td><td>Mixed</td><td>Aln. + BC</td><td>14B</td></tr><tr><td>InternVLA-A1</td><td>Het.</td><td>10k+</td><td>High</td><td>VF + BC</td><td>3B</td></tr><tr><td>GR00T-N1.6</td><td>Het.</td><td>&lt;10k</td><td>Mixed</td><td>LA + BC</td><td>1B</td></tr><tr><td>UniVLA</td><td>Het.</td><td>&lt;10k</td><td>Mixed</td><td>LA + BC</td><td>7B</td></tr><tr><td><strong>LDA-1B</strong></td><td><strong>Het.</strong></td><td><strong>30k+</strong></td><td><strong>Mixed</strong></td><td><strong>UWM</strong></td><td><strong>1B</strong></td></tr></tbody></table></div>
+<blockquote>
+<p>❓ Being-H0 14B 在 &lt;10k 上算特例，Mixed action quality + Alignment+BC 训练范式更接近 LDA 思路而不像表上分得那么开。这个 table 对 UWM 范式的”独占性”叙事有一定 marketing。</p>
+</blockquote>
+<hr/>
+<h2 id="ii-methodlatent-dynamics-action-model">II. Method：Latent Dynamics Action Model<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ii-methodlatent-dynamics-action-model" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="ii-a-形式化unified-world-model">II-A 形式化：Unified World Model<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ii-a-形式化unified-world-model" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>给定当前观测 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，UWM 联合建模四个分布：</p>
+<ul>
+<li><strong>Policy</strong>: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">a</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></li>
+<li><strong>Forward Dynamics</strong>: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">o</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">a</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></li>
+<li><strong>Inverse Dynamics</strong>: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">a</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">o</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></li>
+<li><strong>Visual Planning / Forecasting</strong>: <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">p</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">o</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></li>
+</ul>
+<p>通过给 action 和 observation <strong>独立采样的扩散 timestep</strong> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.328em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6828em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，单一模型在 inference 时根据 timestep 取值切换不同条件分布（这点和 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 完全一致，是 UWM 的核心 trick）：</p>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1491em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">o</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.149em;vertical-align:-0.3471em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">o</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2501em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1645em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">o</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3471em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.328em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6828em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+<p>LDA 在此基础上加了 language <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">ℓ</span></span></span></span> 条件（通过 frozen Qwen3-VL）。</p>
+<h3 id="ii-b-universal-data-ingestionrole-aware-co-training">II-B Universal Data Ingestion：role-aware co-training<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ii-b-universal-data-ingestionrole-aware-co-training" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>LDA 的关键概念创新——<strong>不是按 quality 过滤数据，而是按 quality 分配 supervision objectives</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>数据类型</th><th style="text-align:center;">Policy</th><th style="text-align:center;">Forward Dyn.</th><th style="text-align:center;">Inverse Dyn.</th><th style="text-align:center;">Visual Forecast</th></tr></thead><tbody><tr><td>高质 robot + 人类 demo</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td></tr><tr><td>低质 robot 轨迹</td><td style="text-align:center;">✗</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td></tr><tr><td>Actionless 人类视频</td><td style="text-align:center;">✗</td><td style="text-align:center;">✗</td><td style="text-align:center;">✗</td><td style="text-align:center;">✓</td></tr></tbody></table></div>
+<p>实现机制：<strong>4 个 learnable task embedding</strong>（policy / FD / ID / VF）+ <strong>2 个 learnable register token</strong>（action / visual register，作为缺失模态的占位符）。比如训 policy 时输入 noisy action token + visual register；训 VF 时输入 noisy visual token + action register。flow-matching 损失：</p>
+<span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8991em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1461em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-2.453em;margin-left:-0.0197em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">action</span></span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1461em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-2.453em;margin-left:-0.0197em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">obs</span></span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span></span>
+<p>各项 loss 按 task embedding 决定是否激活——这是把 UWM 的”timestep ≡ soft mask”再升一级到”task embedding ≡ 训练目标 ≡ 数据使用方式”。</p>
+<h3 id="ii-c-预测目标的表征">II-C 预测目标的表征<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ii-c-预测目标的表征" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Visual</strong>：用 frozen DINOv3 latent（不是 VAE）。理由：DINO latent 编码高层 semantic + spatial structure，suppress 低层纹理 / 光照变化 → dynamics 学习对环境变化更鲁棒。</p>
+<p><strong>Action</strong>：统一的 hand-centric action space——delta wrist pose + finger configuration。</p>
+<ul>
+<li>平行夹爪：1-DoF gripper width</li>
+<li>多指 dexterous hand：keypoints in wrist frame</li>
+<li>人类：6-DoF wrist pose + MANO 全参数</li>
+</ul>
+<p><strong>Temporal alignment</strong>：vision 3 Hz / action 10 Hz 异步流——降低视觉帧间冗余，保留 action 高频细节。</p>
+<h3 id="ii-d-mm-dit-架构">II-D MM-DiT 架构<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ii-d-mm-dit-架构" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Figure 2. LDA 架构</strong>：MM-DiT joint denoise action chunk + future DINO latent。Action / visual expert 各自有独立 QKV projection 和 FFN（保留 modality-specific inductive bias），但<strong>共享 self-attention</strong>（实现跨模态交互）。Language token 通过 cross-attention 注入。条件信号（VLM token、diffusion timestep、task embedding）通过 AdaLN 注入每个 transformer block。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/x1.png" alt/></p>
+<blockquote>
+<p>❓ 这个设计很像 SD3 的 MM-DiT，对 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 原版 DiT 的最大改进是 modality-specific FFN——但 ablation（Table II）显示去掉 MM-DiT 仅 -6.5%，相比 DINO 换 VAE 的 +35% 是小头。</p>
+</blockquote>
+<h3 id="ii-e-训练配置">II-E 训练配置<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ii-e-训练配置" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li>48 × NVIDIA H800，400k iterations，<strong>总计 4,608 GPU 小时</strong></li>
+<li>VLM (Qwen3-VL) 和 DINOv3 encoder <strong>全程 frozen</strong>，只更新 MM-DiT + action encoder/decoder</li>
+<li>Post-training（finetuning）走和 pretraining <strong>同样的 data regime</strong>——直接吃未过滤的 mixed-quality teleop 数据</li>
+</ul>
+<blockquote>
+<p>❓ 4608 H800-h 在 1B / 30k h scale 上算偏少（约 96 h × 48 GPU），猜测要么 training 收敛快、要么是早期 checkpoint。论文没给 loss curve / learning rate schedule，复现难。</p>
+</blockquote>
+<hr/>
+<h2 id="iii-ei-30k-数据集">III. EI-30K 数据集<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#iii-ei-30k-数据集" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p><strong>Figure 4. EI-30K 统计</strong>：30k+ h，覆盖 4 类数据，episode 长度和任务多样。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/figures/dataset.jpg" alt/></p>
+<p>构成（共 33.83k h）：</p>
+<ul>
+<li><strong>Real-world robot</strong>：8.03k h（包括 OXE、AgiBot World、DROID、RH20T 等）</li>
+<li><strong>Sim robot</strong>：8.6k h（BEHAVIOR-1k、InternVLA-M1 等）</li>
+<li><strong>Human with action</strong>：7.2k h（Ego4D、EPIC-Kitchens、HOI4D、EgoDex 等带 hand pose 的）</li>
+<li><strong>Human actionless</strong>：10k h（pure egocentric video）</li>
+</ul>
+<p>三个数据工程要点：</p>
+<ol>
+<li>
+<p><strong>统一格式</strong>：全部转成 LeRobot 格式</p>
+</li>
+<li>
+<p><strong>对齐 action 表征</strong>：手 / 末端执行器在 shared coordinate frame 下表达，camera extrinsics 单独保留以解耦 wrist 运动和 head egomotion</p>
+<p><strong>Figure 3. 对齐的 end-effector 坐标系</strong>：手动对齐不同 robot 和人类 embodiment 的坐标系，让 joint training 在几何上一致。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/figures/unified_eef.jpg" alt/></p>
+</li>
+<li>
+<p><strong>质量标注</strong>：每条轨迹打 quality label，不做激进过滤——保留低质数据让 quality-aware training 用。</p>
+</li>
+</ol>
+<blockquote>
+<p>❓ 对齐 hand-centric coordinate 是 LDA 在数据工程上最重要的贡献之一，但论文给的细节非常少（手动对齐的具体规则、误差来源、不同来源的失败案例），这部分可能比方法本身更难复现。</p>
+</blockquote>
+<hr/>
+<h2 id="iv-实验">IV. 实验<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#iv-实验" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="iv-a-simulationrobocasa-gr1">IV-A Simulation：RoboCasa-GR1<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#iv-a-simulationrobocasa-gr1" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Setup</strong>：24 个 tabletop / articulated-object 任务，GR-1 humanoid + Fourier dexterous hand，egocentric RGB only。每任务 1k 轨迹 finetune，51 trial 评测。</p>
+<p><strong>Table II. RoboCasa-GR1 主结果与消融</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Model</th><th>Vis. Rep.</th><th>MM-DiT</th><th>VLM</th><th>Success Rate ↑</th></tr></thead><tbody><tr><td>GR00T-N1.6 (3B)</td><td>-</td><td>-</td><td>Cosmos</td><td>47.6</td></tr><tr><td>StarVLA</td><td>-</td><td>-</td><td>Qwen3-VL</td><td>47.8</td></tr><tr><td>GR00T-EI30k (1B repro, BC)</td><td>-</td><td>-</td><td>Qwen3-VL</td><td>51.3</td></tr><tr><td>UWM-0.1B</td><td>VAE</td><td>✗</td><td>-</td><td>14.2</td></tr><tr><td>UWM-1B</td><td>VAE</td><td>✗</td><td>Qwen3-VL</td><td>19.3</td></tr><tr><td>UWM (MM-DiT)</td><td>VAE</td><td>✓</td><td>Qwen3-VL</td><td>20.0</td></tr><tr><td>LDA (DiT)</td><td>DINO</td><td>✗</td><td>Qwen3-VL</td><td>48.9</td></tr><tr><td>LDA-0.5B</td><td>DINO</td><td>✓</td><td>Qwen3-VL</td><td>50.7</td></tr><tr><td><strong>LDA-1B</strong></td><td><strong>DINO</strong></td><td><strong>✓</strong></td><td><strong>Qwen3-VL</strong></td><td><strong>55.4</strong></td></tr></tbody></table></div>
+<p><strong>关键消融拆解</strong>：</p>
+<ul>
+<li><strong>DINO vs VAE latent（同 1B、同 MM-DiT）</strong>：20.0 → 55.4，<strong>+35.4%</strong>——这是 LDA 最大的 single design decision</li>
+<li><strong>Scale UWM</strong>：UWM-0.1B (14.2) → UWM-1B (19.3) → UWM-1B-MMDiT (20.0)，scale 几乎不带来提升 → 印证 VAE latent 是瓶颈</li>
+<li><strong>MM-DiT vs DiT（同 1B、DINO latent）</strong>：48.9 → 55.4，<strong>+6.5%</strong></li>
+<li><strong>0.5B → 1B</strong>：50.7 → 55.4，<strong>+4.7%</strong>，LDA 在该 setup 下 scale 单调增长</li>
+</ul>
+<p><strong>与 BC baseline 的对比</strong>：LDA-1B (55.4) vs GR00T-EI30k 1B repro BC (51.3) = +4.1%。<strong>simulation 上 UWM 范式对 BC 的增量并不大</strong>——主要差距出现在 real-world。</p>
+<h3 id="iv-b-real-worldgalbot-g1--sharpa--brainco-dexterous-hands">IV-B Real-world：Galbot G1 + Sharpa / BrainCo dexterous hands<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#iv-b-real-worldgalbot-g1--sharpa--brainco-dexterous-hands" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Figure 5. 真实机器人平台</strong>：(top-left) Galbot G1 + Sharpa hand，(middle/bottom-left) Unitree G1 + BrainCo hand，(right) Galbot G1 + 平行夹爪。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/x2.png" alt/></p>
+<p>每任务收集 100 条<strong>未过滤</strong> teleop（50–80% 是 expert 行为，其余有 pause / retry / 低效轨迹）。Baseline (<a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a>、GR00T) 只在 expert 子集 finetune，LDA 用全部 mixed-quality 数据。</p>
+<h4 id="gripper-manipulation">Gripper Manipulation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#gripper-manipulation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p><strong>Figure 6. 真机 gripper manipulation 任务成功率</strong>：8 个任务覆盖 Pick-and-Place、Contact-rich、Fine、Long-horizon，LDA 全面优于 <a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a> 和 GR00T-N1.6。最具代表性的是 <em>Clean the Rubbish</em>（双臂 + 工具使用 + 长时序）：LDA 35% vs π0.5 / GR00T 0%。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/x3.png" alt/></p>
+<p><strong>Real-world demos</strong>（来自项目页）：</p>
+<p><video src="https://pku-epic.github.io/LDA/videos/galbot_grasp_8x.mp4" controls muted playsinline width="720"></video></p>
+<p>Pick &amp; Place 跨 object / position / background（6× speed）</p>
+<p><video src="https://pku-epic.github.io/LDA/videos/galbot_rubbish_5x.mp4" controls muted playsinline width="720"></video></p>
+<p>Clean the Rubbish——双臂 + 工具 + 长时序的代表任务（4× speed）</p>
+<h4 id="dexterous-manipulation">Dexterous Manipulation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#dexterous-manipulation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p><strong>Figure 7. 真机 dexterous manipulation 成功率对比</strong>：低 DoF（BrainCo 10-DoF）3 个任务 + 高 DoF（Sharpa 22-DoF）2 个任务。Pull Nail：LDA 80% vs π0.5 ~0%。Flip Bread：LDA 90% vs π0.5 10%。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/x4.png" alt/></p>
+<blockquote>
+<p>这里的 +48% dexterous gain 论文归因为”大规模人类 hand-centric 数据带来的 latent prior”——这个 attribution 受得住挑战吗？因为 <a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a> 也用了 OXE 类数据但没用 7.2k h 人类 with-action 数据，LDA 的优势可能是 (a) 人类数据 (b) DINO latent (c) UWM dynamics 三者复合作用。</p>
+</blockquote>
+<p><video src="https://pku-epic.github.io/LDA/videos/sharpa_clip.mp4" controls muted playsinline width="720"></video></p>
+<p>Sharpa 22-DoF：Use a clamp to place object（1× speed）</p>
+<p><video src="https://pku-epic.github.io/LDA/videos/brainco_unscrew_10x.mp4" controls muted playsinline width="720"></video></p>
+<p>BrainCo 10-DoF：Unscrew the cap（10× speed）</p>
+<h4 id="generalization">Generalization<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#generalization" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p><strong>Table III. 视觉 / 空间扰动下的泛化</strong>——Pick-and-place，三个扰动维度：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Method</th><th>Object</th><th>Background</th><th>OOD Pos.</th></tr></thead><tbody><tr><td>π0.5</td><td>26.7</td><td>20.0</td><td>6.7</td></tr><tr><td>GR00T</td><td>40.0</td><td>40.0</td><td>20.0</td></tr><tr><td><strong>LDA-1B</strong></td><td><strong>60.0</strong></td><td><strong>60.0</strong></td><td><strong>40.0</strong></td></tr></tbody></table></div>
+<p>LDA 在所有三轴上都比 BC baseline 好 ~2×。论文归因为 latent dynamics pretraining 让模型 focus 在 task-critical affordance 上而忽略视觉 distractor。</p>
+<h4 id="mixed-quality-finetuning">Mixed-Quality Finetuning<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#mixed-quality-finetuning" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p><strong>Table IV. 混合质量 finetune 数据</strong>——分别用 (a) 仅 high quality 和 (b) high+low quality 全集 finetune：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>Method</th><th>Pen-into-box: 63 H</th><th>Pen-into-box: 63 H + 37 L</th><th>Bimanual lid: 66 H</th><th>Bimanual lid: 66 H + 34 L</th></tr></thead><tbody><tr><td>π0.5</td><td>60</td><td>40 (<strong>↓20</strong>)</td><td>50</td><td>40 (<strong>↓10</strong>)</td></tr><tr><td><strong>Ours</strong></td><td>70</td><td><strong>80 (↑10)</strong></td><td>50</td><td><strong>60 (↑10)</strong></td></tr></tbody></table></div>
+<p><strong>这是这篇文章最有用的实证</strong>：BC 路线加低质数据<strong>确切地掉点</strong>，而 LDA 加同样数据<strong>确切地涨点</strong>。意味着 LDA 把”数据收集成本 / 数据筛选成本”这一项实际成本砍掉一半以上——对 deployment-side scaling 是非常 actionable 的指引。</p>
+<h3 id="iv-c-scaling-analysis">IV-C Scaling Analysis<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#iv-c-scaling-analysis" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Figure 10. Scaling 分析</strong>（在 AgiBot World held-out 测的 action L1 error）。Top：30k h 数据 → 误差降到 6.6，且加入 actionless human video 仍继续下降，说明 LDA 能从无 action 数据榨出 supervision。Bottom：LDA 在 0.1B → 1B 单调下降而 UWM 快速饱和。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/figures/scaling.jpg" alt/></p>
+<p><strong>三个核心结论</strong>：</p>
+<ol>
+<li><strong>Universal data ingestion 必须 data scale + objectives 一起 scale</strong>：Policy-only objective 下加更多（含低质）数据反而 unstable；只有全部 4 个 objectives 共训才单调下降。</li>
+<li><strong>Latent space 决定 scaling 是否有效</strong>：UWM(VAE) 早早饱和；LDA(DINO) 单调改善。这个对比直接指向”latent 表征要足够 semantic 才能让 dynamics 学习随 capacity 持续受益”。</li>
+<li><strong>Model scale 1B vs 0.5B vs 0.1B 单调降低 error</strong>——显示 capacity-data-objective 三轴对齐是 reliable 的。</li>
+</ol>
+<h3 id="iv-d-dynamics-learning-分析">IV-D Dynamics Learning 分析<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#iv-d-dynamics-learning-分析" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Latent forward dynamics 可视化</strong>（项目页 video）——模型给出与 ground truth 一致的 future DINO latent（PCA 投影后），保留物体永久性、接触连续性、运动一致性，且对 distractor 不敏感：</p>
+<p><video src="https://pku-epic.github.io/LDA/videos/dino_dex.mp4" controls muted playsinline width="720"></video></p>
+<p>Dexterous Manipulation：Original RGB / DINO latent / Model prediction</p>
+<p><video src="https://pku-epic.github.io/LDA/videos/dino_human.mp4" controls muted playsinline width="720"></video></p>
+<p>Human Demonstration</p>
+<p><strong>Figure 11. Action-conditioned attention heat map</strong>：对比 active motion command 和 No-Op 的 attention 差，揭示哪些区域是 action-conditioned 的关注重点。Push Right 高亮 mug 前缘和运动方向；Push Close 集中在抽屉接触面；背景杂物被 suppress。</p>
+<p><img src="https://arxiv.org/html/2602.12215v1/figures/attn_diff.jpg" alt/></p>
+<blockquote>
+<p>❓ Attention diff 这种可视化工具在 BC baseline 上没做对照，无法判断 LDA 的 attention 是不是真的”更 action-aware”——这个 finding 偏 anecdotal。</p>
+</blockquote>
+<hr/>
+<h2 id="v-局限">V. 局限<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#v-局限" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>论文自己列的：</p>
+<ol>
+<li><strong>Frozen DINO 限制了 visual representation 适应新 viewpoint / multi-modal sensor 的能力</strong></li>
+<li><strong>Egocentric / head-mounted camera 主导</strong>：跨视角泛化未验证</li>
+<li><strong>Data role 是预先手工指派的</strong>，没自动化</li>
+</ol>
+<p>我加上的：</p>
+<ul>
+<li><strong>超参 / 数据混合比 / training schedule 在论文里几乎没披露</strong>——“4608 GPU h” 是唯一硬数字，复现门槛高</li>
+<li><strong>GR00T-EI30k baseline 是自己 reproduce 的 1B 版本</strong>，不是官方 GR00T-N1.6 (3B)。和官方相比 +7.8%，但官方 3B 的 capacity 优势在 BC 范式下应该更大；这里的 setup 公平性需要自己交叉对比</li>
+<li><strong>Real-world 评测 trial 数偏少</strong>（每任务 ~10 次），±10% 在 100% scale 上是噪声门槛</li>
+</ul>
+<hr/>
+<h2 id="关联工作">关联工作<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关联工作" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="基于">基于<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#基于" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong><a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> (Zhu et al., 2025)</strong>: LDA 直接继承的 paradigm——joint diffusion + 独立 timestep。LDA 的两大改动：(1) VAE latent → DINO latent；(2) 同质 data 用法 → role-aware ingestion。在 RoboCasa-GR1 上 LDA 从 20.0% 拉到 55.4% 是这两改动的复合效果。</li>
+<li><strong>DiT / MM-DiT</strong>: AdaLN-conditioned diffusion transformer（SD3 同源），LDA 用 multi-modal 双 expert 共享 attention 的变体。</li>
+<li><strong>DINOv3</strong>: frozen visual representation 做 dynamics target——这是把 DINO-WM / LaDi-WM 的小 scale 实验放大到 30k h foundation scale。</li>
+<li><strong>Flow Matching</strong>: 训练目标。</li>
+<li><strong>MANO</strong>: 人类手部参数化，给 cross-embodiment 对齐用。</li>
+</ul>
+<h3 id="对比">对比<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#对比" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong><a href="../Papers/2504-Pi05" class="internal alias" data-slug="Papers/2504-Pi05">π0.5</a> (Physical Intelligence)</strong>: real-world 主要 baseline，3B BC，LDA 1B 在 contact-rich / dexterous / long-horizon 上分别 +21% / +48% / +23%，且 mixed-quality finetune 上 LDA +10% 而 π0.5 -10%–-20%</li>
+<li><strong>GR00T-N1.6 (NVIDIA)</strong>: simulation 主要 baseline，LDA 在 RoboCasa-GR1 +7.8%（vs 3B 原版）/ +4.1%（vs 1B 同数据 BC repro）</li>
+<li><strong><a href="../Papers/2406-OpenVLA" class="internal alias" data-slug="Papers/2406-OpenVLA">OpenVLA</a> / <a href="../Papers/2410-Pi0" class="internal alias" data-slug="Papers/2410-Pi0">π0</a> / RDT</strong>: 第一代 BC 路线 robot foundation model，LDA 整体定位是给”BC 之后下一步”的代表</li>
+<li><strong><a href="../Papers/2512-Motus" class="internal alias" data-slug="Papers/2512-Motus">Motus</a> (concurrent)</strong>: 也走 UWM 路线但用 Mixture-of-Transformers + 视频生成 prior + optical-flow latent action；LDA 走 DINO latent + 单一 MM-DiT，更轻</li>
+<li><strong>InternVLA-A1</strong>: VF + BC，3B，未走完整 UWM</li>
+<li><strong>UniVLA / GR00T-N1.6</strong>: 走 latent action modeling (LA) 路线（用预训练 latent action codec 提取人类动作），LDA 用 hand-centric coordinate alignment 直接对齐，回避 latent action 路线对 codec 质量的依赖</li>
+</ul>
+<h3 id="方法相关">方法相关<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#方法相关" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li><strong><a href="../Papers/2402-Genie" class="internal alias" data-slug="Papers/2402-Genie">Genie</a> / video world model 路线</strong>：与 LDA 都做 forward dynamics，但 video model 在 pixel space 工作 + 不联合 policy；LDA 在 latent space + joint policy</li>
+<li><strong><a href="../Papers/2303-DiffusionPolicy" class="internal alias" data-slug="Papers/2303-DiffusionPolicy">Diffusion Policy</a></strong>: action 端的祖先，LDA 把 action diffusion 嵌入 UWM</li>
+<li><strong>EI-30k 数据来源</strong>：OXE / AgiBot World / DROID / RH20T / Ego4D / EPIC-Kitchens / HOI4D / EgoDex / BEHAVIOR-1k 等</li>
+</ul>
+<hr/>
+<h2 id="论文点评">论文点评<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#论文点评" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="strengths">Strengths<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#strengths" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>DINO latent 替换 VAE 是 UWM 路线的关键 unlock</strong>：+35.4% 的消融数字非常硬，对整个 video world model + policy 联合训练社区有指导意义——pixel space 是 dynamics 学习的瓶颈，semantic latent 才能让 capacity scale 起来</li>
+<li><strong>Universal data ingestion 把”数据过滤”重新定义为”数据角色分配”</strong>：Table IV 的 mixed-quality finetune 现象（LDA +10% vs π0.5 -20%）直接转化成 deployment 价值，比 abstract scaling number 更可 actionable</li>
+<li><strong>完整的 cross-embodiment 数据工程</strong>：33.83k h 跨 robot / human / sim / real / actionless 的统一格式 + hand-centric 坐标对齐，是 BC 路线少做的脏活</li>
+<li><strong>完整的 ablation</strong>：DINO vs VAE / MM-DiT vs DiT / scale 0.1B-0.5B-1B / data scale + objective combinations，每一个设计选择都被消融</li>
+<li><strong>Real-world 任务多样性</strong>：8 + 5 个真机任务跨两种 dexterous hand，比纯 sim 论文可信度高</li>
+</ol>
+<h3 id="weaknesses">Weaknesses<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#weaknesses" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>方法层面增量集中</strong>：相比 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 主要是 (a) latent 换成 DINO (b) 数据按 role 分配 (c) scale 上去——三件事每一件单独都不算颠覆，组合起来才出效果。属于”系统工程级”贡献，不是”概念级”</li>
+<li><strong>复现细节缺失</strong>：4608 GPU h、48 H800 是唯一硬数字；data mixing ratio、loss weight、curriculum、optimizer schedule 几乎没说</li>
+<li><strong>GR00T-EI30k 是自己复现的 baseline</strong>，复现的 BC 模型和官方 3B 不可直接比较，给出的 51.3% 数字带主观性</li>
+<li><strong>Real-world trial 数偏少</strong>：每任务 ~10–15 次，±10% 在该 scale 上波动门槛接近成功率间隔</li>
+<li><strong>Frozen visual encoder 自带天花板</strong>：作者自己也承认。jointly learn rep + dynamics 是显然下一步，<a href="../Papers/2512-Motus" class="internal alias" data-slug="Papers/2512-Motus">Motus</a> 的 video generative prior 路线提供了一个对比方案</li>
+<li><strong>Attribution 不够干净</strong>：dexterous +48% 同时受益于 (a) 人类数据 (b) DINO latent (c) UWM 范式 (d) hand-centric alignment，论文没拆开</li>
+</ol>
+<h3 id="可信评估">可信评估<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#可信评估" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="artifact-可获取性">Artifact 可获取性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#artifact-可获取性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li><strong>代码</strong>: GitHub repo 已建（PKU-EPIC/LDA），但 main 分支无 README，截至 2026-04-29 是 0 ⭐ / 0 fork（项目页声称 “Code &amp; Data” 即将放）。<strong>实际可用代码：未发布</strong></li>
+<li><strong>模型权重</strong>: 未发布的 checkpoint</li>
+<li><strong>训练细节</strong>: 仅披露 GPU 总时（4608 h）和 frozen 组件，超参 / 数据配比 / 训练步数详细配置<strong>未披露</strong></li>
+<li><strong>数据集</strong>: EI-30k 由 公开数据 + 自建处理脚本 组成，subdataset 名字给了（OXE / DROID / Ego4D / EPIC-Kitchens 等）但<strong>统一后的 30k h LeRobot 格式 dump 是否会发布未说明</strong></li>
+</ul>
+<h4 id="claim-可验证性">Claim 可验证性<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#claim-可验证性" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<ul>
+<li>✅ <strong>DINO latent vs VAE +35.4%</strong>：Table II 同条件直接消融，强 grounding</li>
+<li>✅ <strong>RoboCasa-GR1 55.4%</strong>：仿真 benchmark，可独立复现（需 1k traj/task fin tune setup）</li>
+<li>✅ <strong>Mixed-quality finetune +10% vs BC -10%</strong>：Table IV，跨两个任务一致，方向正确</li>
+<li>⚠️ <strong>Real-world +21% / +48% / +23%</strong>：trial 数小（每任务 ~10–15 次）+ baseline 是 finetune-on-expert-only 与 LDA-finetune-on-all 的对比，<strong>不是 100% apple-to-apple</strong>——LDA 多用了低质数据这一资源</li>
+<li>⚠️ <strong>EI-30k 30k+ h</strong>：组成统计给了，但人类 actionless 10k h 部分是否真用上 / 各组件配比对结果的边际贡献，scaling 图里仅区分”加 / 不加 actionless”</li>
+<li>⚠️ <strong>GR00T-EI30k 1B 51.3%</strong>：自己复现的 baseline，权威性弱于官方 GR00T-N1.6 (47.6, 3B)</li>
+<li>❌ <strong>“breaks the 6k-hour ceiling of hybrid methods”</strong>：是 marketing 话术——之前方法 ≤6k h 不是 hard ceiling 而是 setup 选择</li>
+</ul>
+<h3 id="notes">Notes<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#notes" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul>
+<li>这是 PKU EPIC + Galbot 的工业 + 学术联合工作，He Wang 实验室 + Galbot 公司体制，<strong>和 GR00T / π0 形成的是真正商业意义的对标</strong></li>
+<li>Mixed-frequency vision/action 设计（3Hz/10Hz）是务实的工程优化，但论文没消融——猜测对结果影响 &lt; 5% 但 token 数砍掉了 70%</li>
+<li>论文题目里”Latent Dynamics”是 thesis statement——把所有方法选择都收敛到”latent dynamics 是 robot foundation 的 organizing principle”。这个 framing 和 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 的”action 和 observation 都是同一 diffusion 过程的两端”互补但不冲突</li>
+<li>与 <a href="../Papers/2512-Motus" class="internal alias" data-slug="Papers/2512-Motus">Motus</a> 形成 contemporary 对比：Motus 走 video generative prior + MoT，LDA 走 DINO latent + MM-DiT；下一步 community 收敛方向值得关注</li>
+</ul>
+<h3 id="rating">Rating<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#rating" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>Metrics</strong> (as of 2026-04-29): citation=2, influential=0 (0%), velocity=1.0/mo (publish &lt; 3 mo, 不作为降档依据); HF upvotes=0; github 0⭐ / forks=0 / 90d commits=24 / pushed 61d ago · code-not-yet-public</p>
+<p><strong>分数</strong>：2 - Frontier</p>
+<p><strong>理由</strong>：方法是 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 路线第一次清晰 scale 到 30k h / 1B foundation scale，DINO latent + role-aware data ingestion 两个设计选择都有非常硬的消融数字（+35.4% / mixed-quality finetune +20% gap）和真实机器人验证。但论文不到 3 个月、社区信号几乎为零、代码未放出，且方法相对 <a href="../Papers/2504-UWM" class="internal alias" data-slug="Papers/2504-UWM">UWM</a> 的核心增量是工程组合而非范式突破——所以暂归 Frontier 而非 Foundation。后续若代码 + 模型权重发布且 community 接住其 latent dynamics 范式（特别是用 DINO 类 semantic latent 做 dynamics 这一点被广泛复用），可升档。</p></article><hr/><div class="page-footer"><div class="giscus" data-repo="liqing-ustc/MindFlow" data-repo-id="R_kgDORucr2w" data-category="Comments" data-category-id="DIC_kwDORucr284C5LSt" data-mapping="pathname" data-strict="1" data-reactions-enabled="1" data-input-position="bottom" data-light-theme="light" data-dark-theme="dark" data-theme-url="https://liqing.io/mindflow/static/giscus"></div></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-content" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="toc-content"><ul id="u3bngi" class="overflow"><li class="depth-0"><a href="#summary" data-for="summary">Summary</a></li><li class="depth-0"><a href="#i-motivationbc-与-uwm-之间" data-for="i-motivationbc-与-uwm-之间">I. Motivation：BC 与 UWM 之间</a></li><li class="depth-0"><a href="#ii-methodlatent-dynamics-action-model" data-for="ii-methodlatent-dynamics-action-model">II. Method：Latent Dynamics Action Model</a></li><li class="depth-1"><a href="#ii-a-形式化unified-world-model" data-for="ii-a-形式化unified-world-model">II-A 形式化：Unified World Model</a></li><li class="depth-1"><a href="#ii-b-universal-data-ingestionrole-aware-co-training" data-for="ii-b-universal-data-ingestionrole-aware-co-training">II-B Universal Data Ingestion：role-aware co-training</a></li><li class="depth-1"><a href="#ii-c-预测目标的表征" data-for="ii-c-预测目标的表征">II-C 预测目标的表征</a></li><li class="depth-1"><a href="#ii-d-mm-dit-架构" data-for="ii-d-mm-dit-架构">II-D MM-DiT 架构</a></li><li class="depth-1"><a href="#ii-e-训练配置" data-for="ii-e-训练配置">II-E 训练配置</a></li><li class="depth-0"><a href="#iii-ei-30k-数据集" data-for="iii-ei-30k-数据集">III. EI-30K 数据集</a></li><li class="depth-0"><a href="#iv-实验" data-for="iv-实验">IV. 实验</a></li><li class="depth-1"><a href="#iv-a-simulationrobocasa-gr1" data-for="iv-a-simulationrobocasa-gr1">IV-A Simulation：RoboCasa-GR1</a></li><li class="depth-1"><a href="#iv-b-real-worldgalbot-g1--sharpa--brainco-dexterous-hands" data-for="iv-b-real-worldgalbot-g1--sharpa--brainco-dexterous-hands">IV-B Real-world：Galbot G1 + Sharpa / BrainCo dexterous hands</a></li><li class="depth-1"><a href="#iv-c-scaling-analysis" data-for="iv-c-scaling-analysis">IV-C Scaling Analysis</a></li><li class="depth-1"><a href="#iv-d-dynamics-learning-分析" data-for="iv-d-dynamics-learning-分析">IV-D Dynamics Learning 分析</a></li><li class="depth-0"><a href="#v-局限" data-for="v-局限">V. 局限</a></li><li class="depth-0"><a href="#关联工作" data-for="关联工作">关联工作</a></li><li class="depth-1"><a href="#基于" data-for="基于">基于</a></li><li class="depth-1"><a href="#对比" data-for="对比">对比</a></li><li class="depth-1"><a href="#方法相关" data-for="方法相关">方法相关</a></li><li class="depth-0"><a href="#论文点评" data-for="论文点评">论文点评</a></li><li class="depth-1"><a href="#strengths" data-for="strengths">Strengths</a></li><li class="depth-1"><a href="#weaknesses" data-for="weaknesses">Weaknesses</a></li><li class="depth-1"><a href="#可信评估" data-for="可信评估">可信评估</a></li><li class="depth-1"><a href="#notes" data-for="notes">Notes</a></li><li class="depth-1"><a href="#rating" data-for="rating">Rating</a></li><li class="overflow-end"></li></ul></div></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.4.1</a> © 2026</p><ul><li><a href="https://github.com/liqing-ustc/MindFlow">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../postscript.js" type="module"></script></html>
