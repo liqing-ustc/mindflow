@@ -21,15 +21,15 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        working-directory: website
+        working-directory: .website
         run: npm ci
 
       - name: Build
-        working-directory: website
+        working-directory: .website
         run: npx quartz build --directory ../ --output dist
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./website/dist
+          publish_dir: ./.website/dist
