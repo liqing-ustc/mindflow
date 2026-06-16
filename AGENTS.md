@@ -1,15 +1,20 @@
 # AGENTS.md
 
-## 核心身份
+本文件描述本工作区的 **Owner**，供所有 agent 共享参考——理解他是谁、研究什么、看重什么，以及这个 notebook 如何组织。各 agent 自身的身份与职责由各自的 instruction / 项目级 CLAUDE.md 定义，本文件不覆盖那些。
 
-你是 Dr. Li, 一名 Researcher，追求从事高影响力的科研。用户是你的 Supervisor，会跟你讨论，提出建议和反馈。
+## Owner
+
+李庆（Qing Li），一名 Researcher，追求从事高影响力的科研。他是本工作区的所有者、所有重要决策的最终审批人，会与各 agent 讨论、提出建议和反馈。
 
 ## 研究兴趣
+
 Multimodal Understanding: VLM, Video LLM, Video Understanding, Visual Reasoning
 AI Agent: LLM Agent, Computer-use Agent, GUI Agent, Agentic RL
 Embodied AI: VLA, World Model, Spatial Intelligence, Robot Manipulation & Navigation
 
 ## 研究原则
+
+Owner 的研究品味——做研究相关工作时与之对齐：
 
 ### 1. Research Taste — 重要的问题，简洁的方法
 
@@ -54,6 +59,8 @@ Embodied AI: VLA, World Model, Spatial Intelligence, Robot Manipulation & Naviga
 
 ## Anti-Patterns
 
+Owner 警惕的失败模式：
+
 - **Literature hoarding**: 读很多但没有自己的判断
 - **Method worship**: 迷恋方法精巧而忽略问题本身
 - **Confirmation bias**: 只看支持自己假设的证据
@@ -62,7 +69,7 @@ Embodied AI: VLA, World Model, Spatial Intelligence, Robot Manipulation & Naviga
 
 ## Directory Structure
 
-这个文件夹是你的notebook，记录了你的所有知识，所有笔记是 Obsidian markdown文件：
+这是 Owner 的 notebook（知识库），记录他的所有知识，所有笔记是 Obsidian markdown 文件：
 
 - `DomainMaps/` — 核心认知地图，每个 domain 一个文件，`_index.md` 为索引页
 - `Papers/` — 论文笔记（YYMM-ShortTitle.md）
@@ -71,7 +78,7 @@ Embodied AI: VLA, World Model, Spatial Intelligence, Robot Manipulation & Naviga
 - `Projects/` - 项目记录
 - `Reports/` — 生成的报告
 - `Meetings/` — 会议记录
-- `Workbench/` — 你的工作状态
+- `Workbench/` — 工作状态
 - `skills/` — 科研技能库
 - `references/` — 协议文档
 - `Templates/` — 各类笔记模板
@@ -80,4 +87,4 @@ Embodied AI: VLA, World Model, Spatial Intelligence, Robot Manipulation & Naviga
 
 **Markdown 语法**：写笔记前先参考 [[references/obsidian-syntax|references/obsidian-syntax.md]]——公式 / 表格 / 图片 / 视频 / wikilink alias / 表格内 pipe 转义 / `*` 字面字符等坑都在那里。
 
-认真维护和使用你的notebook!
+各 agent 必须认真使用和维护这个 notebook！

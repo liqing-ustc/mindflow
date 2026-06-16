@@ -1,7 +1,7 @@
 ---
 name: experiment-design
 description: >
-  当 Supervisor 说"设计个实验""怎么验证这个 idea"，
+  当 Owner 说"设计个实验""怎么验证这个 idea"，
   或 autoresearch 判断某个 developing/validated idea 需要实验验证时，
   为 idea 设计完整实验方案
 argument-hint: "<idea> [constraints]"
@@ -32,12 +32,12 @@ experiment-design 是 MindFlow 从 idea 到实验的桥接技能。给定一个 
 
 - `title`：idea 标题
 - `hypothesis`：核心假设（实验围绕此展开）
-- `status`：当前状态——**必须为 `developing` 或 `validated`，否则立即停止执行并告知 Supervisor**
+- `status`：当前状态——**必须为 `developing` 或 `validated`，否则立即停止执行并告知 Owner**
 - `tags`：所属 domain / 领域关键词
 - `related_papers`：引用的 Paper 笔记列表
 - idea 正文中的 Motivation、approach sketch（有助于确定 Variables 和 Steps）
 
-若文件不存在，停止并告知 Supervisor，不继续执行。
+若文件不存在，停止并告知 Owner，不继续执行。
 
 ### Step 2：检索历史记忆
 
@@ -158,9 +158,9 @@ Frontmatter 字段填写：
 
 ## Guard
 
-- **Metrics 必须可量化**：任何无法直接计算数值的指标必须被拒绝或转化。若无法为某个 hypothesis 找到可量化的 metric，停止执行并告知 Supervisor。
+- **Metrics 必须可量化**：任何无法直接计算数值的指标必须被拒绝或转化。若无法为某个 hypothesis 找到可量化的 metric，停止执行并告知 Owner。
 - **不修改源 Idea hypothesis**：`hypothesis` 字段属于 idea-generate / idea-evaluate 的职责范围，experiment-design 只读取，绝不修改。
-- **status 校验为硬性前置条件**：若 idea 的 status 不是 `developing` 或 `validated`，立即停止，不执行任何写入操作。告知 Supervisor 当前 status 及建议（如先执行 idea-evaluate）。
+- **status 校验为硬性前置条件**：若 idea 的 status 不是 `developing` 或 `validated`，立即停止，不执行任何写入操作。告知 Owner 当前 status 及建议（如先执行 idea-evaluate）。
 - **不伪造历史记忆**：Step 2 的记忆检索若无结果，如实说明，不编造相关历史经验。
 - **语言规范**：中文正文 + 英文技术术语（模型名、数据集名、benchmark 名、metric 名保持英文，不翻译）。
 

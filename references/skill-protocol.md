@@ -25,7 +25,7 @@ Description 应积极触发（"pushy"）——明确描述**触发场景**，降
 
 | Bad | Good |
 |-----|------|
-| `消化一篇论文，生成结构化笔记` | `当 Supervisor 给出论文 URL/标题/PDF/DOI，或阅读队列中有待处理论文时，消化论文并生成结构化笔记到 Papers/` |
+| `消化一篇论文，生成结构化笔记` | `当 Owner 给出论文 URL/标题/PDF/DOI，或阅读队列中有待处理论文时，消化论文并生成结构化笔记到 Papers/` |
 
 **`allowed-tools` values** (Claude Code tool names):
 
@@ -37,7 +37,7 @@ Description 应积极触发（"pushy"）——明确描述**触发场景**，降
 ---
 name: paper-digest
 description: >
-  当 Supervisor 给出论文 URL/标题/PDF/DOI，或阅读队列中有待处理论文时，消化论文并生成结构化笔记到 Papers/
+  当 Owner 给出论文 URL/标题/PDF/DOI，或阅读队列中有待处理论文时，消化论文并生成结构化笔记到 Papers/
 argument-hint: "[arXiv URL / PDF path / title / DOI]"
 allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 ---
@@ -88,7 +88,7 @@ A bulleted list of rules the skill must never violate. These act as hard constra
 - Never overwrite an existing paper note without explicit user confirmation.
 - Never modify `agenda.md` Mission section.
 - Do not mark an insight as `validated` without ≥2 independent evidence sources.
-- Copilot mode: produce a draft only — output to conversation for Supervisor review before writing files.
+- Copilot mode: produce a draft only — output to conversation for Owner review before writing files.
 ```
 
 ### Verify
@@ -161,7 +161,7 @@ A skill that sequences or conditions other skills to accomplish a compound goal.
 
 A skill that operates across the entire vault or research state. It may invoke multiple Level 1 skills, modify `agenda.md`, update memory files, or trigger cross-cutting evolution.
 
-- Typically run on a schedule or by explicit Supervisor command
+- Typically run on a schedule or by explicit Owner command
 - Broad `allowed-tools` and strict `## Guard` section
 - Example: `memory-distill`, `agenda-evolve`
 

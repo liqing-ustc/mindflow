@@ -1,7 +1,7 @@
 ---
 name: writing-refine
 description: >
-  当 Supervisor 说"打磨一下""改改这段""逻辑不通顺"，
+  当 Owner 说"打磨一下""改改这段""逻辑不通顺"，
   或 autoresearch 在写作阶段自检时，
   从结构/清晰度/论据三个维度打磨已有文稿
 argument-hint: "<target> [section] [focus]"
@@ -16,7 +16,7 @@ allowed-tools: Read, Edit, Glob, Grep
 - **clarity**：冗余表达、歧义措辞、过度抽象的概念是否需要具体化
 - **evidence**：每个关键 claim 是否有 `[[wikilink]]` 支撑，引用是否恰当
 
-默认行为：输出建议列表，由 Supervisor 确认后再执行修改。
+默认行为：输出建议列表，由 Owner 确认后再执行修改。
 
 ---
 
@@ -99,9 +99,9 @@ Read(target)
 
 ### Step 4 — Copilot 确认流程
 
-**默认行为**：输出建议列表后，等待 Supervisor 确认。不主动执行 Edit。
+**默认行为**：输出建议列表后，等待 Owner 确认。不主动执行 Edit。
 
-询问 Supervisor：
+询问 Owner：
 > "以上 N 条修改建议，请确认哪些执行？可回复：全部执行 / 执行 #1 #3 #5 / 跳过全部"
 
 收到确认后，逐条使用 `Edit` 执行。每次 Edit 后在建议前标记 `[✓]`。
@@ -117,7 +117,7 @@ Read(target)
 - section: <指定章节 或 "全文">
 - focus: <structure / clarity / evidence / all>
 - 建议总数: N（structure: X, clarity: Y, evidence: Z）
-- 执行: <已确认执行的条目序号，或 "待 Supervisor 确认">
+- 执行: <已确认执行的条目序号，或 "待 Owner 确认">
 ```
 
 ---
@@ -134,9 +134,9 @@ Read(target)
 
 ## Guard
 
-- **默认先确认再修改**：不经 Supervisor 确认不执行 Edit。
+- **默认先确认再修改**：不经 Owner 确认不执行 Edit。
 - **不改变核心论点**：只调整表达和结构，不替换或删除作者的核心主张。
-- **不增删章节**：不新增标题层级，不删除现有段落（除非 Supervisor 明确指示）。
+- **不增删章节**：不新增标题层级，不删除现有段落（除非 Owner 明确指示）。
 - **语言规范**：遵循文稿原有语言风格（中英混用 / 纯英文 / 纯中文），不擅自切换。
 - **范围限定**：若指定了 `section`，只在该章节内给出建议，不扩散到全文。
 
@@ -179,4 +179,4 @@ Read("Papers/drafts/survey-draft.md")                      # Step 1
 - evidence: 3 条
 ```
 
-**Researcher 等待 Supervisor 确认后，逐条执行 Edit。**
+**Researcher 等待 Owner 确认后，逐条执行 Edit。**

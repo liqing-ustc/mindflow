@@ -2,7 +2,7 @@
 name: agenda-evolve
 description: >
   当积累了新的 validated insight、实验结果改变了方向判断、
-  或 Supervisor 说"更新研究方向""复盘 agenda"时，
+  或 Owner 说"更新研究方向""复盘 agenda"时，
   根据记忆和发现演化研究议程
 argument-hint: "[trigger]"
 allowed-tools: Read, Edit, Glob, Grep
@@ -14,7 +14,7 @@ agenda-evolve 是 MindFlow 研究议程的演化引擎。它定期审视 `Workbe
 
 该技能实现了 `references/agenda-protocol.md` 中定义的 Researcher 完全自主的议程演化权限。它将"分散在记忆和队列中的证据积累"转化为"研究方向层面的有据决策"，是 MindFlow 自我进化机制中连接 insight 与 strategy 的关键环节。
 
-触发时机：每次 memory-distill 产出新的 validated insight 之后；收到 Supervisor 的方向性反馈之后；实验结果与当前 hypothesis 出现显著偏差时；或定期复盘（建议每两周一次）。
+触发时机：每次 memory-distill 产出新的 validated insight 之后；收到 Owner 的方向性反馈之后；实验结果与当前 hypothesis 出现显著偏差时；或定期复盘（建议每两周一次）。
 
 ## Steps
 
@@ -124,7 +124,7 @@ priority 依据：高度相关 Mission 且有强证据支持 → high；与 Miss
 触发条件（满足其一即可）：
 - 该 direction 的 `next_action` 已连续两次无法推进（因缺乏资源、前置依赖未完成等）
 - 有更高优先级的新方向需要占用同等精力，当前方向需要让位
-- 该 direction 的 hypothesis 在短期内无法被验证（如需等待实验数据、等待 Supervisor 反馈）
+- 该 direction 的 hypothesis 在短期内无法被验证（如需等待实验数据、等待 Owner 反馈）
 
 执行：
 1. 用 Edit 将该 direction 从 `## Active Directions` 节剪切，移入 `## Paused Directions` 节
@@ -136,7 +136,7 @@ priority 依据：高度相关 Mission 且有强证据支持 → high；与 Miss
 3. 将 `status` 字段值改为 `paused`
 4. 保留原有的 `hypothesis`、`evidence`、`confidence` 字段
 
-注意：不得删除 Supervisor 手动添加的 direction，只能暂停并在 `pause_reason` 中注明来源；如确需删除，须先在 `## Discussion Topics` 节提出讨论。
+注意：不得删除 Owner 手动添加的 direction，只能暂停并在 `pause_reason` 中注明来源；如确需删除，须先在 `## Discussion Topics` 节提出讨论。
 
 ---
 
@@ -171,8 +171,8 @@ priority 依据：高度相关 Mission 且有强证据支持 → high；与 Miss
 
 **E. 新增 Discussion Topic**
 
-触发条件：演化过程中发现需要 Supervisor 判断的议题，如：
-- 两个方向的 hypothesis 存在逻辑冲突，需要 Supervisor 决定优先级
+触发条件：演化过程中发现需要 Owner 判断的议题，如：
+- 两个方向的 hypothesis 存在逻辑冲突，需要 Owner 决定优先级
 - 某个方向按现有证据应废弃，但它是 supervisor-assigned 来源，需确认
 
 执行：用 Edit 在 `Workbench/agenda.md` 的 `## Discussion Topics` 节末尾追加：
@@ -182,7 +182,7 @@ priority 依据：高度相关 Mission 且有强证据支持 → high；与 Miss
 
 - **raised_by**: agenda-evolve
 - **context**: <触发该话题的具体情境>
-- **question**: <需要 Supervisor 回答的具体问题>
+- **question**: <需要 Owner 回答的具体问题>
 - **related_direction**: <相关的 direction 名称>
 ```
 
@@ -239,9 +239,9 @@ priority 依据：高度相关 Mission 且有强证据支持 → high；与 Miss
 ## Guard
 
 - **严格遵循格式**：所有 agenda 条目的字段和格式必须符合 `references/agenda-protocol.md` 的规范，不得自定义字段名或省略必填字段。
-- **不删除 Supervisor 方向**：`origin: supervisor-assigned` 的 direction 不得被废弃，只可暂停，并在 `pause_reason` 中注明"supervisor-assigned，需 Supervisor 确认后方可废弃"，同时在 Discussion Topics 中提出讨论。
+- **不删除 Owner 方向**：`origin: supervisor-assigned` 的 direction 不得被废弃，只可暂停，并在 `pause_reason` 中注明"supervisor-assigned，需 Owner 确认后方可废弃"，同时在 Discussion Topics 中提出讨论。
 - **变更必须有推理记录**：每次变更在 `evolution/changelog.md` 的 `reasoning` 字段中必须说明决策依据，不得只记录"变更了 X 方向"而不说明为何。
-- **不修改 Mission 节**：`## Mission` 节的内容只有 Supervisor 可以直接修改，Researcher 可在 Discussion Topics 中提出 Mission 演化建议，但不得直接改写 Mission 正文。
+- **不修改 Mission 节**：`## Mission` 节的内容只有 Owner 可以直接修改，Researcher 可在 Discussion Topics 中提出 Mission 演化建议，但不得直接改写 Mission 正文。
 - **废弃需有明确证据**：废弃 direction 时，`reason` 字段必须引用具体证据来源（insight 链接、实验结果等），不得基于"感觉方向不对"等主观判断执行废弃。
 - **confidence 需有依据**：所有 confidence 值必须遵循 `references/agenda-protocol.md` 的定量规范：exploring 无证据 0.1-0.2，多篇论文支持 0.7-0.8，实验确认才可达 0.9+。
 - **语言规范**：中文正文，英文技术术语（方向名、模型名、方法名、benchmark 名）保持英文，不做翻译。

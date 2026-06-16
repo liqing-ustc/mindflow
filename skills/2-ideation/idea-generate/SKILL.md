@@ -89,7 +89,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 - **不修改任何已有 Idea 文件**：若 `Ideas/` 下已存在内容相近的文件，停止执行并告知 Human；不得覆盖或追加已有 Idea 文件的内容。
 - **不捏造文献支持**：`## Hypothesis` 中 `closest works` 引用必须指向 vault 中 `Papers/` 目录下已存在的笔记（`[[Papers/YYMM-ShortTitle]]`）；若尚无相关 Paper 笔记，写"暂无相关笔记，建议先 paper-digest X"，不得引用不存在的链接。
-- **不直接修改 agenda.md**：idea-generate 的产出只写入 `Ideas/`；是否将某个 idea 纳入 agenda 的 direction，由 agenda-evolve skill 或 Supervisor 决策，idea-generate 不擅自修改 `Workbench/agenda.md`。
+- **不直接修改 agenda.md**：idea-generate 的产出只写入 `Ideas/`；是否将某个 idea 纳入 agenda 的 direction，由 agenda-evolve skill 或 Owner 决策，idea-generate 不擅自修改 `Workbench/agenda.md`。
 - **hypothesis 必须可证伪**：若某个候选 idea 的假设无法在合理实验条件下被证伪（如过于宽泛的"改进 VLA 的泛化能力"），不得写入文件；须拒绝该候选，并在输出中说明原因，改换更具体的方向。
 - **语言规范**：正文用中文撰写，英文技术术语（模型名、方法名、benchmark 名、任务名）保持英文，不做翻译。
 

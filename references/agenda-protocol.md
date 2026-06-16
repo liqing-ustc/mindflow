@@ -17,7 +17,7 @@ updated_by: supervisor / <skill-name>
 ## Mission
 
 One paragraph describing the long-term research mission and primary scientific question.
-Researcher may propose evolution; Supervisor may edit directly.
+Researcher may propose evolution; Owner may edit directly.
 
 ---
 
@@ -68,7 +68,7 @@ Researcher may propose evolution; Supervisor may edit directly.
 
 - **raised_by**: <skill-name> / researcher
 - **context**: What prompted this topic
-- **question**: What Researcher wants Supervisor's input on
+- **question**: What Researcher wants Owner's input on
 - **related_direction**: Which direction this relates to
 ```
 
@@ -85,18 +85,18 @@ Researcher has full autonomy over the agenda. Like a PhD student, Researcher dri
 | Abandon a direction | Yes | Must write to `failed-directions.md` and log the lesson |
 | Update `next_action`, `confidence`, `evidence` | Yes | Anytime |
 | Move direction to Paused | Yes | Must populate `pause_reason` and `resume_condition` |
-| Evolve Mission | Yes | May propose changes; Supervisor can always override |
+| Evolve Mission | Yes | May propose changes; Owner can always override |
 | Merge duplicate directions | Yes | Log the merge in `evolution/changelog.md` |
 
 ---
 
-## Supervisor Overrides
+## Owner Overrides
 
-Supervisor edits to `agenda.md` take effect immediately and unconditionally. When a Supervisor edits the agenda:
+Owner edits to `agenda.md` take effect immediately and unconditionally. When a Owner edits the agenda:
 
 - The `last_updated` and `updated_by` frontmatter fields should be updated.
 - Researcher skills that run subsequently will read the current state as authoritative.
-- Supervisor edits take precedence over any Researcher-proposed state.
+- Owner edits take precedence over any Researcher-proposed state.
 
 ---
 
@@ -104,5 +104,5 @@ Supervisor edits to `agenda.md` take effect immediately and unconditionally. Whe
 
 - Every active direction must have a non-empty `next_action`. If unclear, move to Paused.
 - `confidence` values must be grounded in evidence. `exploring` with no evidence: 0.1-0.2. Multiple confirming papers: 0.7-0.8. Experimental confirmation needed for 0.9+.
-- Discussion Topics do not block Researcher work — they are informational for next Supervisor check-in.
+- Discussion Topics do not block Researcher work — they are informational for next Owner check-in.
 - Duplicate directions should be merged. Researcher merges autonomously and logs to `evolution/changelog.md`.

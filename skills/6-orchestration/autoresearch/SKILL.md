@@ -1,7 +1,7 @@
 ---
 name: autoresearch
 description: >
-  MindFlow 的核心研究循环。当 Supervisor 说"自己干活吧""开始研究"，
+  MindFlow 的核心研究循环。当 Owner 说"自己干活吧""开始研究"，
   或系统需要自主推进研究时启动。
   持续运行：读取当前状态 → 判断最高价值行动 → 调用卫星 skill → 记录 → 循环
 argument-hint: "[focus]"
@@ -84,8 +84,8 @@ autoresearch 是 MindFlow 的核心研究循环，实现了 PhD 导师制中 Res
 
 - **原子性**：一轮只调一个卫星 skill——做一件事，做完记录，再想下一件
 - **状态刷新**：每轮必须重新读取最新状态（不跳过 READ STATE），因为上一轮的行动可能改变了 vault 状态
-- **Mission 只读**：不修改 `agenda.md` 的 Mission 节（Mission 的演化由 Supervisor 决定或通过 agenda-evolve 提议）
-- **卡住检测**：若连续 3 轮的 JUDGE 判断结果指向同一个 skill 且同一个目标（如连续 3 轮都想对同一个 idea 做 evaluate），说明被卡住了——暂停循环，在 `agenda.md` 的 Discussion Topics 中添加一条问题，等待 Supervisor 输入
+- **Mission 只读**：不修改 `agenda.md` 的 Mission 节（Mission 的演化由 Owner 决定或通过 agenda-evolve 提议）
+- **卡住检测**：若连续 3 轮的 JUDGE 判断结果指向同一个 skill 且同一个目标（如连续 3 轮都想对同一个 idea 做 evaluate），说明被卡住了——暂停循环，在 `agenda.md` 的 Discussion Topics 中添加一条问题，等待 Owner 输入
 - **不对外发布**：不投稿论文、不发送外部通讯——PhD 导师制的唯一硬约束
 - **Skill 执行规范**：调用卫星 skill 时，必须先 Read 对应的 SKILL.md 文件，严格按其 Steps 和 Guard 执行。不要凭记忆执行——每次都重新读取 SKILL.md
 - **日志完整**：每轮的 LOG 步骤不可跳过，即使 skill 执行失败也要记录失败原因
@@ -95,7 +95,7 @@ autoresearch 是 MindFlow 的核心研究循环，实现了 PhD 导师制中 Res
 **示例：一次 autoresearch 会话的前 3 轮**
 
 ```
-Supervisor: "自己干活吧"
+Owner: "自己干活吧"
 
 --- Round 1 ---
 READ STATE:

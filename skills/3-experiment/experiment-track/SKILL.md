@@ -1,7 +1,7 @@
 ---
 name: experiment-track
 description: >
-  当 Supervisor 说"记录一下实验结果""实验跑完了"，
+  当 Owner 说"记录一下实验结果""实验跑完了"，
   或 Researcher 完成一轮实验需要记录时，
   在 Experiment 笔记中追加 Run Entry 并更新状态
 argument-hint: "<experiment> <result>"
@@ -26,7 +26,7 @@ experiment-track 是 MindFlow 实验执行循环的记录层。每当一轮实�
 - 正文中已有的 `### Run [N]` 标题列表（用于计算新 Run 编号）
 - `## Analysis` 节是否存在（用于确定追加位置）
 
-若文件不存在，停止执行并告知 Supervisor，不继续后续步骤。
+若文件不存在，停止执行并告知 Owner，不继续后续步骤。
 
 ### Step 2：计算新 Run 编号
 
@@ -55,7 +55,7 @@ Run Entry 格式如下：
 - **next**: <基于本次结果，下一步计划（调整 config、新 ablation、停止实验等）>
 ```
 
-日期填写今天（`YYYY-MM-DD`）。`result` 字段必须非空——若 Supervisor 未提供具体数值，在字段中注明"待补充"并给出已知信息，不得留空。
+日期填写今天（`YYYY-MM-DD`）。`result` 字段必须非空——若 Owner 未提供具体数值，在字段中注明"待补充"并给出已知信息，不得留空。
 
 ### Step 4：更新 frontmatter status
 
@@ -68,7 +68,7 @@ Run Entry 格式如下：
 | `running` | 停止性描述（实验达标、终止实验、结论确认等） | `completed` 或 `failed` |
 | `completed` / `failed` | 任意 | 保持不变（不得回退已终止状态） |
 
-停止性描述的判断标准：`next` 字段中含有"终止""停止""结论""完成""达标""failed""abort""done""conclude"等语义。若无法判断，保持 `running` 不变，在日志中注明"status 未变更，待 Supervisor 确认"。
+停止性描述的判断标准：`next` 字段中含有"终止""停止""结论""完成""达标""failed""abort""done""conclude"等语义。若无法判断，保持 `running` 不变，在日志中注明"status 未变更，待 Owner 确认"。
 
 仅修改 `status` 字段，frontmatter 其他字段保持不变。
 
@@ -100,7 +100,7 @@ Run Entry 格式如下：
 
 - **append-only**：不得修改或删除已有的任何 `### Run [N]` Entry。已记录的实验结果是不可变的历史记录。
 - **不修改设计字段**：`variables`、`baseline`、`metrics` 等由 experiment-design 写入的字段一律不得修改。
-- **result 必须非空**：若 Supervisor 未提供量化结果，在 `result` 字段注明"待补充"，但不得完全省略该字段。
+- **result 必须非空**：若 Owner 未提供量化结果，在 `result` 字段注明"待补充"，但不得完全省略该字段。
 - **不回退终止状态**：`status` 为 `completed` 或 `failed` 时，不得改回 `running` 或 `planning`。
 - **语言规范**：中文正文 + 英文技术术语（模型名、方法名、benchmark 名、超参数名保持英文，不翻译）。
 
@@ -110,7 +110,7 @@ Run Entry 格式如下：
 
 假设 Experiment 笔记为 `Experiments/VLN-BEVFusion-Ablation.md`，当前 status 为 `running`，已有 Run 1 和 Run 2，metrics 定义为 `SR`（Success Rate）和 `SPL`。
 
-Supervisor 说："实验跑完了，Run 3 用 lr=1e-4、BEV resolution=0.5m，SR 61.2%，SPL 0.54，比 baseline 高了 3 个点，感觉 resolution 影响比较大，下一步试试 0.3m。"
+Owner 说："实验跑完了，Run 3 用 lr=1e-4、BEV resolution=0.5m，SR 61.2%，SPL 0.54，比 baseline 高了 3 个点，感觉 resolution 影响比较大，下一步试试 0.3m。"
 
 执行过程：
 

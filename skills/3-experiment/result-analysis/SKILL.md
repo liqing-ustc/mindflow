@@ -1,7 +1,7 @@
 ---
 name: result-analysis
 description: >
-  当 Supervisor 说"分析一下实验结果"，
+  当 Owner 说"分析一下实验结果"，
   或实验 status 变为 completed 后 autoresearch 自动调用，
   分析实验数据并判断假设是否成立
 argument-hint: "<experiment>"
@@ -28,7 +28,7 @@ result-analysis 是 MindFlow 实验闭环的最后一环。给定一个实验笔
 
 用 Read 打开 `experiment` 参数指向的 `Experiments/xxx.md` 文件。提取以下字段：
 
-- `status`：确认为 `running` 或 `completed`（若为 `planned`，停止并告知 Supervisor"实验尚未运行，暂无数据可分析"）
+- `status`：确认为 `running` 或 `completed`（若为 `planned`，停止并告知 Owner"实验尚未运行，暂无数据可分析"）
 - `hypothesis`（若直接记录在 Experiment 文件中）或 `idea_ref`（指向关联 Idea）
 - 所有 `## Run` 节或 Run Entries 表格：记录每个 run 的 config、metrics、observations
 - `baseline`：对照指标或对照组描述

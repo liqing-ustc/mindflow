@@ -1,7 +1,7 @@
 ---
 name: draft-section
 description: >
-  当 Supervisor 说"写一下 introduction""起草 related work"，
+  当 Owner 说"写一下 introduction""起草 related work"，
   或 autoresearch 判断某 direction 已积累足够素材需要成文时，
   起草论文或报告的指定章节
 argument-hint: "<target> <section> <sources>"
@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 draft-section 是 MindFlow 的基础写作技能。给定目标文件、章节名和素材引用列表，它从 vault 中读取所有相关笔记，按照学术写作规范起草指定章节，并写入目标文件。
 
-它是 autoresearch 高阶工作流的写作子技能，也可由 Supervisor 直接触发用于快速成文。
+它是 autoresearch 高阶工作流的写作子技能，也可由 Owner 直接触发用于快速成文。
 
 所有 claim 必须有 `[[wikilink]]` 来源，正文用中文撰写，英文技术术语保持英文。
 

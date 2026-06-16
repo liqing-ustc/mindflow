@@ -89,6 +89,6 @@ Level 0  Raw Log              Workbench/logs/
    - **promoted_by**: <skill name or "human">
    ```
 
-3. **Supervisor writes**: Supervisor may write directly to any memory file at any time without restrictions.
+3. **Owner writes**: Owner may write directly to any memory file at any time without restrictions.
 
 4. **Conflict handling**: If a new insight contradicts an existing validated one, create a new `provisional` entry noting the contradiction. Do not modify the old entry.
