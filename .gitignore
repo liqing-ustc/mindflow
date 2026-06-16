@@ -5,7 +5,9 @@
 # Private notes (never committed, never published)
 Private/
 Meetings/
-Projects/
+# 项目子目录是各自独立的 notes repo，不进 vault repo；但顶层共享规范 Projects/CLAUDE.md 要跟踪
+Projects/*
+!Projects/CLAUDE.md
 
 # Obsidian - all config and plugins
 .obsidian/
