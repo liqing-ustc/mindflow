@@ -32,7 +32,27 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Task, WebSearch, WebFetch
 
 ### 4. 综合写作
 
-**读取笔记**：只读取候选论文清单里 rating >= 2 的论文笔记，作为新增论文（筛 rating 用 Bash 批处理 frontmatter，避免对每篇 Read）
+**读取笔记**：只读取候选论文清单里 rating >= 2 的论文笔记，作为新增论文（筛 rating 用 Bash 批处理 frontmatter，避免对每篇 Read）；这些笔记必须全部完整读取，不能因为已有 `## Claims` 摘要而跳过正文、实验、限制或 related work。
+
+**结构化 Claims 提取**：对每篇参与综合的论文笔记读取 `## Claims` section。每个 claim block 必须按 `references/claim-protocol.md` 的 canonical fields 解析：`claim_id`, `claim`, `type`, `scope`, `stance`, `confidence`, `grounding`, `evidence`, `counterevidence`, `contradictions`, `impact`, `status`, `provenance`。若笔记缺少 `## Claims`，不要丢弃该论文；仍完整阅读并在 `## 调研日志` 的 issues 中记录 `missing structured claims: [[Paper]]`，同时用正文证据参与常规综合。
+
+**Claim 综合**：按 `claim` 语义、`type`、`scope` 和 `impact` 聚合同义或相邻 claims，显式区分支持、挑战、反驳、混合和 open stance。Survey 正文中必须加入 claim-derived synthesis，不替代下列 6 条必备元素，而是嵌入对应元素或单独小节：
+
+| Claim / 问题 | Supporting papers | Challenging papers | Confidence range | Net stance | Open question |
+|---|---|---|---|---|---|
+| 归并后的 claim 或问题 | 支持该 claim 的 `[[wikilinks]]` | 挑战或反驳该 claim 的 `[[wikilinks]]`，无则 `none` | 最低到最高 confidence，如 `0.42-0.78` | `supports` / `challenges` / `refutes` / `mixed` / `open` | 仍需什么证据才能更新判断 |
+
+同时记录两个辅助表：
+
+| Contradiction | Claim IDs / papers | Why it conflicts | Current resolution |
+|---|---|---|---|
+| 冲突主题 | `C-...` in `[[PaperA]]`; `C-...` in `[[PaperB]]` | scope / benchmark / evidence 的不兼容点 | append-only: 保留双方；说明是否由 scope 化解，或进入 open problem |
+
+| Open problem | Claim-derived evidence | Blocking uncertainty | Next evidence to seek |
+|---|---|---|---|
+| 真实 open problem | `[[PaperA]]`, `[[PaperB]]` | 低置信度、矛盾、缺 baseline、缺复现实验等 | 下一步需要的 paper / experiment / benchmark |
+
+Claim 表只汇总结构化证据，不直接修改 `DomainMaps/`。若 claim 稳定到值得进入 DomainMap，只能在 `## DomainMap 更新建议` 中列出建议，并保持 actual DomainMap update 由后续人工或 memory promotion 决策完成。
 
 **确定 section 结构：**  下列必备元素为骨架；各元素内部的子分类由**已有对应 DomainMap + 已有 `Topics/{Topic}-Survey.md`（增量时） + Step 2.1 新侦察的 survey paper** 综合提炼：
 
@@ -45,7 +65,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Task, WebSearch, WebFetch
 
 **写作基线**：Survey 定位为 DomainMap 的 delta 报告——已在对应 DomainMap 中 Established 的内容不重述，聚焦窗口内的新技术路线、对既有 claim 的支持/挑战、新 open problems；必要时用 `[[DomainMaps/{Name}#某节]]` 引用基线。无对应 DomainMap 时完整展开所有必备元素。
 
-若调研中发现明显应纳入 DomainMap 的内容，在 `## 调研日志` 之前加 `## DomainMap 更新建议` 节显式列出；无则不加此节。
+若调研中发现明显应纳入 DomainMap 的内容，在 `## 调研日志` 之前加 `## DomainMap 更新建议` 节显式列出；无则不加此节。不得直接修改 `DomainMaps/` 下任何文件。
 
 **Frontmatter**（新建或更新时写入/刷新）：
 ```yaml
@@ -73,7 +93,7 @@ year_range: YYYY-YYYY
 - **output**: [[Topics/{Topic}-Survey]]
 - **stats**: 侦察 survey N 篇，新增论文 N 篇
 - **observation**: <一句话领域核心发现>
-- **issues**: <未能获取的论文及原因；无则 none>
+- **issues**: <未能获取的论文及原因；missing structured claims；claim contradictions；低置信度但影响大的 claim-derived open problems；无则 none>
 ```
 
 ## Verify
@@ -91,6 +111,10 @@ year_range: YYYY-YYYY
 
 ### Step 4 · 综合写作
 - [ ] 所有新增论文（候选论文清单中 rating >= 2） 的笔记已**全部完整读取，无跳过，无截断**
+- [ ] 已读取每篇参与综合论文笔记的 `## Claims`；缺失时已在调研日志 issues 中记录，且没有因此跳过全文阅读
+- [ ] Claim blocks 已按 `references/claim-protocol.md` 的 canonical fields 提取：`claim_id`, `claim`, `type`, `scope`, `stance`, `confidence`, `grounding`, `evidence`, `counterevidence`, `contradictions`, `impact`, `status`, `provenance`
+- [ ] Survey 产出 claim aggregation table，字段包含 Supporting papers / Challenging papers / Confidence range / Net stance / Open question
+- [ ] 已检查 `counterevidence` 与 `contradictions`，并记录 contradiction table；无法化解的矛盾进入 Open Problems 或调研日志 issues
 - [ ] 6 条必备元素（Overview / Problem & Motivation / 技术路线对比 / Datasets & Benchmarks / Open Problems / 调研日志）全部出现
 - [ ] 若 Step 2.1 有 survey 输出，本次笔记的 section 结构可追溯到其 taxonomy
 - [ ] 技术路线对比有分析深度——不止罗列 method 是什么，还说清楚各自的实际效果与优缺点
@@ -101,4 +125,4 @@ year_range: YYYY-YYYY
 - [ ] 有 DomainMap 更新建议时已作为独立 section 列出；未直接修改 `DomainMaps/` 下任何文件
 
 ### Step 5 · 日志
-- [ ] 日志 entry 已追加到 `Workbench/logs/YYYY-MM-DD.md`，失败论文已记入 issues
+- [ ] 日志 entry 已追加到 `Workbench/logs/YYYY-MM-DD.md`，失败论文、missing structured claims、claim contradictions 和高影响低置信度 open problems 已记入 issues

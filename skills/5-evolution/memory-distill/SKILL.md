@@ -8,21 +8,22 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## Purpose
 
-memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 `Workbench/logs/` 中的原始工作日志，从中提取跨日期重复出现的 pattern 和意外发现，并将有价值的 observation 提升为结构化的记忆条目，写入 `Workbench/memory/patterns.md` 和 `Workbench/memory/insights.md`。
+memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 `Workbench/logs/` 中的原始工作日志，也可读取 `Topics/*-Analysis.md`、survey 报告或 paper note `## Claims` 中已经按 `references/claim-protocol.md` 记录的 claim-derived signals，从中提取跨日期或跨来源重复出现的 pattern、意外发现和稳定 insight，并将有价值的 observation 提升为结构化的记忆条目，写入 `Workbench/memory/patterns.md` 和 `Workbench/memory/insights.md`。
 
 该技能实现了 `references/memory-protocol.md` 中定义的 Insight Promotion Hierarchy 的底层两级跃迁：从 Level 0（Raw Log）提升至 Level 1（Pattern），再进一步触发 Level 1 → Level 2（Provisional Insight）和 Level 2 → Level 3（Validated Insight）的升级。它将"散落的日常观察"转化为"可复用的研究经验"，是 MindFlow 自我进化机制的核心入口。
 
-输入为时间范围内的日志文件（`Workbench/logs/YYYY-MM-DD.md`），输出为更新后的记忆文件和 changelog 条目。
+输入为时间范围内的日志文件（`Workbench/logs/YYYY-MM-DD.md`）和显式给出的 claim synthesis artifact，输出为更新后的记忆文件和 changelog 条目。
 
 ## Steps
 
-### Step 1：收集日志
+### Step 1：收集日志和 claim 来源
 
 1. 解析 `period` 参数，确定起止日期。若未提供，默认为今天往前 7 天（含今天）。
 2. 用 Glob 列出 `Workbench/logs/YYYY-MM-DD.md` 格式的所有日志文件。
 3. 根据文件名中的日期过滤，保留落在 `period` 范围内的文件。
 4. 用 Read 逐一读取全部匹配的日志文件，记录每个文件的日期和内容。
-5. 若范围内无任何日志文件，输出提示"指定时间段内无日志，跳过蒸馏"，终止执行。
+5. 若参数或日志中引用了 `Topics/*-Analysis.md`、`*-Survey.md` 或 paper note `## Claims`，读取这些文件中的 `## Claim/Evidence Matrix`、`## Claim-Derived Memory Candidates` 或 `## Claims` section。
+6. 若范围内无任何日志文件且没有显式 claim 来源，输出提示"指定时间段内无日志或 claim 来源，跳过蒸馏"，终止执行。
 
 ### Step 2：提取候选 Pattern
 
@@ -31,10 +32,13 @@ memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 
 1. **跨日期重复观察**：同一现象、规律或结论在两个或更多不同日期的日志中均有提及。即使措辞不同，只要语义相似，均视为同一 pattern 的多次出现。
 2. **意外发现（anomaly）**：某个结果或行为与 `DomainMaps/` 中记录的已有知识相悖，或日志中明确标注为"出乎意料"、"与预期不符"的观察。
 3. **关联线索（correlation clue）**：日志中提示两篇论文、两个实验或两个概念之间存在潜在联系，且该联系尚未在任何记忆文件中被明确记录。
+4. **claim-derived pattern**：两个或更多 claim 指向同一方法、benchmark、failure mode、open question 或 impact target，且 `evidence` / `counterevidence` 可以追溯到具体 wikilink。
+5. **claim-derived insight**：claim 已有多源支持、明确 confidence/status，且 claim matrix 中没有 unresolved high-impact contradiction，适合进入 `insights.md` 的 provisional 或 validated entry。
 
 对每个候选 pattern，记录：
 - 核心 observation 的一句话概括
 - 来源日志文件列表（`Workbench/logs/YYYY-MM-DD.md`）
+- claim 来源列表（claim_id、`evidence`、`counterevidence`、`contradictions`、`provenance`）
 
 ### Step 3：检查已有记忆
 
@@ -63,6 +67,13 @@ memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 
 
 日期填写今天（执行蒸馏的日期）。
 
+claim-derived pattern 也写入 `Workbench/memory/patterns.md`，字段映射为：
+
+- `claim` 或 claim cluster 概括 → `observation`
+- `evidence` 与 claim_id → `occurrences`
+- `confidence < 0.60` 或存在 unresolved `counterevidence` / `contradictions` → `confidence: low` 或 `medium`，`needs_verification: yes`
+- `provenance` → 追加到条目末尾的 `source_claims` 行
+
 **情况 B：已有 pattern 获得新证据**
 
 1. 用 Read 再次确认目标 pattern 条目的当前 `occurrences` 列表。
@@ -85,6 +96,15 @@ memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 
      - **impact**: <该 insight 可能影响的研究方向，若暂不明确可填"待评估">
      - **status**: provisional
      ```
+
+claim-derived insight 写入 `Workbench/memory/insights.md`，字段映射为：
+
+- canonical `claim` → `claim`
+- claim `evidence`、claim_id、supporting source notes → `evidence`
+- claim `confidence` 或多个 claim 的 confidence range → `confidence`
+- claim `impact` → `impact`
+- claim `provenance` 和生成它的 synthesis artifact → `source`
+- claim `status: provisional` 或 `validated` → 对应 insight `status`，但遇到 unresolved `contradictions` 时只能保持 `provisional`
 
 **情况 C：已有 provisional insight 获得新证据**
 
@@ -125,9 +145,11 @@ memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 
 ## Guard
 
 - **仅追加，不修改**：永远不修改或删除记忆文件中的已有条目。若需更新，只能在对应条目的现有字段行末追加内容，或在条目末尾追加新字段行，不得改动原始文字。
+- **claim-derived 也仅追加**：claim 之间出现冲突时，不改写旧 pattern/insight；追加新的 evidence、`source_claims` 或 superseding entry，并保留旧条目作为历史证据。
 - **不直接修改 DomainMaps**：memory-distill 无权写入 `DomainMaps/` 下的任何文件，只能通过 `Workbench/queue.md` 的 Review 部分提出建议，由 Human 或上层技能决策。
-- **来源引用必须明确**：patterns.md 中每条 pattern 的 `occurrences`，以及 insights.md 中每条 insight 的 `evidence`，都必须包含指向具体日志文件的 Obsidian wikilink，不得仅凭印象记录"多次观察到"。
+- **来源引用必须明确**：patterns.md 中每条 pattern 的 `occurrences`，以及 insights.md 中每条 insight 的 `evidence`，都必须包含指向具体日志文件、claim_id 或 claim `evidence` wikilink，不得仅凭印象记录"多次观察到"。
 - **不捏造 pattern**：只有在日志中确实出现的 observation 才能被提取为候选 pattern，不得基于推断或联想凭空生成。若某规律听起来合理但日志中找不到明确依据，不记录。
+- **不捏造 claim-derived pattern**：只有 claim block、claim matrix 或 contradiction ledger 明确给出 `claim_id` 和 `evidence` 时，才可作为 claim-derived memory 输入。
 - **晋升需引用具体证据**：将 pattern 晋升为 provisional insight，或将 provisional insight 标记为 validated 时，必须在 insight 的 `evidence` 字段中列出支撑该结论的所有具体日志来源。
 - **独立来源的判断**：同一天的多条日志条目不算作独立来源；独立来源需来自不同日期，或来自不同论文/实验的观察。
 
@@ -135,6 +157,9 @@ memory-distill 是 MindFlow 记忆演化体系的基础技能。它定期扫描 
 
 - [ ] `Workbench/evolution/changelog.md` 已追加本次蒸馏记录
 - [ ] 蒸馏结果已记录（新增 pattern 数 + 晋升 insight 数，允许为 0 但须明确记录）
+- [ ] claim-derived pattern 已映射到 `Workbench/memory/patterns.md` 的 `observation` / `occurrences` / `source_claims`
+- [ ] claim-derived insight 已映射到 `Workbench/memory/insights.md` 的 `claim` / `evidence` / `confidence` / `source` / `impact` / `status`
+- [ ] 所有 claim-derived 更新遵守 append-only；有 contradiction 时保留旧条目并追加新 evidence 或新 entry
 
 ## Examples
 

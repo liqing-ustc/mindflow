@@ -24,8 +24,9 @@ An Obsidian-based research workspace for building a **human-AI collaborative res
 - **Paper Notes** — 结构化论文笔记（108+ 篇），含 Mind Map 与跨论文链接
 - **Domain Maps** — 按研究领域构建的认知地图（VLM、CUA、VLA 等）
 - **Research Ideas** — 灵感记录与评估，双向链接到相关论文
-- **Literature Survey** — 按主题系统调研，多篇论文对比分析
-- **AI Skills** — 13 个 AI 技能覆盖完整研究流程（阅读→构思→实验→写作→反思）
+- **Literature Survey** — 按主题系统调研，多篇论文 claim/evidence 对比分析
+- **Cross-paper Claim Synthesis** — 基于结构化 claim、evidence、counterevidence 和 contradictions 生成跨论文分析
+- **AI Skills** — 15 个 AI 技能覆盖完整研究流程（阅读→构思→实验→写作→反思）
 - **Workbench** — 研究状态追踪（agenda、日志、记忆库）
 - **Project & Meeting Tracking** — 项目进展与会议记录
 - **Published Website** — 基于 Quartz v4 的知识库站点
@@ -70,11 +71,11 @@ Install MindFlow from: https://github.com/liqing-ustc/mindflow/blob/main/docs/IN
 
 ## AI Research Skills
 
-MindFlow 内置了 13 个 AI 技能，按研究流程分为 6 层：
+MindFlow 内置了 15 个 AI 技能，按研究流程分为 6 层：
 
 | Layer | Skills | Purpose |
 |-------|--------|---------|
-| 1. Literature | `paper-digest`, `literature-survey` | 论文阅读与文献调研 |
+| 1. Literature | `daily-papers`, `paper-digest`, `literature-survey`, `cross-paper-analysis` | 论文发现、阅读、claim synthesis 与文献调研 |
 | 2. Ideation | `idea-generate`, `idea-evaluate` | 研究 idea 生成与评估 |
 | 3. Experiment | `experiment-design`, `experiment-track`, `result-analysis` | 实验设计、跟踪与分析 |
 | 4. Writing | `draft-section`, `writing-refine` | 论文写作与打磨 |

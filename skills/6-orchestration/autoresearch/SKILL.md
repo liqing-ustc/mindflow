@@ -26,7 +26,8 @@ autoresearch 是 MindFlow 的核心研究循环，实现了 PhD 导师制中 Res
 2. `Workbench/queue.md` — 待处理任务（Reading / Review / Questions / Experiments 四个部分）
 3. `Workbench/memory/insights.md` — 近期 insight（关注 status: validated 且近 30 天内的条目）
 4. `Workbench/memory/patterns.md` — 近期 pattern
-5. 用 Glob 列出最近 3 天的 `Workbench/logs/YYYY-MM-DD.md`，用 Read 读取，了解近期执行了什么（避免重复行动）
+5. 近期 `Topics/*-Analysis.md` 和 `*-Survey.md` 中的 `## Claim/Evidence Matrix`、`## Contradiction Ledger`、`## Claim-Derived Memory Candidates`
+6. 用 Glob 列出最近 3 天的 `Workbench/logs/YYYY-MM-DD.md`，用 Read 读取，了解近期执行了什么（避免重复行动）
 
 若 `focus` 参数指定了某个 direction，重点关注该 direction 相关的信息。
 
@@ -38,13 +39,16 @@ autoresearch 是 MindFlow 的核心研究循环，实现了 PhD 导师制中 Res
 |:--------|:----------|
 | queue 的 Reading 部分有待处理论文 | 读取 `skills/1-literature/paper-digest/SKILL.md` 并执行 |
 | agenda 中某 direction 缺乏文献支撑（evidence 稀疏） | 读取 `skills/1-literature/literature-survey/SKILL.md` 并执行 |
-| vault 中有多篇相关论文但未做对比分析 | 读取 `skills/1-literature/cross-paper-analysis/SKILL.md` 并执行 |
+| vault 中有多篇相关论文但未做 claim/evidence 对比分析 | 读取 `skills/1-literature/cross-paper-analysis/SKILL.md` 并执行 |
+| 多个 `## Claims` 指向同一 impact target，但 stance/confidence/status 不一致 | 读取 `skills/1-literature/cross-paper-analysis/SKILL.md` 并执行，生成 contradiction ledger |
+| 近期 claim matrix 中出现 conflicting claims、unresolved contradiction、counterevidence 增多 | 读取 `skills/1-literature/cross-paper-analysis/SKILL.md` 并执行，限定到相关 wikilinks 或 tag filter |
+| claim-derived pattern 在多个 source 中重复出现，且 matrix 已给出 memory candidate | 读取 `skills/5-evolution/memory-distill/SKILL.md` 并执行 |
 | 近期有 Topics/*-Analysis.md 标注了知识空白 | 读取 `skills/2-ideation/idea-generate/SKILL.md` 并执行 |
 | Ideas/ 中有 status: raw 的 idea 待评估 | 读取 `skills/2-ideation/idea-evaluate/SKILL.md` 并执行 |
 | Ideas/ 中有 status: developing 的 idea 缺实验方案 | 读取 `skills/3-experiment/experiment-design/SKILL.md` 并执行 |
 | Experiments/ 中有 status: completed 且无 ## Analysis 节 | 读取 `skills/3-experiment/result-analysis/SKILL.md` 并执行 |
 | 最近一次 memory-distill 距今 >5 天（检查 logs） | 读取 `skills/5-evolution/memory-distill/SKILL.md` 并执行 |
-| 近期有新 validated insight 但 agenda 未反映 | 读取 `skills/5-evolution/agenda-evolve/SKILL.md` 并执行 |
+| 近期有新 validated insight，或 claim-derived open question 影响 high-priority direction 但 agenda 未反映 | 读取 `skills/5-evolution/agenda-evolve/SKILL.md` 并执行 |
 | 某 direction 已有充足论文+实验+idea，需要成文 | 读取 `skills/4-writing/draft-section/SKILL.md` 并执行 |
 
 判断时优先考虑：
@@ -52,6 +56,7 @@ autoresearch 是 MindFlow 的核心研究循环，实现了 PhD 导师制中 Res
 - agenda 中 priority: high 的 direction 的 next_action
 - queue 中积压的待处理项
 - 最近未被处理的完成态工作（如 completed experiment 未分析）
+- `references/claim-protocol.md` 中定义的 claim conflict signals：相同 scope 下的 `stance` 冲突、`counterevidence` 非空、`contradictions` 非空、confidence 大幅分歧、`status: deprecated` 与新 evidence 并存
 
 ### Step 3：ACT
 

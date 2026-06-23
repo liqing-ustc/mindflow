@@ -29,6 +29,9 @@ date_added:          # 填写今天的日期 YYYY-MM-DD
 **Teaser. {描述}** 
 %% 若有独立 teaser 图/视频，在这里直接嵌入；若无，则跳过 %%
 
+## Claims
+%% 按 `references/claim-protocol.md` 写 3-8 个真实 claim block。每个 block 的标题使用协议规定的 Claim heading；字段必须按精确顺序填写：claim_id, claim, type, scope, stance, confidence, grounding, evidence, counterevidence, contradictions, impact, status, provenance。`evidence` 至少包含一个具体 wikilink；`counterevidence` 和 `contradictions` 可写 `none` 或具体 claim_id / wikilink。禁止保留本注释，禁止输出占位 claim block。 %%
+
 ---
 %% ═══ Body （内容解读）  ═══  %%
 
@@ -98,7 +101,7 @@ $$
 - **数据集**: {开源（名字 + 链接）/ 私有 / 部分公开}
 
 #### Claim 可验证性
-%% 用 ✅/⚠️/❌ 三档对核心 claim 分类。若全部 ✅ 也要写出来，明确 "无 ⚠️/❌"，避免漏过潜在的 marketing 修辞 %%
+%% 用 ✅/⚠️/❌ 三档对核心 claim 分类。必须从 `## Claims` 的结构化 block 派生，逐条 cross-check `evidence` / `counterevidence` / `contradictions`；若全部 ✅ 也要写出来，明确 "无 ⚠️/❌"，避免漏过潜在的 marketing 修辞 %%
 - ✅ {可验证 claim}：{grounding——论文实验/视频/独立复现}
 - ⚠️ {半可信 claim}：{打折原因——归因不严、样本量不明、定义模糊}
 - ❌ {营销话术}：{为什么不算技术 claim——如 "first to cross commercial viability"}
