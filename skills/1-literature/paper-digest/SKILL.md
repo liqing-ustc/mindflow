@@ -7,11 +7,18 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch
 
 ## Purpose
 
-给定一篇论文或技术 blog 的来源（URL、PDF 路径、论文标题或者关键词），它自动获取内容、提炼核心信息，生成结构化笔记。
+给定一篇论文或技术 blog 的来源（URL、PDF 路径、论文标题或者关键词），它获取或读取内容、提炼核心信息，生成结构化笔记。
 
 支持两种内容类型：
 - **paper**：学术论文
 - **blog**：所有 blog 类文章（tech blog，product blog 等）
+
+## Operating Modes
+
+- **Local / offline claim workflow**：当论文正文、PDF、markdown 源文件、已在当前上下文中提供全文的 URL 内容、URL 的本地抓取结果、或已有 `Papers/` 笔记已经可被 agent 读取时，可以直接进入 Step 3 写作或补写 `## Claims`。这种模式不要求 WebSearch、WebFetch、Semantic Scholar、Hugging Face、GitHub API 或任何 paper-fetch 步骤；这些能力不是从本地材料抽取 / 校验 `## Claims` 的前置条件。
+- **Acquisition / enrichment workflow**：当输入只有标题、关键词、缺失的 URL、或源材料不完整时，执行 Step 2 的官方源发现、抓取和 metrics enrichment。WebSearch/API/paper-fetch 是寻找缺失源材料和补充影响力指标的获取 / 增强选项，保留原有能力；失败按 Step 2.4 和 Step 5 记录，不阻塞 `## Claims` 从已读文本中生成。
+
+已有 paper note 之后，claim extraction 和 `cross-paper-analysis` 都只消费本地 markdown：`paper-digest` 写入的 `## Claims` section 可在离线状态下被 `cross-paper-analysis` 读取、聚合和对比，不需要网络、外部 API、数据库或 vector index。
 
 ## Steps
 
@@ -19,7 +26,9 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch
 
 先扫一遍 `Papers/`，避免对一篇已有笔记重复 digest。若找到对应笔记 → **立刻停止**，告知用户已有笔记 [[xxx]]，询问是否需要 覆盖 / 更新 / 取消
 
-### Step 2：Fetch
+### Step 2：Fetch / Acquisition（仅在源材料缺失时）
+
+若 Step 1 命中已有 note，或用户提供了 agent 可直接读取的本地 PDF / markdown / 已 materialized 的 URL 内容或源文本，则不要为了 claim extraction 重新跑 WebSearch 或 API；直接使用这些本地材料进入 Step 3。若需要生成完整新笔记但 metrics 无法联网获取，按 Step 2.4 写 `null` 和 Step 5 `issues`，不要让 metrics 阻塞 `## Claims`。
 
 #### Step 2.1：寻找官方源
 
@@ -29,7 +38,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch
 - **github**：代码仓库的 README
 
 根据输入信息寻找这三类官方源
-**用 WebSearch 兜底，不可跳过**
+**Acquisition / enrichment workflow 中用 WebSearch 兜底，不可跳过；Local / offline claim workflow 中不要求 WebSearch**
 综合判断找到的源是否来自于官方，若不是，则丢弃
 
 #### Step 2.2：抓取源、生成源文件
@@ -95,15 +104,17 @@ curl -sX POST 'https://api.semanticscholar.org/graph/v1/paper/batch?fields=citat
 **读取两个参考文件**：
 - **模板**：`{skill_dir}/references/paper-note-template.md`
 - **Syntax 参考**：vault 根目录 `references/obsidian-syntax.md` —— 公式 / 图 / 视频 / 表格的 Obsidian-specific 语法 quirks（全局，写任何笔记都应遵守）
+- **Claim 参考**：vault 根目录 `references/claim-protocol.md` —— `## Claims` 的结构化 claim/evidence/counterevidence/contradictions 协议
 
 #### 笔记结构
 
-**模版顺序**：Frontmatter → `## Summary` → **Body**（内容解读） → `## 关联工作` → `## 论文点评`
+**模版顺序**：Frontmatter → `## Summary` → `## Claims` → **Body**（内容解读） → `## 关联工作` → `## 论文点评`
 
-**撰写顺序**：Body → 关联工作 → 论文点评 → Summary → Frontmatter
+**撰写顺序**：Body → Claims → 关联工作 → 论文点评 → Summary → Frontmatter
 
 **撰写逻辑**：每一步的产出都依赖前面已写的内容，倒序写以保证每个判断都 grounded 在已有内容上，而不是凭印象先填。
 - **Body**：论文本身的解读，不依赖其他段落。
+- **Claims**：从 Body 和源文件中抽取 3-8 条结构化 claim，必须符合 `references/claim-protocol.md`。
 - **关联工作**：论文在 landscape 中的位置，需先理解论文本身。
 - **论文点评**：价值判断，依赖对论文本身的解读、和关联工作之间的关系、论文影响力指标。
 - **Summary**：笔记全文总结，依赖对论文本身的理解以及其点评。
@@ -114,6 +125,15 @@ curl -sX POST 'https://api.semanticscholar.org/graph/v1/paper/batch?fields=citat
 - 综合参考源文件的结构确定层级结构，**要保留源内容的核心结构和要素**，不要过于简略和压缩内容
 - 从所有源文件中，按需挑选 figures / equations / tables / videos 嵌入合适位置
 - 加入你自己的理解，标出有疑问的地方：`> ❓ ...`
+
+**Claims**（结构化主张）：
+- 可以从当前笔记 Body、已有本地源文件、或已有 `Papers/` note 中离线抽取；只要 evidence 能指向具体 source section / figure / table / experiment，就不需要 WebSearch/API/paper-fetch 参与。
+- 在 `## Summary` 之后、Body 之前写且只写一个 `## Claims` section。
+- 写 3-8 个 `### Claim: <short title>` block；每个 claim 必须是可证伪的一句话，不写泛泛 summary。
+- 每个 block 必须按 `references/claim-protocol.md` 的 canonical fields 精确顺序填写：`claim_id`, `claim`, `type`, `scope`, `stance`, `confidence`, `grounding`, `evidence`, `counterevidence`, `contradictions`, `impact`, `status`, `provenance`。
+- `evidence` 必须至少包含一个指向具体 source section / figure / table / experiment 的 Obsidian wikilink，不能写 `none`；`counterevidence` 和 `contradictions` 若未知可写 `none`，否则写 claim_id 或 wikilink。
+- `claim_id` 使用 `C-YYYYMM-<slug>`，`status` 初始通常为 `raw`，`provenance` 记录 `source=paper-digest; extracted_from=...; captured_at=YYYY-MM-DD; method=direct extraction`。
+- 不保留模板里的 claim 注释，不输出未替换的待填标记或占位 claim block。
 
 **Teaser 处理**：若某类源文件里存在明确是 overview / concept / motivation 用途的 figure 或 video（通常在 intro / abstract 段），嵌入到笔记 `## Summary` 下。
 
@@ -189,13 +209,20 @@ Glob DomainMaps/*<TermCamelCase>*.md   # 若目录存在
 ## Verify
 
 ### Step 2 (Fetch) 自检
-- [ ] 三类源（paper / website / github）均已尝试发现；WebSearch 兜底已对每一类跑过（不可跳过）
-- [ ] paper / website 源已通过 defuddle 抓到 `/tmp/{ShortTitle}/paper.json` 或 `website.json`；github 源已通过 `curl` 抓到同目录下的 `github.md`
-- [ ] Step 2.3 两项检查（文件完整性；website 的 video/figure URL 完整性）均已过；未过的已记入 Step 5 log 的 `issues`
-- [ ] Step 2.4 已产出 `/tmp/{ShortTitle}/metrics.json`，含 `measured_at`；存在的源对应 metrics 块非 null；缺失源对应块为 null；API 失败已记入 Step 5 log 的 `issues`
+- [ ] 若执行 Acquisition / enrichment workflow：三类源（paper / website / github）均已尝试发现；WebSearch 兜底已对每一类跑过（不可跳过）
+- [ ] 若执行 Local / offline claim workflow：已记录使用的本地 PDF / markdown / 已有 note / 已 materialized URL 内容；未把 WebSearch、WebFetch、Semantic Scholar、Hugging Face、GitHub API 或 paper-fetch 当作 `## Claims` 的前置条件
+- [ ] 若执行 Acquisition / enrichment workflow：paper / website 源已通过 defuddle 抓到 `/tmp/{ShortTitle}/paper.json` 或 `website.json`；github 源已通过 `curl` 抓到同目录下的 `github.md`
+- [ ] 若执行 Acquisition / enrichment workflow：Step 2.3 两项检查（文件完整性；website 的 video/figure URL 完整性）均已过；未过的已记入 Step 5 log 的 `issues`
+- [ ] 若执行 Acquisition / enrichment workflow：Step 2.4 已产出 `/tmp/{ShortTitle}/metrics.json`，含 `measured_at`；存在的源对应 metrics 块非 null；缺失源对应块为 null；API 失败已记入 Step 5 log 的 `issues`
 
 ### Step 3 (Compose & Save) 自检
 - [ ] `Papers/{笔记文件名}.md` 已创建
+- [ ] 笔记含且仅含一个 `## Claims` section，位置在 `## Summary` 之后、正文 Body / `## 关联工作` 之前
+- [ ] `## Claims` 中有 3-8 个 `### Claim:` block，且每个 block 都含有 canonical fields：`claim_id`, `claim`, `type`, `scope`, `stance`, `confidence`, `grounding`, `evidence`, `counterevidence`, `contradictions`, `impact`, `status`, `provenance`
+- [ ] 每个 claim block 的字段顺序与 `references/claim-protocol.md` 完全一致，`claim_id` 符合 `C-YYYYMM-<slug>`，无重复 ID
+- [ ] 每个 `evidence` 字段至少有一个具体 Obsidian wikilink；`counterevidence` / `contradictions` 要么是 `none`，要么是 claim_id 或 wikilink
+- [ ] `## Claims` 可从已有本地材料离线抽取和验证；after-note `cross-paper-analysis` 只读取本地 `## Claims` sections，不要求网络/API
+- [ ] 没有遗留模板注释、未替换的待填标记，也没有占位 claim block
 - [ ] 笔记中所有 URL / 数字 / 公式 / 表格 **均可在 Step 2 的某类源文件里 grep 到**，无新增
 - [ ] 笔记 body 的 prose（方法名、技术 claim、数值）**均可追溯到主文本源文件对应 section 的原文**，无凭印象补写
 - [ ] 每个 figure / equation / table / video **就近放置**——放在相关讨论的段落附近
@@ -205,6 +232,7 @@ Glob DomainMaps/*<TermCamelCase>*.md   # 若目录存在
 - [ ] **每个元素的嵌入位置与其描述在语境上一致**：元素不应被放在会误导读者的上下文（例：一段讲 "zero-shot 失败" 的文字下方不能紧接一个展示成功的视频）。若描述和周围文字冲突，更换嵌入的位置
 - [ ] **Rating 三处一致**：Summary 里的 Rating、frontmatter 的 `rating` 字段、`### Rating` 段的分数完全对应
 - [ ] **Rating 段有 Metrics 行**：`### Rating` 段首行是 `**Metrics** (as of YYYY-MM-DD): ...`，数字来自 `/tmp/{ShortTitle}/metrics.json`，缺失源对应字段写 "N/A（原因）"
+- [ ] `#### Claim 可验证性` 已明确从 `## Claims` 派生或逐条 cross-check 结构化 claim 的 evidence/counterevidence/contradictions
 
 ### Step 4 (Wikilink 注入) 自检 
 

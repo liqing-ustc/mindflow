@@ -87,6 +87,7 @@ MindFlow/
 ├── references/          # 协议文档
 │   ├── skill-protocol.md
 │   ├── memory-protocol.md
+│   ├── claim-protocol.md
 │   ├── agenda-protocol.md
 │   └── tags.md
 │
@@ -143,10 +144,12 @@ Skill 是 MindFlow 的自动化核心——定义在 `skills/<category>/<name>/S
 
 创建新 skill 或了解格式详情 → `references/skill-protocol.md`
 
-**架构**：核心循环 + 卫星 skill。`autoresearch`（L2 编排）读取 agenda/memory/queue 状态，判断下一个最高价值行动，调用对应卫星 skill。每个卫星 skill 也可被 Supervisor 自然语言直接触发。
+**架构**：核心循环 + 卫星 skill。`autoresearch`（工作流编排 skill，不等同于可选 Layer 2 Orchestrator）读取 agenda/memory/queue 状态，判断下一个最高价值行动，调用对应卫星 skill。每个卫星 skill 也可被 Supervisor 自然语言直接触发。
+
+**Claim / Evidence Protocol**：论文笔记、survey 和 cross-paper analysis 通过 `references/claim-protocol.md` 记录结构化 claim、evidence、counterevidence、contradictions、confidence 和 provenance。`cross-paper-analysis` 负责把多篇论文的 `## Claims` 汇总为 claim/evidence matrix、contradiction ledger 和 open questions；`memory-distill` 再把稳定的 claim-derived pattern/insight 追加到 `Workbench/memory/patterns.md` 与 `Workbench/memory/insights.md`。
 
 ```
-               ┌─── autoresearch (L2) ───┐
+               ┌─── autoresearch skill ───┐
                │   读状态 → 判断 → 执行    │
                └────┬──┬──┬──┬──┬────────┘
                     │  │  │  │  │
@@ -158,12 +161,14 @@ Skill 是 MindFlow 的自动化核心——定义在 `skills/<category>/<name>/S
                   5-evolution → 更新 Workbench/ → 下一轮
 ```
 
-**完整 skill 清单**（13 个）：
+**完整 skill 清单**（15 个）：
 
 | Category | Skill | Level | 功能 | 状态 |
 |:---------|:------|:------|:-----|:-----|
 | `1-literature` | `paper-digest` | L0 | 消化单篇论文 → Paper 笔记 | ✅ |
-| | `literature-survey` | L1 | 主题级调研（搜索 + 批量 digest + 综合） | ✅ |
+| | `daily-papers` | L0 | 每日论文发现、筛选和点评 | ✅ |
+| | `literature-survey` | L1 | 主题级调研（搜索 + 批量 digest + claim 综合） | ✅ |
+| | `cross-paper-analysis` | L1 | 跨论文 claim/evidence/contradiction matrix | ✅ |
 | `2-ideation` | `idea-generate` | L0 | 从知识空白生成研究 idea | ✅ |
 | | `idea-evaluate` | L0 | 评估 idea 可行性和新颖性 | ✅ |
 | `3-experiment` | `experiment-design` | L0 | 设计实验方案 | ✅ |
@@ -238,6 +243,7 @@ L4: Domain Map      DomainMaps/{Name}.md             持久领域知识
 |:-----|:-----|:---------|
 | Skill Protocol | `references/skill-protocol.md` | SKILL.md 格式、frontmatter 字段、skill levels |
 | Memory Protocol | `references/memory-protocol.md` | 记忆文件格式、L0-L4 晋升规则、更新规则 |
+| Claim Protocol | `references/claim-protocol.md` | `## Claims` 字段、claim/evidence/counterevidence/contradictions、confidence/status/provenance、memory/agenda promotion |
 | Agenda Protocol | `references/agenda-protocol.md` | agenda.md 格式、Researcher 权限、Supervisor override |
 | Tag Taxonomy | `references/tags.md` | Tag 列表、选择原则、更新记录 |
 
@@ -257,6 +263,7 @@ L4: Domain Map      DomainMaps/{Name}.md             持久领域知识
 
 | 日期 | 变更 |
 |:-----|:-----|
+| 2026-06-23 | 新增 `references/claim-protocol.md`；恢复为 claim/evidence matrix 设计的 `cross-paper-analysis`；SPEC skill 清单显式纳入 `daily-papers`，当前可见 skill 为 15 个 |
 | 2026-04-01 | 移除 Daily/ 和 Experiments/ 目录；移除 cross-paper-analysis skill；CLAUDE.md 改为 AGENTS.md 的 symlink，身份信息集中到 AGENTS.md；精简 paper-digest 和 literature-survey；Paper 模板移除 Connections 章节 |
 | 2026-03-28 | Skill System Design：14 skill 全景图（核心循环 + 卫星架构）、protocol 改造（Verify/pushy desc/budget）、Roadmap 重排 Phase 1.5-6 |
 | 2026-03-27 | Spec 精简至 ~250 行；补全目录结构（dist/docs/examples/website）、笔记类型表（Report）；明确 skill 编号约定；移除未定义缩写 |
